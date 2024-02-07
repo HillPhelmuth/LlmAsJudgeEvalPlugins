@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "type": "completion",
+  "description": "Evaluate the relevance, using a score of 1-5, of generated answer to the to the question and retreived context",
+  "execution_settings": {
+    "default": {
+      "max_tokens": 128,
+      "temperature": 0.1,
+      "top_p": 0.1,
+      "presence_penalty": 0.0,
+      "frequency_penalty": 0.0
+    }
+  },
+  "input": {
+    "parameters": [
+      {
+        "name": "question",
+        "description": "The benchmark question",
+        "defaultValue": ""
+      },
+      {
+        "name": "context",
+        "description": "The context retreived from vector store",
+        "defaultValue": ""
+      },
+      {
+        "name": "answer",
+        "description": "GPT-3.5-turbo generated Answer.",
+        "defaultValue": ""
+      }
+    ]
+  }
+}
