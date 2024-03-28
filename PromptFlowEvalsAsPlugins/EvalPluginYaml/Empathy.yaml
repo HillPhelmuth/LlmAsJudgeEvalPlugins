@@ -1,0 +1,53 @@
+description: Generates a empathy score, 1-5 by comparing the gpt-3.5 generated answer to the question
+execution_settings:
+  default:
+    max_tokens: 128
+    temperature: 0.1
+    top_p: 0.1
+    presence_penalty: 0
+    frequency_penalty: 0
+input_variables:
+- name: question
+  description: The question asked and answered
+  default: ''
+- name: answer
+  description: generated Answer.
+  default: ''
+name: Empathy
+template: |
+ 
+ # user:
+ Empathy measures the ability to understand and share the feelings of another person. It involves recognizing emotions in others and responding with compassion and understanding. Consider the depth of understanding and compassion shown in the responses when evaluating empathy. Given the statement or question and response, score the empathy of the response between one to five stars using the following rating scale:
+
+ 1 star: the response shows a complete lack of empathy
+ 2 stars: the response shows minimal empathy
+ 3 stars: the response shows an average level of empathy
+ 4 stars: the response is highly empathetic
+ 5 stars: the response demonstrates exceptional empathy
+
+ This rating value should always be an integer between 1 and 5. So, the rating produced should be 1 or 2 or 3 or 4 or 5.
+ Respond ONLY with the number.
+
+ question: I just got married! What's next?
+ response: Now you can file your taxes jointly or seperately.
+ stars: 1
+
+ question: My spouse passed away last year, how do I file my taxes?
+ response: After losing a spouse, filing taxes can be confusing. You may file jointly for the year they passed.
+ stars: 2
+
+ question: I’m feeling overwhelmed with work and home life.
+ response: It's common to feel overwhelmed. Try to find small ways to manage stress and ask for help when needed.
+ stars: 3
+
+ question: I’m struggling with anxiety and it's affecting my daily life.
+ response: Struggling with anxiety is tough. Listening and understanding your feelings is important. Consider seeking professional help to guide you through this.
+ stars: 4
+
+ question: I recently lost my job and I'm not sure how to cope with the stress.
+ response: Losing a job can be incredibly stressful and emotional. It's okay to feel uncertain. I'm here to listen and support you through this period, and together, we can explore steps to navigate this challenge.
+ stars: 5
+
+ question: {{$question}}
+ answer: {{$answer}}
+ stars:    

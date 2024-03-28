@@ -1,0 +1,30 @@
+﻿<RadzenDataGrid @ref=_grid Data="EvalResultDisplays" TItem="EvalResultDisplay" AllowSorting=true Density="Density.Compact" AllowPaging=true PageSize="12">
+    <Template Context="display">
+        <RadzenText TextStyle="TextStyle.Overline">@display.ResultScore.Output</RadzenText>
+        <RadzenCard Style="word-wrap: break-word;
+                           overflow-wrap: break-word;
+                           white-space: normal;
+                           overflow: hidden;
+                           width: 100%;">
+            @((MarkupString)AsHtml(display.Answer))
+        </RadzenCard>
+    </Template>
+    <Columns>
+        <RadzenDataGridColumn TItem="EvalResultDisplay" Title="Question" Property="Question" Width="70%"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="EvalResultDisplay" Title="Eval" Property="ResultScore.EvalName" Width="20%"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="EvalResultDisplay" Title="Score" Property="ResultScore.Score" Width="10%"></RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+@if (AggregatedResults.Any())
+{
+    <RadzenCard>
+        <RadzenText Text="Aggregated Results" TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center"></RadzenText>
+        @foreach (var agg in AggregatedResults)
+        {
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Body1">@agg.Key -</RadzenText>
+                <RadzenText TextStyle="TextStyle.Caption">@agg.Value @(agg.Key == "PerceivedIntelligenceNonRag" ? " / 10" : " / 5")</RadzenText>
+            </RadzenCard>
+        }
+    </RadzenCard>
+}
