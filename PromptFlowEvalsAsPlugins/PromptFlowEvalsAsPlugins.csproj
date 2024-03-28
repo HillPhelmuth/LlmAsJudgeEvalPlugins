@@ -4,19 +4,26 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <NoWarn>SKEXP0010</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.3.0" />
+    <None Remove="EvalPluginYaml\Empathy.yaml" />
+    <None Remove="EvalPluginYaml\Fluency.yaml" />
+    <None Remove="EvalPluginYaml\PerceivedIntelligenceNonRag.yaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Plugins\**\config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Plugins\**\skprompt.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <EmbeddedResource Include="EvalPluginYaml\*.yaml" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="IInputModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.6.3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.6.3" />
+  </ItemGroup> 
 
 </Project>
