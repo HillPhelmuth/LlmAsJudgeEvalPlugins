@@ -13,5 +13,6 @@ public enum EvalType
     PerceivedIntelligence,
     PerceivedIntelligenceNonRag,
     Fluency,
-    Empathy
+    Empathy,
+    Helpfulness
 }

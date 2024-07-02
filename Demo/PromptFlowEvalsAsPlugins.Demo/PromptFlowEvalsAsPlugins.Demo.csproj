@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.36.2" />
-    <PackageReference Include="Radzen.Blazor" Version="4.28.9" />
+    <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="Radzen.Blazor" Version="4.33.1" />
   </ItemGroup>
 
   <ItemGroup>

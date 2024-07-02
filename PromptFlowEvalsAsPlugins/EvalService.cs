@@ -6,6 +6,7 @@ using Microsoft.SemanticKernel.TextGeneration;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Azure.AI.OpenAI;
 
 namespace PromptFlowEvalsAsPlugins;
 
@@ -19,11 +20,30 @@ public class EvalService(Kernel kernel)
             throw new Exception("Kernel must have a chat completion service or text generation service to execute an eval");
         }
         var evalPlugin = currentKernel.ImportEvalPlugin();
-        var settings = new OpenAIPromptExecutionSettings { StopSequences = ["stars"], MaxTokens = 128, Temperature = 0.1, TopP = 0.1, ChatSystemPrompt = "You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric." };
+        var settings = new OpenAIPromptExecutionSettings { StopSequences = ["stars"], MaxTokens = 1, Temperature = 0.1, TopP = 0.1, ChatSystemPrompt = "You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric. Your response must always be a single numerical value." };
         var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { "default", settings} });
         var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], kernelArgs);
         return new ResultScore(inputModel.FunctionName, result);
     }
+    public async Task<ResultScore> ExecuteLogProbEval(InputModel inputModel)
+    {
+	    var currentKernel = kernel.Clone();
+        var chatService = currentKernel.GetRequiredService<IChatCompletionService>();
+        var settings = new OpenAIPromptExecutionSettings { StopSequences = ["stars"], MaxTokens = 1, Temperature = 0.1, TopP = 0.1, ChatSystemPrompt = "You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric. Your response must always be a single numerical value.", Logprobs = true, TopLogprobs = 5 };
+        var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { "default", settings } });
+        var evalPrompts = currentKernel.ToPromptTemplateConfigs();
+        
+        var evalPrompt = evalPrompts[inputModel.FunctionName];
+        
+		var promptTemplateFactory = new KernelPromptTemplateFactory();
+        var userPrompt = await promptTemplateFactory.Create(evalPrompt).RenderAsync(currentKernel, kernelArgs);
+        var chatHistory = new ChatHistory();
+        chatHistory.AddUserMessage(userPrompt);
+        var result = await chatService.GetChatMessageContentAsync(chatHistory, settings, currentKernel);
+        var logProbs = result.Metadata?["LogProbabilityInfo"] as ChatChoiceLogProbabilityInfo;
+        var tokenStrings = logProbs.TokenLogProbabilityResults.AsTokenStrings()[0];
+        return new ResultScore(inputModel.FunctionName, tokenStrings);
+	}
     public static async Task<ResultScore> ExecuteEval(InputModel inputModel, Kernel evalKernel)
     {
         var kernel = evalKernel.Clone();
@@ -48,13 +68,17 @@ public class EvalService(Kernel kernel)
         var scoreResult = result.GetTypedResult<ScorePlusResponse>();
         return new ResultScore(inputModel.FunctionName, scoreResult);
     }
-    public static Dictionary<string, double> AggregateResults(IEnumerable<ResultScore> resultScores)
+    public static Dictionary<string, double> AggregateResults(IEnumerable<ResultScore> resultScores, bool useLogProbs = false)
     {
         var result = new Dictionary<string, double>();
         try
         {
             var aggregateResults = resultScores.GroupBy(r => r.EvalName)
-                .ToDictionary(g => g.Key, g => g.Average(r => r.Score));
+                .ToDictionary(g => g.Key, g =>
+                {
+                    Func<ResultScore, double> selector = useLogProbs ? r => r.ProbScore : r => r.Score;
+                    return g.Average(selector);
+                });
             return aggregateResults;
         }
         catch (Exception ex)
@@ -70,65 +94,7 @@ public class EvalService(Kernel kernel)
     //}
         
 }
-public class ResultScore
-{
-    public string EvalName { get; set; }
 
-
-    public int Score { get; set; } = -1;
-
-    /// <summary>
-    /// Actual response if it could not be converted into a score
-    /// </summary>
-    public string? Output { get; set; }
-
-    public string? Reasoning { get; set; }
-    public string? ReferenceAnswer { get; set; }
-    /// <summary>
-    /// Should be a score from 1-5; -1 Represents an unparsable result
-    /// </summary>
-    public ResultScore(string name, FunctionResult result)
-    {
-        EvalName = name;
-        var output = result.GetValue<string>()?.Replace("Score:", "").Trim();
-        if (int.TryParse(output, out var parsedScore))
-        {
-            Score = parsedScore;
-        }
-        else
-        {
-            Output = output;
-        }
-    }
-    public ResultScore(string name, string result)
-    {
-        EvalName = name;
-        var output = result.Replace("Score:", "").Trim();
-        if (int.TryParse(output, out var parsedScore))
-        {
-            Score = parsedScore;
-        }
-        else
-        {
-            Output = output;
-        }
-    }
-    public ResultScore(string name, ScorePlusResponse? scorePlusResponse)
-    {
-        EvalName = name;
-        var output = scorePlusResponse?.QualityScore?.Replace("Score:", "").Trim();
-        if (int.TryParse(output, out var parsedScore))
-        {
-            Score = parsedScore;
-        }
-        else
-        {
-            Output = output;
-        }
-        Reasoning = scorePlusResponse?.QualityScoreReasoning;
-        ReferenceAnswer = scorePlusResponse?.ReferenceAnswer;
-    }
-}
 public class ScorePlusResponse
 {
     [JsonPropertyName("referenceAnswer")]

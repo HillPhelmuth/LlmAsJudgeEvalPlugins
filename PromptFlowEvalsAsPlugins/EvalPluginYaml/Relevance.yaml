@@ -30,6 +30,7 @@ template: |
     Five stars: the answer has perfect relevance
 
     This rating value should always be an integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
+    * Just respond with the score number, nothing else.
 
     context: Marie Curie was a Polish-born physicist and chemist who pioneered research on radioactivity and was the first woman to win a Nobel Prize.
     question: What field did Marie Curie excel in?

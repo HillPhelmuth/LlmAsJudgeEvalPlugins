@@ -12,7 +12,9 @@ public partial class EvalDisplay : ComponentBase
     [Parameter]
     public List<EvalResultDisplay> EvalResultDisplays { get; set; } = [];
     [Parameter]
-    public Dictionary<string, double> AggregatedResults { get; set; } = [];
+    public Dictionary<string, double> LogProbAggregatedResults { get; set; } = [];
+    [Parameter]
+    public Dictionary<string, double> StandardAggregatedResults { get; set; } = [];
     private RadzenDataGrid<EvalResultDisplay>? _grid;
     private string AsHtml(string? text)
     {

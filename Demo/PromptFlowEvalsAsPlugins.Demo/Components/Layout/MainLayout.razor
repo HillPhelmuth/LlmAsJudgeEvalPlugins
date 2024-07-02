@@ -16,24 +16,7 @@
         </RadzenRow>
     </RadzenHeader>
     <RadzenBody Style="padding:0">
-        <RadzenTabs>
-            <Tabs>
-                <RadzenTabsItem Text="Non-Rag Evals">
-                    <RadzenRow>
-                        <RadzenColumn Size="6">
-                            <QnAGenerator @ref=_qnAGenerator EvalResultGenerated="HandleAddEval" ResultsAggregated="HandleAggregate"></QnAGenerator>
-                        </RadzenColumn>
-                        <RadzenColumn Size="6">
-                            <EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay AggregatedResults="_aggResults"></EvalDisplay>
-                        </RadzenColumn>
-                    </RadzenRow>
-                </RadzenTabsItem>
-                <RadzenTabsItem Text="Rag Evals">
-                    <RadzenText TextStyle="TextStyle.DisplayH5" Text="Coming Soon" TextAlign="TextAlign.Center"></RadzenText>
-                    <RadzenText TextStyle="TextStyle.Subtitle1" Text="If anyone actually cares, I guess." TextAlign="TextAlign.Center"></RadzenText>
-                </RadzenTabsItem>
-            </Tabs>
-        </RadzenTabs>
+       @Body
     </RadzenBody>
 </RadzenLayout>
 <div id="blazor-error-ui">
