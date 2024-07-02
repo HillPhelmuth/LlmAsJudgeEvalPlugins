@@ -12,7 +12,7 @@ namespace PromptFlowEvalsAsPlugins;
 /// </summary>
 public class InputModel
 {
-       private InputModel(EvalType evalType, KernelArguments kernelArgs)
+    private InputModel(EvalType evalType, KernelArguments kernelArgs)
     {
         EvalType = evalType;
         RequiredInputs = kernelArgs;
@@ -147,6 +147,17 @@ public class InputModel
     /// <param name="question">The question.</param>
     /// <returns>The input model for empathy evaluation.</returns>
     public static InputModel EmpathyModel(string answer, string question) => CreateInstance(EvalType.Empathy, new KernelArguments
+    {
+        ["answer"] = answer,
+        ["question"] = question,
+    });
+    /// <summary>
+    /// Creates an input model for helpfulness evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The response being evaluated.</param>
+    /// <param name="question">The question.</param>
+    /// <returns>The input model for helpfulness evaluation.</returns>
+    public static InputModel HelfulnessModel(string answer, string question) => CreateInstance(EvalType.Helpfulness, new KernelArguments
     {
         ["answer"] = answer,
         ["question"] = question,

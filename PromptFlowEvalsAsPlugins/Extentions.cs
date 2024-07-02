@@ -54,6 +54,18 @@ public static class Extentions
         var plugin = KernelPluginFactory.CreateFromFunctions(pluginName, description, kFunctions);
         return plugin;
     }
+    public static Dictionary<string, PromptTemplateConfig> ToPromptTemplateConfigs(this Kernel kernel, string pluginName = "EvalPlugin")
+    {
+	    var files = Enum.GetNames<EvalType>();
+        var result = new Dictionary<string, PromptTemplateConfig>();
+        foreach (var file in files)
+        {
+	        var yamlText = ExtractFromAssembly<string>($"{file}.yaml");
+            var config = KernelFunctionYaml.ToPromptTemplateConfig(yamlText);
+            result.Add(file, config);
+        }
+        return result;
+	}
     public static T? GetTypedResult<T>(this FunctionResult functionResult)
     {
         if (functionResult.ValueType == typeof(T))

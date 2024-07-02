@@ -12,7 +12,9 @@ public partial class QnAGenerator : ComponentBase
     [Parameter]
     public EventCallback<EvalResultDisplay> EvalResultGenerated { get; set; }
     [Parameter]
-    public EventCallback<Dictionary<string, double>> ResultsAggregated { get; set; }
+    public EventCallback<Dictionary<string, double>> StandardResultsAggregated { get; set; }
+    [Parameter]
+    public EventCallback<Dictionary<string, double>> LogProbResultsAggregrated { get; set; }
     private class QnAForm
     {
         public string SystemPrompt { get; set; } = "";
@@ -67,13 +69,15 @@ public partial class QnAGenerator : ComponentBase
         var userInputs = qnaForm.UserInputs.Select(ui => ui.Input).ToList();
         var inputModels = await KernelService.CreateNonRagInputModels(systemPrompt, userInputs);
         var results = new List<EvalResultDisplay>();
-        await foreach (var result in KernelService.ExecuteEvalsAsync(inputModels))
+        await foreach (var result in KernelService.ExecuteEvalsAsync(inputModels, useLogProbs:true))
         {
             results.Add(result);
             await EvalResultGenerated.InvokeAsync(result);
         }
-        var aggResults = EvalService.AggregateResults(results.Select(r => r.ResultScore));
-        await ResultsAggregated.InvokeAsync(aggResults);
+        var aggResults = EvalService.AggregateResults(results.Select(r => r.ResultScore), true);
+        await LogProbResultsAggregrated.InvokeAsync(aggResults);
+        var standardResults = EvalService.AggregateResults(results.Select(r => r.ResultScore), false);
+        await StandardResultsAggregated.InvokeAsync(standardResults);
         _isEvaluating = false;
         StateHasChanged();
         // Do something with the resultScores

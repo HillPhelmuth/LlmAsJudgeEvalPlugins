@@ -14,7 +14,9 @@ public class KernelService
 
     private Kernel CreateKernel(string model = "gpt-3.5-turbo")
     {
-        var kernel = Kernel.CreateBuilder().AddOpenAIChatCompletion(model, _configuration["OpenAI:ApiKey"]!).Build();
+        var kernelBuilder = Kernel.CreateBuilder();
+        kernelBuilder.Services.AddLogging(o => o.AddConsole());
+        var kernel = kernelBuilder.AddOpenAIChatCompletion(model, _configuration["OpenAI:ApiKey"]!).Build();
         
         return kernel;
     }
@@ -30,13 +32,13 @@ public class KernelService
         }
         return resultScores;
     }
-    public async IAsyncEnumerable<EvalResultDisplay> ExecuteEvalsAsync(List<InputModel> inputs, string model = "gpt-3.5-turbo")
+    public async IAsyncEnumerable<EvalResultDisplay> ExecuteEvalsAsync(List<InputModel> inputs, string model = "gpt-3.5-turbo", bool useLogProbs = false)
     {
         var kernel = CreateKernel(model);
         var evalService = new EvalService(kernel);
         foreach (var input in inputs)
         {
-            var result = await evalService.ExecuteEval(input);
+            var result = useLogProbs ? await evalService.ExecuteLogProbEval(input) : await evalService.ExecuteEval(input);
             var question = input.RequiredInputs["question"]!.ToString();
             var answer = input.RequiredInputs["answer"]!.ToString();
             yield return new EvalResultDisplay(question!, answer!, result);
@@ -46,7 +48,7 @@ public class KernelService
     {
         var kernel = CreateKernel(model);
         var prompt = $"Generate {numberOfQ} different questions about {topic}. Each question should be on its own line. Do not label the lines.";
-        var function = KernelFunctionFactory.CreateFromPrompt(prompt, executionSettings: new OpenAIPromptExecutionSettings { MaxTokens = 528, Temperature = 1.2, TopP = 1.0 });
+        var function = KernelFunctionFactory.CreateFromPrompt(prompt, executionSettings: new OpenAIPromptExecutionSettings { MaxTokens = 528, Temperature = 1.0, TopP = 1.0 });
         var result = await kernel.InvokeAsync(function);
         return [.. result.GetValue<string>()!.Split("\n")];
     }
@@ -66,6 +68,8 @@ public class KernelService
             inputs.Add(noRagIntelligences);
             var coherence = InputModel.CoherenceModel(answer, question);
             inputs.Add(coherence);
+            var helpfulness = InputModel.HelfulnessModel(answer, question);
+            inputs.Add(helpfulness);
         }
         return inputs;
     }
