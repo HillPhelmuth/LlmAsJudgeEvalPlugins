@@ -1,22 +1,55 @@
 ﻿@page "/"
 
 <PageTitle>Home</PageTitle>
-
+<RadzenButton Variant="Variant.Text" Text="Reset All" Click="Reset" Size="ButtonSize.ExtraSmall"></RadzenButton>
+<RadzenButton Variant="Variant.Text" Text="Clear Evals" Click="ClearEvals" Size="ButtonSize.Small"></RadzenButton>
 <RadzenTabs>
 	<Tabs>
 		<RadzenTabsItem Text="Non-Rag Evals">
 			<RadzenRow>
-				<RadzenColumn Size="6">
+				<RadzenColumn Size="5">
 					<QnAGenerator @ref=_qnAGenerator EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate"></QnAGenerator>
 				</RadzenColumn>
-				<RadzenColumn Size="6">
+				<RadzenColumn Size="7">
 					<EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
 				</RadzenColumn>
 			</RadzenRow>
 		</RadzenTabsItem>
 		<RadzenTabsItem Text="Rag Evals">
-			<RadzenText TextStyle="TextStyle.DisplayH5" Text="Coming Soon" TextAlign="TextAlign.Center"></RadzenText>
-			<RadzenText TextStyle="TextStyle.Subtitle1" Text="If anyone actually cares, I guess." TextAlign="TextAlign.Center"></RadzenText>
+			<RadzenRow>
+				<RadzenColumn Size="5">
+					<AddRagContent @ref=_addRagContent EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate"></AddRagContent>
+				</RadzenColumn>
+				<RadzenColumn Size="7">
+					<EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
+				</RadzenColumn>
+			</RadzenRow>
+		</RadzenTabsItem>
+		<RadzenTabsItem Text="Prompts and Content">
+			<RadzenRow>
+				<RadzenColumn Size="8" Offset="2">
+					<RadzenAccordion Multiple="false">
+						<Items>
+							@foreach (var template in _evalTemplates.Values)
+							{
+								<RadzenAccordionItem Text="@($"EVAL - {template.Name}")" >
+									<RadzenText TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center">Description: @template.Description</RadzenText>
+									<RadzenCard Style="word-wrap: break-word;
+									                   overflow-wrap: break-word;
+									                   white-space: normal;
+									                   overflow: hidden;
+									                   width: 100%;">
+										@((MarkupString)AsHtml(template.Template))
+									</RadzenCard>
+								</RadzenAccordionItem>
+							}
+							<RadzenAccordionItem Text="Default RAG Content">
+								<embed style="width:100%; height:25rem" src="@_pdfUri" />
+							</RadzenAccordionItem>
+						</Items>
+					</RadzenAccordion>
+				</RadzenColumn>
+			</RadzenRow>
 		</RadzenTabsItem>
 	</Tabs>
 </RadzenTabs>

@@ -1,9 +1,4 @@
 ﻿using Azure.AI.OpenAI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PromptFlowEvalsAsPlugins;
 
@@ -45,10 +40,10 @@ public static class LogProbExts
 		var result = new List<TokenString>();
 		foreach (var logProb in logProbContentItems)
 		{
-			var tokenString = new TokenString(logProb.Token, logProb.NormalizedLogProb());
+			var tokenString = new TokenString(logProb.Token, logProb.ToLinearProb());
 			if (logProb.TopLogProbabilityEntries is { Count: > 0 })
 			{
-				var innerResult = logProb.TopLogProbabilityEntries.Select(item => new TokenString(item.Token, item.NormalizedLogProb())).ToList();
+				var innerResult = logProb.TopLogProbabilityEntries.Select(item => new TokenString(item.Token, item.ToLinearProb())).ToList();
 				tokenString.TopLogProbs = innerResult;
 			}
 			result.Add(tokenString);
@@ -73,14 +68,26 @@ public static class LogProbExts
 
 		var weightedSum = validTokens.Sum(vt => vt.Value * vt.Probability);
 
-		return weightedSum /*/ validTokens.Count*/;
+		return weightedSum;
 	}
-	public static double NormalizedLogProb(this ChatTokenLogProbabilityResult logProbabilityResult)
+	public static IEnumerable<TokenProb> NormalizeValues(this IEnumerable<TokenProb> tokenProbs)
 	{
-		return Math.Exp(logProbabilityResult.LogProbability);
+		
+		double sum = tokenProbs.Sum(x => x.Probability);
+
+		if (sum == 0)
+		{
+			throw new ArgumentException("The sum of the values in the TokenProb is zero.");
+		}
+		foreach (var token in tokenProbs)
+		{
+			var normalizeValues = new TokenProb(token.StringValue, token.Probability / sum);
+			Console.WriteLine($"Normalized to {normalizeValues} (from {token})");
+			yield return normalizeValues;
+		}
+		//return tokenProbs.Select(token => new TokenProb(token.StringValue, token.Probability / sum));
 	}
-	public static double NormalizedLogProb(this ChatTokenLogProbabilityInfo logProbInfo)
-	{
-		return Math.Exp(logProbInfo.LogProbability);
-	}
+	public static double ToLinearProb(this ChatTokenLogProbabilityResult logProbabilityResult) => Math.Exp(logProbabilityResult.LogProbability);
+
+	public static double ToLinearProb(this ChatTokenLogProbabilityInfo logProbInfo) => Math.Exp(logProbInfo.LogProbability);
 }

@@ -33,6 +33,7 @@
 
  <ItemGroup>
   <PackageReference Include="Microsoft.SemanticKernel" Version="1.15.0" />
+  <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.15.0-alpha" />
   <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.15.0" />
  </ItemGroup>
 

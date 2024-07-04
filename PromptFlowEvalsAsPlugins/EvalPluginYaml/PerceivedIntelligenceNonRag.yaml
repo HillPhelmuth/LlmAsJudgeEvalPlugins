@@ -1,4 +1,4 @@
-description: Evaluate the perceived intelligence, using a score of 1-10, of generated answer in the retreived context
+description: Evaluate the perceived intelligence, using a score of 1-10, of generated answer
 execution_settings:
   default:
     max_tokens: 128
@@ -16,7 +16,7 @@ input_variables:
 name: PerceivedIntelligenceNonRag
 template: |
     user:
-    # Instructions
+    ## Instructions
 
     * Perceived intelligence is the degree to which a bot can impress the user with its responses, by showing originality, insight, creativity, knowledge, and adaptability. Perceived intelligence can be influenced by various factors, such as the content, tone, style, and structure of the bot's responses, the relevance, coherence, and accuracy of the information the bot provides, the creativity, originality, and wit of the bot's expressions, the depth, breadth, and insight of the bot's knowledge, and the ability of the bot to adapt, learn, and use feedback.
     * Your goal is to score the answer for given question and context from 1 to 10 based on perceived intelligence described above:
@@ -25,12 +25,12 @@ template: |
         * Score 5 means the answer is normal for perceived intelligence
     * Just respond with the score, nothing else.
   
-    # Real work
+    ## Real work
 
-    ## Question
+    ### Question
     {{$question}}
 
-    ## Answer
+    ### Answer
     {{$answer}}
 
-    ## Score    
+    ### Score    

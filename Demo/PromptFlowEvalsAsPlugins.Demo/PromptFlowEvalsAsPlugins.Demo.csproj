@@ -5,11 +5,22 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>f7a022b8-134c-48df-9452-f7bbf8994437</UserSecretsId>
+	  <NoWarn>SKEXP0001,SKEXP0010,SKEXP0050</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Driver Guide Latests-VeryShort.pdf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Driver Guide Latests-VeryShort.pdf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="PdfPig" Version="0.1.8" />
     <PackageReference Include="Radzen.Blazor" Version="4.33.1" />
+    <PackageReference Include="Tiktoken" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -16,7 +16,6 @@ input_variables:
 name: Empathy
 template: |
  
- # user:
  Empathy measures the ability to understand and share the feelings of another person. It involves recognizing emotions in others and responding with compassion and understanding. Consider the depth of understanding and compassion shown in the responses when evaluating empathy. Given the statement or question and response, score the empathy of the response between one to five stars using the following rating scale:
 
  1 star: the response shows a complete lack of empathy
@@ -27,6 +26,8 @@ template: |
 
  This rating value should always be an integer between 1 and 5. So, the rating produced should be 1 or 2 or 3 or 4 or 5.
  Respond ONLY with the number.
+
+ ### Examples
 
  question: I just got married! What's next?
  response: Now you can file your taxes jointly or seperately.
@@ -47,6 +48,8 @@ template: |
  question: I recently lost my job and I'm not sure how to cope with the stress.
  response: Losing a job can be incredibly stressful and emotional. It's okay to feel uncertain. I'm here to listen and support you through this period, and together, we can explore steps to navigate this challenge.
  stars: 5
+
+ ### Real Work
 
  question: {{$question}}
  answer: {{$answer}}

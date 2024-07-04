@@ -33,7 +33,9 @@ template: |
     This rating value should always be an integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
 
     The examples below show the Equivalence score for a question, a correct answer, and a predicted answer.
-    * Just respond with the score number, nothing else.
+    **Just respond with the score number, nothing else.**
+
+    ### Examples
 
     question: What is the role of ribosomes?
     correct answer: Ribosomes are cellular structures responsible for protein synthesis. They interpret the genetic information carried by messenger RNA (mRNA) and use it to assemble amino acids into proteins.
@@ -59,6 +61,8 @@ template: |
     correct answer: Regular exercise can help maintain a healthy weight, increase muscle and bone strength, and reduce the risk of chronic diseases. It also promotes mental well-being by reducing stress and improving overall mood.
     predicted answer: Routine physical activity can contribute to maintaining ideal body weight, enhancing muscle and bone strength, and preventing chronic illnesses. In addition, it supports mental health by alleviating stress and augmenting general mood.
     stars: 5
+
+    ### Real Work
 
     question: {{$question}}
     correct answer: {{$ground_truth}}

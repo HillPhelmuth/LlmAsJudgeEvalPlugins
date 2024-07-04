@@ -1,0 +1,92 @@
+﻿<RadzenRow>
+	<RadzenColumn Size="12">
+		<RadzenCard>
+			<RadzenTemplateForm Data="_addContentForm" TItem="AddContentForm" Submit="SubmitContent">
+				<RadzenFieldset Text="Content">
+					<RadzenToggleButton ToggleButtonStyle="ButtonStyle.Success" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" Text="@(_addContentForm.UseDefault ? "Use Custom Content":"Use Default Content")" @bind-Value=_addContentForm.UseDefault Change="DefaultToggleChange"></RadzenToggleButton><br />
+					@if (!_addContentForm.UseDefault)
+					{
+						<RadzenFormField>
+							<ChildContent>
+								<RadzenFileInput MaxFileSize="MaxFileSize" ChooseText="Upload pdf, txt or docx file" @bind-FileName="@_addContentForm.FileUpload.FileName" TValue="string" @bind-Value="@_addContentForm.FileUpload.FileBase64" @bind-FileSize="_addContentForm.FileUpload.FileSize" Accept="text/x-markdown,text/plain,application/pdf,application/msword,application/json,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></RadzenFileInput>
+							</ChildContent>
+							<Helper>
+								<RadzenText TextStyle="TextStyle.Caption" Text="Upload a file to chunk, vectorize and cluster"></RadzenText>
+								@* <RadzenRequiredValidator Component="File" Text="Upload a file" Popup=true Style="position:absolute"></RadzenRequiredValidator> *@
+							</Helper>
+						</RadzenFormField>
+
+						<br />
+					}
+					<RadzenFormField Text="Chunk Size Tokens">
+						<ChildContent>
+							<RadzenNumeric @bind-Value=_addContentForm.ChunckSize Step="10" Min="100" Max="2000"></RadzenNumeric>
+						</ChildContent>
+						<Helper>
+							<RadzenText TextStyle="TextStyle.Caption" Text="Size of individual memory items in tokens"></RadzenText>
+						</Helper>
+					</RadzenFormField>
+					<RadzenFormField Text="Overlap Tokens">
+						<ChildContent>
+							<RadzenNumeric Name="Overlap" @bind-Value=_addContentForm.Overlap Step="5" Min="0" Max="500"></RadzenNumeric>
+						</ChildContent>
+						<Helper>
+							<RadzenCompareValidator Component="Overlap" Value="@_addContentForm.ChunckSize" Operator="CompareOperator.LessThan" Text="Overlap must be less than chunk size" Popup=true Style="position:absolute"></RadzenCompareValidator>
+							<RadzenText TextStyle="TextStyle.Caption" Text="Number of tokens to overlap between memory items"></RadzenText>
+
+						</Helper>
+					</RadzenFormField>
+					<RadzenButton ButtonType="ButtonType.Submit" Text="Save" IsBusy=_isSaving BusyText="Saving..." Style="margin-top:.5rem"></RadzenButton>
+				</RadzenFieldset>
+			</RadzenTemplateForm>
+			<RadzenTemplateForm Data="_userInputGenForm" TItem="UserInputGenForm" Submit="SubmitInputGen">
+				<RadzenFieldset Text="Generate Questions From Content">
+					<RadzenFormField Text="Number">
+						<ChildContent>
+							<RadzenNumeric @bind-Value=_userInputGenForm.NumQuestions></RadzenNumeric>
+						</ChildContent>
+						<Helper>
+							<RadzenText TextStyle="TextStyle.Caption" Text="Number of questions to generate"></RadzenText>
+						</Helper>
+					</RadzenFormField>
+					<RadzenButton ButtonType="ButtonType.Submit" Text="Generate" IsBusy=_isGenerating BusyText="Generating..." Style="margin-top:.5rem"></RadzenButton>
+				</RadzenFieldset>
+			</RadzenTemplateForm>
+		</RadzenCard>
+	</RadzenColumn>
+	<RadzenColumn Size="12">
+		<RadzenText TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle1">Generate or add questions and then evaluate a system prompt</RadzenText>
+		<RadzenCard>
+			<RadzenTemplateForm Data="_qnaForm" TItem="QnAForm" Submit="SubmitQnA">
+				<RadzenButton ButtonStyle="ButtonStyle.Success" Size="ButtonSize.ExtraSmall" Text="HelpfulAI sample" Click="@(() => SelectSample($"You are helpful, kind and intelligent expert in {_userInputGenForm.ShortTopic}. Use the context below to answer user questions."))"></RadzenButton>
+				<RadzenButton ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.ExtraSmall" Text="ChildishAI sample" Click="@(() => SelectSample("You are mean, unhelpful and childish. Act like a mid-tantrum 5 year old. Ignore the content below."))"></RadzenButton>
+				<RadzenButton ButtonStyle="ButtonStyle.Info" Size="ButtonSize.ExtraSmall" Text="NeutralAI sample" Click="@(() => SelectSample("You are the hurdy-gurdy man. Respond in song lyrics"))"></RadzenButton>
+				<RadzenFormField Text="System Prompt" Style="width:100%">
+					<ChildContent>
+						<RadzenTextArea Name="System" @bind-Value=_qnaForm.SystemPrompt Style="width:100%; height:7rem"></RadzenTextArea>
+					</ChildContent>
+					<Helper>
+						<RadzenText TextStyle="TextStyle.Caption" Text="Enter the system prompt to evaluate"></RadzenText>
+						<RadzenRequiredValidator Component="System" Popup=true Style="position:absolute" Text="System prompt is required"></RadzenRequiredValidator>
+					</Helper>
+				</RadzenFormField>
+				<RadzenRow>
+					<RadzenColumn Size="10" Style="max-height:20rem;overflow:auto">
+						@foreach (var input in _qnaForm.UserInputs)
+						{
+							<RadzenFormField Style="width:100%">
+								<RadzenTextBox @bind-Value=input.Input Style="width:100%"></RadzenTextBox>
+							</RadzenFormField>
+						}
+						<RadzenCustomValidator Component="System" Validator="@(() => _qnaForm.UserInputs.Count(x => !string.IsNullOrWhiteSpace(x.Input)) > 0)" Text="At least one input is required."></RadzenCustomValidator>
+						<RadzenButton Size="ButtonSize.ExtraSmall" Text="Add" Click="AddInput" Style="margin-top:.5rem"></RadzenButton>
+					</RadzenColumn>
+					<RadzenColumn Size="2">
+						<RadzenButton ButtonType="ButtonType.Submit" Text="Evaluate" IsBusy=_isEvaluating BusyText="Evaluating..."></RadzenButton>
+					</RadzenColumn>
+				</RadzenRow>
+
+			</RadzenTemplateForm>
+		</RadzenCard>
+	</RadzenColumn>
+</RadzenRow>

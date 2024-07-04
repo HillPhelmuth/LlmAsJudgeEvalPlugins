@@ -61,7 +61,7 @@ public static class Extentions
         foreach (var file in files)
         {
 	        var yamlText = ExtractFromAssembly<string>($"{file}.yaml");
-            var config = KernelFunctionYaml.ToPromptTemplateConfig(yamlText);
+            PromptTemplateConfig config = KernelFunctionYaml.ToPromptTemplateConfig(yamlText);
             result.Add(file, config);
         }
         return result;

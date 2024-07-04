@@ -15,7 +15,6 @@ input_variables:
   default: ''
 name: Coherence
 template: |
-    # User
     Coherence of an answer is measured by how well all the sentences fit together and sound naturally as a whole. Consider the overall quality of the answer when evaluating coherence. Given the question and answer, score the coherence of answer between one to five stars using the following rating scale:
     One star: the answer completely lacks coherence
     Two stars: the answer mostly lacks coherence
@@ -25,25 +24,30 @@ template: |
 
     This rating value should always be an integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
     Respond ONLY with the number.
-    question: What is your favorite indoor activity and why do you enjoy it?
-    answer: I like pizza. The sun is shining.
+
+    ### Examples
+
+    question: How do I bake a chocolate cake?
+    response: Get ingredients. Oven hot. Mix them. Bake.
     stars: 1
 
-    question: Can you describe your favorite movie without giving away any spoilers?
-    answer: It is a science fiction movie. There are dinosaurs. The actors eat cake. People must stop the villain.
+    question: What's the best way to start a garden?
+    response: You should get seeds. Soil is important. Water is needed. Growing is the goal.
     stars: 2
 
-    question: What are some benefits of regular exercise?
-    answer: Regular exercise improves your mood. A good workout also helps you sleep better. Trees are green.
+    question: How do I prepare for a job interview?
+    response: First, research the company. You need to be on time. Practice common questions. Dress appropriately is key.
     stars: 3
 
-    question: How do you cope with stress in your daily life?
-    answer: I usually go for a walk to clear my head. Listening to music helps me relax as well. Stress is a part of life, but we can manage it through some activities.
+    question: What are some tips for learning a new language?
+    response: To learn a new language, start by practicing daily. You should immerse yourself in the language. Watching movies helps. Joining language groups can also be beneficial.
     stars: 4
 
-    question: What can you tell me about climate change and its effects on the environment?
-    answer: Climate change has far-reaching effects on the environment. Rising temperatures result in the melting of polar ice caps, contributing to sea-level rise. Additionally, more frequent and severe weather events, such as hurricanes and heatwaves, can cause disruption to ecosystems and human societies alike.
+    question: How can I improve my public speaking skills?
+    response: To improve your public speaking skills, practice regularly in front of a mirror or with friends. Record yourself to identify areas of improvement. Additionally, consider joining a public speaking club like Toastmasters to gain more experience and receive constructive feedback.
     stars: 5
+
+    ### Real Work
 
     question: {{$question}}
     answer: {{$answer}}
