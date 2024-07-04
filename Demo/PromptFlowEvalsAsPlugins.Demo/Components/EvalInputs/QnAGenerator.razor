@@ -1,53 +1,62 @@
 ﻿<RadzenRow>
-    <RadzenColumn Size="12">
-        
-        <RadzenCard>
-            <RadzenTemplateForm Data="_userInputGenForm" TItem="UserInputGenForm" Submit="SubmitInputGen">
-                <RadzenFormField Text="Topic">
-                    <ChildContent>
-                        <RadzenTextBox Name="Topic" @bind-Value=_userInputGenForm.Topic></RadzenTextBox>
-                    </ChildContent>
-                    <Helper>
-                        <RadzenText TextStyle="TextStyle.Caption" Text="On what topic should the generated questions be?"></RadzenText>
-                        <RadzenRequiredValidator Component="Topic" Popup=true Style="position:absolute" Text="Topic is required"></RadzenRequiredValidator>
-                    </Helper>
-                </RadzenFormField>
-                <RadzenFormField Text="Number">
-                    <ChildContent>
-                        <RadzenNumeric @bind-Value=_userInputGenForm.NumQuestions></RadzenNumeric>
-                    </ChildContent>
-                    <Helper>
-                        <RadzenText TextStyle="TextStyle.Caption" Text="Number of questions to generate"></RadzenText>
-                    </Helper>
-                </RadzenFormField>
-                <RadzenButton ButtonType="ButtonType.Submit" Text="Generate" IsBusy=_isGenerating BusyText="Generating..." Style="margin-top:.5rem"></RadzenButton>
-            </RadzenTemplateForm>
-        </RadzenCard>
-    </RadzenColumn>
-    <RadzenColumn Size="12">
-        <RadzenText TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle1">Generate or add questions and then evaluate a system prompt</RadzenText>
-        <RadzenCard>
-            <RadzenTemplateForm Data="_qnaForm" TItem="QnAForm" Submit="SubmitQnA">
-                <RadzenFormField Text="System Prompt" Style="width:100%">
-                    <RadzenTextArea Name="System" @bind-Value=_qnaForm.SystemPrompt Style="width:100%; height:7rem"></RadzenTextArea>
-                </RadzenFormField>
-                <RadzenRow>
-                    <RadzenColumn Size="10" Style="max-height:25rem;overflow:auto">
-                        @foreach (var input in _qnaForm.UserInputs)
-                        {
-                            <RadzenFormField Style="width:100%">
-                                <RadzenTextBox @bind-Value=input.Input Style="width:100%"></RadzenTextBox>
-                            </RadzenFormField>
-                        }
-                        <RadzenCustomValidator Component="System" Validator="@(() => _qnaForm.UserInputs.Count(x => !string.IsNullOrWhiteSpace(x.Input)) > 0)" Text="At least one input is required."></RadzenCustomValidator>
-                        <RadzenButton Size="ButtonSize.ExtraSmall" Text="Add" Click="AddInput" Style="margin-top:.5rem"></RadzenButton>
-                    </RadzenColumn>
-                    <RadzenColumn Size="2">
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Evaluate" IsBusy=_isEvaluating BusyText="Evaluating..."></RadzenButton>
-                    </RadzenColumn>
-                </RadzenRow>
-                              
-            </RadzenTemplateForm>
-        </RadzenCard>
-    </RadzenColumn>
+	<RadzenColumn Size="12">
+
+		<RadzenCard>
+			<RadzenTemplateForm Data="_userInputGenForm" TItem="UserInputGenForm" Submit="SubmitInputGen">
+				<RadzenFormField Text="Topic">
+					<ChildContent>
+						<RadzenTextBox Name="Topic" @bind-Value=_userInputGenForm.Topic></RadzenTextBox>
+					</ChildContent>
+					<Helper>
+						<RadzenText TextStyle="TextStyle.Caption" Text="On what topic should the generated questions be?"></RadzenText>
+						<RadzenRequiredValidator Component="Topic" Popup=true Style="position:absolute" Text="Topic is required"></RadzenRequiredValidator>
+					</Helper>
+				</RadzenFormField>
+				<RadzenFormField Text="Number">
+					<ChildContent>
+						<RadzenNumeric @bind-Value=_userInputGenForm.NumQuestions></RadzenNumeric>
+					</ChildContent>
+					<Helper>
+						<RadzenText TextStyle="TextStyle.Caption" Text="Number of questions to generate"></RadzenText>
+					</Helper>
+				</RadzenFormField>
+				<RadzenButton ButtonType="ButtonType.Submit" Text="Generate" IsBusy=_isGenerating BusyText="Generating..." Style="margin-top:.5rem"></RadzenButton>
+			</RadzenTemplateForm>
+		</RadzenCard>
+	</RadzenColumn>
+	<RadzenColumn Size="12">
+		<RadzenText TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle1">Generate or add questions and then evaluate a system prompt</RadzenText>
+		<RadzenCard>
+			<RadzenTemplateForm Data="_qnaForm" TItem="QnAForm" Submit="SubmitQnA">
+				<RadzenButton ButtonStyle="ButtonStyle.Success" Size="ButtonSize.ExtraSmall" Text="HelpfulAI sample" Click="@(() => SelectSample($"You are helpful, kind and intelligent expert in {_userInputGenForm.Topic}."))"></RadzenButton>
+				<RadzenButton ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.ExtraSmall" Text="ChildishAI sample" Click="@(() => SelectSample("You are mean, unhelpful and childish. Act like a mid-tantrum 5 year old."))"></RadzenButton>
+				<RadzenButton ButtonStyle="ButtonStyle.Info" Size="ButtonSize.ExtraSmall" Text="NeutralAI sample" Click="@(() => SelectSample("You are the hurdy-gurdy man. Respond in song lyrics"))"></RadzenButton>
+				<RadzenFormField Text="System Prompt" Style="width:100%">
+					<ChildContent>
+						<RadzenTextArea Name="System" @bind-Value=_qnaForm.SystemPrompt Style="width:100%; height:7rem"></RadzenTextArea>
+					</ChildContent>
+					<Helper>
+						<RadzenText TextStyle="TextStyle.Caption" Text="Enter the system prompt to evaluate"></RadzenText>
+						<RadzenRequiredValidator Component="System" Popup=true Style="position:absolute" Text="System prompt is required"></RadzenRequiredValidator>
+					</Helper>
+				</RadzenFormField>
+				<RadzenRow>
+					<RadzenColumn Size="10" Style="max-height:20rem;overflow:auto">
+						@foreach (var input in _qnaForm.UserInputs)
+						{
+							<RadzenFormField Style="width:100%">
+								<RadzenTextBox @bind-Value=input.Input Style="width:100%"></RadzenTextBox>
+							</RadzenFormField>
+						}
+						<RadzenCustomValidator Component="System" Validator="@(() => _qnaForm.UserInputs.Count(x => !string.IsNullOrWhiteSpace(x.Input)) > 0)" Text="At least one input is required."></RadzenCustomValidator>
+						<RadzenButton Size="ButtonSize.ExtraSmall" Text="Add" Click="AddInput" Style="margin-top:.5rem"></RadzenButton>
+					</RadzenColumn>
+					<RadzenColumn Size="2">
+						<RadzenButton ButtonType="ButtonType.Submit" Text="Evaluate" IsBusy=_isEvaluating BusyText="Evaluating..."></RadzenButton>
+					</RadzenColumn>
+				</RadzenRow>
+
+			</RadzenTemplateForm>
+		</RadzenCard>
+	</RadzenColumn>
 </RadzenRow>

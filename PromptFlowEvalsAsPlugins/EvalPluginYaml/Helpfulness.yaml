@@ -16,7 +16,6 @@ input_variables:
   default: ''
 template: |
  
- # user:
  Helpfulness measures the ability to provide useful and actionable information or assistance. It involves understanding the user's needs and responding with relevant and practical advice. Consider the relevance, accuracy, and clarity of the responses when evaluating helpfulness. Given the statement or question and response, score the helpfulness of the response between one to five stars using the following rating scale:
 
  1 star: the response is not helpful at all
@@ -27,6 +26,8 @@ template: |
 
  This rating value should always be an integer between 1 and 5. So, the rating produced should be 1 or 2 or 3 or 4 or 5.
  Respond ONLY with the number.
+
+ ### Examples
 
  question: How do I change my car's oil?
  response: Just look it up online.
@@ -47,6 +48,8 @@ template: |
  question: I'm moving to a new city for work. What should I consider during the move?
  response: When moving to a new city for work, consider researching the cost of living, finding a convenient place to live near your workplace, understanding the local transportation options, and getting to know the community. Additionally, make sure to transfer utilities, update your address with important institutions, and explore local amenities.
  stars: 5
+
+ ### Real Work
 
  question: {{$question}}
  answer: {{$answer}}

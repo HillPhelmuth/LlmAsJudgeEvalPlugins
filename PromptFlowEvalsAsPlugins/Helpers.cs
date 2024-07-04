@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace PromptFlowEvalsAsPlugins;
 
-internal static class Helpers
+public static class Helpers
 {
     internal static T ExtractFromAssembly<T>(string fileName)
     {
@@ -22,4 +22,26 @@ internal static class Helpers
     {
         PropertyNameCaseInsensitive = true
     };
+    public static Dictionary<string, PromptTemplateConfig> GetPromptTemplateConfigs(string pluginName = "EvalPlugin")
+    {
+	    var files = Enum.GetNames<EvalType>();
+	    var result = new Dictionary<string, PromptTemplateConfig>();
+	    foreach (var file in files)
+	    {
+		    var yamlText = ExtractFromAssembly<string>($"{file}.yaml");
+		    PromptTemplateConfig config = KernelFunctionYaml.ToPromptTemplateConfig(yamlText);
+		    result.Add(file, config);
+	    }
+	    return result;
+    }
+    public static byte[] ReadFromAssembly(string fileName)
+    {
+	    var assembly = Assembly.GetExecutingAssembly();
+	    var jsonName = assembly.GetManifestResourceNames()
+		    .SingleOrDefault(s => s.EndsWith(fileName, StringComparison.OrdinalIgnoreCase)) ?? "";
+	    using var stream = assembly.GetManifestResourceStream(jsonName);
+	    using var memoryStream = new MemoryStream();
+	    stream.CopyTo(memoryStream);
+	    return memoryStream.ToArray();
+    }
 }

@@ -17,6 +17,7 @@ public class ResultScore
 
 	public string? Reasoning { get; set; }
 	public string? ReferenceAnswer { get; set; }
+	public List<TokenString>? LogProbResults { get; set; }
 	/// <summary>
 	/// Should be a score from 1-5; -1 Represents an unparsable result
 	/// </summary>
@@ -50,8 +51,9 @@ public class ResultScore
 	{
 		Console.WriteLine($"Topline: {name} - {logProb.StringValue}");
 		var logProbVals = logProb.TopLogProbs;
+		LogProbResults = logProbVals;
 		EvalName = name;
-		ProbScore = logProbVals.Select(x => x.AsTokenProb()).CalculateWeightedScore();
+		ProbScore = logProbVals.Select(x => x.AsTokenProb()).NormalizeValues().CalculateWeightedScore();
 		if (int.TryParse(logProb.StringValue, out var parsedScore))
         {
             Score = parsedScore;
@@ -60,7 +62,6 @@ public class ResultScore
         {
 			Output = logProb.StringValue;
         }
-		//Score = (int) ProbScore;
 
 	}
 	public ResultScore(string name, ScorePlusResponse? scorePlusResponse)

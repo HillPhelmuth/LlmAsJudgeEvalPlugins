@@ -73,11 +73,12 @@ public class InputModel
     /// <param name="answer">The response being evaluated.</param>
     /// <param name="context">The context/RAG content</param>
     /// <returns>The input model for relevance evaluation.</returns>
-    public static InputModel RelevanceModel(string answer, string context) => CreateInstance(EvalType.Relevance, new KernelArguments
+    public static InputModel RelevanceModel(string answer,string question, string context) => CreateInstance(EvalType.Relevance, new KernelArguments
     {
-        ["answer"] = answer,
-        ["context"] = context
-    });
+		["answer"] = answer,
+		["context"] = context,
+		["question"] = question
+	});
 
     /// <summary>
     /// Creates an input model for coherence evaluation. Scores 1-5

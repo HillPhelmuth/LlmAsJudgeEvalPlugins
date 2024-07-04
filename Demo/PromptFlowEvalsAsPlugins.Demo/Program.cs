@@ -6,7 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddScoped<KernelService>();
+builder.Services.AddSignalR(o =>
+{
+    o.MaximumReceiveMessageSize = null;
+});
+builder.Services.AddLogging(o => o.AddConsole());
+//builder.Logging.AddConsole();
+//builder.Services.AddSingleton<ILoggerFactory, LoggerFactory>();
+builder.Services.AddScoped<EvalManager>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

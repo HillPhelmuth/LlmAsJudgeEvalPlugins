@@ -1,19 +1,52 @@
-﻿<RadzenDataGrid @ref=_grid Data="EvalResultDisplays" TItem="EvalResultDisplay" AllowSorting=true Density="Density.Compact" AllowPaging=true PageSize="12">
+﻿<RadzenDataGrid @ref=_grid Data="EvalResultDisplays" TItem="EvalResultDisplay" AllowSorting=true AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Density="Density.Compact" AllowPaging=true PageSize="12">
 	<Template Context="display">
-		<RadzenText TextStyle="TextStyle.Overline">@display.ResultScore.Output</RadzenText>
-		<RadzenCard Style="word-wrap: break-word;
+		<RadzenTabs>
+			<Tabs>
+				<RadzenTabsItem Text="Response">
+					<RadzenText TextStyle="TextStyle.Overline">@display.ResultScore.Output</RadzenText>
+					<RadzenCard Style="word-wrap: break-word;
                            overflow-wrap: break-word;
                            white-space: normal;
                            overflow: hidden;
                            width: 100%;">
-			@((MarkupString)AsHtml(display.Answer))
-		</RadzenCard>
+						@((MarkupString)AsHtml(display.Answer))
+					</RadzenCard>
+				</RadzenTabsItem>
+				<RadzenTabsItem Visible="@(display.ResultScore.LogProbResults != null)" Text="Result Probabilities">
+					<RadzenCard>
+						<RadzenDataGrid TItem="TokenString" Data="@display.ResultScore.LogProbResults" AllowSorting="true" Density="Density.Compact">
+							<Columns>
+								<RadzenDataGridColumn TItem="TokenString" Property="StringValue" Title="Value" Width="50%"></RadzenDataGridColumn>
+								<RadzenDataGridColumn TItem="TokenString" Title="Probability" Width="50%">
+									<Template Context="tokenString">
+										<RadzenText TextStyle="TextStyle.Body2" Text="@tokenString.NormalizedLogProbability.ToString("P3")"></RadzenText>
+									</Template>
+								</RadzenDataGridColumn>
+							</Columns>
+						</RadzenDataGrid>
+					</RadzenCard>
+				</RadzenTabsItem>
+				<RadzenTabsItem Visible="@(!string.IsNullOrEmpty(display.Context))" Text="Retreived Content">
+					<RadzenCard Style="word-wrap: break-word;
+					                   overflow-wrap: break-word;
+					                   white-space: normal;
+					                   overflow: hidden;
+					                   width: 100%;">
+						@((MarkupString)AsHtml(display.Context))
+					</RadzenCard>
+				</RadzenTabsItem>
+			</Tabs>
+		</RadzenTabs>
 	</Template>
 	<Columns>
 		<RadzenDataGridColumn TItem="EvalResultDisplay" Title="Question" Property="Question" Width="60%"></RadzenDataGridColumn>
 		<RadzenDataGridColumn TItem="EvalResultDisplay" Title="Eval" Property="ResultScore.EvalName" Width="20%"></RadzenDataGridColumn>
 		<RadzenDataGridColumn TItem="EvalResultDisplay" Title="Score" Property="ResultScore.Score" Width="10%"></RadzenDataGridColumn>
-		<RadzenDataGridColumn TItem="EvalResultDisplay" Title="LP Score" Property="ResultScore.ProbScore" Width="10%"></RadzenDataGridColumn>
+		<RadzenDataGridColumn TItem="EvalResultDisplay" Title="Weighted" Width="10%">
+			<Template Context="result">
+				<RadzenText Text="@result.ResultScore.ProbScore.ToString("N3")"></RadzenText>
+			</Template>
+		</RadzenDataGridColumn>
 	</Columns>
 </RadzenDataGrid>
 @if (LogProbAggregatedResults.Any())
@@ -26,7 +59,7 @@
 				{
 					<RadzenCard>
 						<RadzenText TextStyle="TextStyle.Body1">@agg.Key -</RadzenText>
-						<RadzenText TextStyle="TextStyle.Caption">@agg.Value.ToString("N3") @(agg.Key == "PerceivedIntelligenceNonRag" ? " / 10" : " / 5")</RadzenText>
+						<RadzenText TextStyle="TextStyle.Caption">@agg.Value.ToString("N3") @(agg.Key.Contains("PerceivedIntelligence") || agg.Key == "GptGroundedness2" ? " / 10" : " / 5")</RadzenText>
 					</RadzenCard>
 				}
 			</RadzenCard>
@@ -38,7 +71,7 @@
 				{
 					<RadzenCard>
 						<RadzenText TextStyle="TextStyle.Body1">@agg.Key -</RadzenText>
-						<RadzenText TextStyle="TextStyle.Caption">@agg.Value @(agg.Key == "PerceivedIntelligenceNonRag" ? " / 10" : " / 5")</RadzenText>
+						<RadzenText TextStyle="TextStyle.Caption">@agg.Value @(agg.Key.Contains("PerceivedIntelligence") || agg.Key == "GptGroundedness2" ? " / 10" : " / 5")</RadzenText>
 					</RadzenCard>
 				}
 			</RadzenCard>
