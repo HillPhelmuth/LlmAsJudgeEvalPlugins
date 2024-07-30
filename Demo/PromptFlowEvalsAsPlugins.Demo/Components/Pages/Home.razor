@@ -7,20 +7,20 @@
 	<Tabs>
 		<RadzenTabsItem Text="Non-Rag Evals">
 			<RadzenRow>
-				<RadzenColumn Size="5">
+				<RadzenColumn Size="6">
 					<QnAGenerator @ref=_qnAGenerator EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate"></QnAGenerator>
 				</RadzenColumn>
-				<RadzenColumn Size="7">
+				<RadzenColumn Size="6">
 					<EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
 				</RadzenColumn>
 			</RadzenRow>
 		</RadzenTabsItem>
 		<RadzenTabsItem Text="Rag Evals">
 			<RadzenRow>
-				<RadzenColumn Size="5">
+				<RadzenColumn Size="6">
 					<AddRagContent @ref=_addRagContent EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate"></AddRagContent>
 				</RadzenColumn>
-				<RadzenColumn Size="7">
+				<RadzenColumn Size="6">
 					<EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
 				</RadzenColumn>
 			</RadzenRow>

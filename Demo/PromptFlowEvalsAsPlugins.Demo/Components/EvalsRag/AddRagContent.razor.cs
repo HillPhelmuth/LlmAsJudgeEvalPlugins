@@ -50,7 +50,9 @@ public partial class AddRagContent : ComponentBase
 	private class QnAForm
 	{
 		public string SystemPrompt { get; set; } = "";
-		public List<UserInput> UserInputs { get; set; } = [new UserInput("")];
+        public string AnswerModel { get; set; } = "gpt-3.5-turbo";
+        public string EvalModel { get; set; } = "gpt-3.5-turbo";
+        public List<UserInput> UserInputs { get; set; } = [new UserInput("")];
 
 	}
 	private bool _isGenerating;
@@ -60,8 +62,8 @@ public partial class AddRagContent : ComponentBase
 	{
 		public string Input { get; set; } = Input;
 	}
-
-	private QnAForm _qnaForm = new();
+    private List<string> _availableModels = ["gpt-3.5-turbo", "gpt-4o-mini", "gpt-4o"];
+    private QnAForm _qnaForm = new();
 	private class UserInputGenForm
 	{
 		public string Topic { get; set; } = "";
@@ -140,9 +142,9 @@ public partial class AddRagContent : ComponentBase
 		Console.WriteLine($"SystemPrompt At Submit: {_qnaForm.SystemPrompt}");
 		var systemPrompt = _qnaForm.SystemPrompt;
 		var userInputs = qnaForm.UserInputs.Select(ui => ui.Input).ToList();
-		var inputModels = await EvalManager.CreateRagInputModels(systemPrompt, userInputs);
+		var inputModels = await EvalManager.CreateRagInputModels(systemPrompt, userInputs, qnaForm.AnswerModel);
 		var results = new List<EvalResultDisplay>();
-		await foreach (var result in EvalManager.ExecuteEvalsAsync(inputModels, useLogProbs: true))
+		await foreach (var result in EvalManager.ExecuteEvalsAsync(inputModels, qnaForm.EvalModel, useLogProbs: true))
 		{
 			results.Add(result);
 			await EvalResultGenerated.InvokeAsync(result);

@@ -49,7 +49,7 @@
 							<RadzenText TextStyle="TextStyle.Caption" Text="Number of questions to generate"></RadzenText>
 						</Helper>
 					</RadzenFormField>
-					<RadzenButton ButtonType="ButtonType.Submit" Text="Generate" IsBusy=_isGenerating BusyText="Generating..." Style="margin-top:.5rem"></RadzenButton>
+					<RadzenButton Disabled="@(string.IsNullOrEmpty(_userInputGenForm.Topic))" ButtonType="ButtonType.Submit" Text="Generate" IsBusy=_isGenerating BusyText="Generating..." Style="margin-top:.5rem"></RadzenButton>
 				</RadzenFieldset>
 			</RadzenTemplateForm>
 		</RadzenCard>
@@ -81,9 +81,15 @@
 						<RadzenCustomValidator Component="System" Validator="@(() => _qnaForm.UserInputs.Count(x => !string.IsNullOrWhiteSpace(x.Input)) > 0)" Text="At least one input is required."></RadzenCustomValidator>
 						<RadzenButton Size="ButtonSize.ExtraSmall" Text="Add" Click="AddInput" Style="margin-top:.5rem"></RadzenButton>
 					</RadzenColumn>
-					<RadzenColumn Size="2">
-						<RadzenButton ButtonType="ButtonType.Submit" Text="Evaluate" IsBusy=_isEvaluating BusyText="Evaluating..."></RadzenButton>
-					</RadzenColumn>
+                    <RadzenColumn Size="2">
+                        <RadzenFormField Text="Answer Model" Style="width:7rem;font-size:90%">
+                            <RadzenDropDown Data="_availableModels" @bind-Value="_qnaForm.AnswerModel"></RadzenDropDown>
+                        </RadzenFormField>
+                        <RadzenFormField Text="Eval Model" Style="width:7rem;font-size:90%">
+                            <RadzenDropDown Data="_availableModels" @bind-Value="_qnaForm.EvalModel"></RadzenDropDown>
+                        </RadzenFormField>
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Evaluate" IsBusy=_isEvaluating BusyText="Evaluating..."></RadzenButton>
+                    </RadzenColumn>
 				</RadzenRow>
 
 			</RadzenTemplateForm>
