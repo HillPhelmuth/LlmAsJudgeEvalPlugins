@@ -31,13 +31,13 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 		}
 		return resultScores;
 	}
-	public async IAsyncEnumerable<EvalResultDisplay> ExecuteEvalsAsync(List<InputModel> inputs, string model = "gpt-3.5-turbo", bool useLogProbs = true)
+	public async IAsyncEnumerable<EvalResultDisplay> ExecuteEvalsAsync(List<InputModel> inputs, string model = "gpt-3.5-turbo")
 	{
 		var kernel = CreateKernel(model);
 		var evalService = new EvalService(kernel);
 		foreach (var input in inputs)
 		{
-			var result = useLogProbs ? await evalService.ExecuteLogProbEval(input) : await evalService.ExecuteEval(input);
+			var result = await evalService.ExecuteEval(input);
 			var question = input.RequiredInputs["question"]!.ToString();
 			var answer = input.RequiredInputs["answer"]!.ToString();
 			if (input.RequiredInputs.ContainsName("context"))

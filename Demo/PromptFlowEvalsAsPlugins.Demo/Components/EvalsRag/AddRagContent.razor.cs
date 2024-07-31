@@ -144,7 +144,7 @@ public partial class AddRagContent : ComponentBase
 		var userInputs = qnaForm.UserInputs.Select(ui => ui.Input).ToList();
 		var inputModels = await EvalManager.CreateRagInputModels(systemPrompt, userInputs, qnaForm.AnswerModel);
 		var results = new List<EvalResultDisplay>();
-		await foreach (var result in EvalManager.ExecuteEvalsAsync(inputModels, qnaForm.EvalModel, useLogProbs: true))
+		await foreach (var result in EvalManager.ExecuteEvalsAsync(inputModels, qnaForm.EvalModel))
 		{
 			results.Add(result);
 			await EvalResultGenerated.InvokeAsync(result);
