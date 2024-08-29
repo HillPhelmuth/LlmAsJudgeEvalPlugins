@@ -19,7 +19,7 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 
 		return kernel;
 	}
-	public async Task<List<ResultScore>> ExecuteEvals(List<InputModel> inputs, string model = "gpt-3.5-turbo")
+	public async Task<List<ResultScore>> ExecuteEvals(List<IInputModel> inputs, string model = "gpt-3.5-turbo")
 	{
 		var kernel = CreateKernel(model);
 		var evalService = new EvalService(kernel);
@@ -31,13 +31,13 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 		}
 		return resultScores;
 	}
-	public async IAsyncEnumerable<EvalResultDisplay> ExecuteEvalsAsync(List<InputModel> inputs, string model = "gpt-3.5-turbo")
+	public async IAsyncEnumerable<EvalResultDisplay> ExecuteEvalsAsync(List<IInputModel> inputs, string model = "gpt-3.5-turbo", bool addExplain = false)
 	{
 		var kernel = CreateKernel(model);
 		var evalService = new EvalService(kernel);
 		foreach (var input in inputs)
 		{
-			var result = await evalService.ExecuteEval(input);
+			var result = addExplain ? await evalService.ExecuteScorePlusEval(input): await evalService.ExecuteEval(input);
 			var question = input.RequiredInputs["question"]!.ToString();
 			var answer = input.RequiredInputs["answer"]!.ToString();
 			if (input.RequiredInputs.ContainsName("context"))
@@ -59,10 +59,10 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 		var result = await kernel.InvokeAsync(function);
 		return [.. result.GetValue<string>()!.Split("\n")];
 	}
-	public async Task<List<InputModel>> CreateNonRagInputModels(string systemPrompt, List<string> userQustions, string model = "gpt-3.5-turbo")
+	public async Task<List<IInputModel>> CreateNonRagInputModels(string systemPrompt, List<string> userQustions, string model = "gpt-3.5-turbo", bool withExplain = false)
 	{
 		var kernel = CreateKernel(model);
-		var inputs = new List<InputModel>();
+		var inputs = new List<IInputModel>();
 		foreach (var question in userQustions)
 		{
 			var settings = new OpenAIPromptExecutionSettings { ChatSystemPrompt = systemPrompt };
@@ -71,21 +71,21 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 			chatHistory.AddUserMessage(question);
 			var response = await chat.GetChatMessageContentAsync(chatHistory, settings, kernel);
 			var answer = response.Content/*await kernel.InvokePromptAsync<string>(question, new KernelArguments(settings))*/;
-			var empathy = InputModel.EmpathyModel(answer, question);
+			var empathy = withExplain ? InputModel.EmpathyExplainModel(answer, question) : InputModel.EmpathyModel(answer, question);
 			inputs.Add(empathy);
-			var fluency = InputModel.FluencyModel(answer, question);
+			var fluency = withExplain ? InputModel.FluencyExplainModel(answer, question) : InputModel.FluencyModel(answer, question);
 			inputs.Add(fluency);
-			var noRagIntelligences = InputModel.PerceivedIntelligenceNonRagModel(answer, question);
+			var noRagIntelligences = withExplain ? InputModel.PerceivedIntelligenceNonRagExplainModel(answer,question) : InputModel.PerceivedIntelligenceNonRagModel(answer, question);
 			inputs.Add(noRagIntelligences);
-			var coherence = InputModel.CoherenceModel(answer, question);
+			var coherence = withExplain ? InputModel.CoherenceExplainModel(answer,question) : InputModel.CoherenceModel(answer, question);
 			inputs.Add(coherence);
-			var helpfulness = InputModel.HelfulnessModel(answer, question);
+			var helpfulness = withExplain ? InputModel.HelfulnessExplainModel(answer, question) : InputModel.HelfulnessModel(answer, question);
 			inputs.Add(helpfulness);
 		}
 		return inputs;
 	}
 	private const string CollectionName = "ragCollection";
-	public async Task<List<InputModel>> CreateRagInputModels(string systemPrompt, List<string> userQuestions, string model = "gpt-3.5-turbo")
+	public async Task<List<IInputModel>> CreateRagInputModels(string systemPrompt, List<string> userQuestions, string model = "gpt-3.5-turbo")
 	{
 		if (!systemPrompt.Contains("$context"))
 		{
@@ -93,7 +93,7 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 		}
 		var kernel = CreateKernel(model);
 		var memory = CreateSemanticMemory();
-		var inputs = new List<InputModel>();
+		var inputs = new List<IInputModel>();
 		foreach (var question in userQuestions)
 		{
 			var context = await SearchContext(question, memory);

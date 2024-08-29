@@ -64,10 +64,15 @@ public class ResultScore
         }
 
 	}
-	public ResultScore(string name, ScorePlusResponse? scorePlusResponse)
+	public ResultScore(string name, ScorePlusResponse? scorePlusResponse, IEnumerable<TokenString> tokenStrings)
 	{
 		EvalName = name;
-		var output = scorePlusResponse?.QualityScore?.Replace("Score:", "").Trim();
+		var logProb = LogProbAnalyzer.GetTokenAfterScore(tokenStrings);
+		var logProbVals = logProb.TopLogProbs;
+		var output = logProb?.StringValue;
+		LogProbResults = logProbVals;
+		EvalName = name;
+		ProbScore = logProbVals.Select(x => x.AsTokenProb()).NormalizeValues().CalculateWeightedScore();
 		if (int.TryParse(output, out var parsedScore))
 		{
 			Score = parsedScore;
@@ -77,6 +82,42 @@ public class ResultScore
 			Output = output;
 		}
 		Reasoning = scorePlusResponse?.QualityScoreReasoning;
-		ReferenceAnswer = scorePlusResponse?.ReferenceAnswer;
+		
+	}
+}
+
+public class LogProbAnalyzer
+{
+	public static TokenString? GetTokenAfterScore(IEnumerable<TokenString> tokens)
+	{
+		var scoreString = "\"score\": ";
+		var currentString = string.Empty;
+		var tokenList = tokens.ToList();
+
+		for (var i = 0; i < tokenList.Count; i++)
+		{
+			currentString += tokenList[i].StringValue;
+
+			// Check if the current string contains the target sequence
+			if (currentString.Contains(scoreString))
+			{
+				// Calculate the position immediately following the scoreString
+				var scoreEndIndex = currentString.IndexOf(scoreString, StringComparison.Ordinal) + scoreString.Length;
+
+				// Find the token that follows the scoreString
+				var remainingString = currentString[scoreEndIndex..];
+				if (!string.IsNullOrEmpty(remainingString))
+				{
+					var remainingTokenIndex = i - (remainingString.Length - 1);
+					return tokenList[remainingTokenIndex];
+				}
+				else if (i + 1 < tokenList.Count)
+				{
+					return tokenList[i + 1];
+				}
+			}
+		}
+
+		return null;
 	}
 }

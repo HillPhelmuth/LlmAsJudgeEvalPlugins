@@ -6,18 +6,30 @@
   <Nullable>enable</Nullable>
   <NoWarn>SKEXP0010</NoWarn>
 
-  <Title>PromptFlow Eval Flows as SemanticKernel Plugins</Title>
+  <Title>PromptFlow Eval Flows or Custom Evals as SemanticKernel Plugins</Title>
   <PackageProjectUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</PackageProjectUrl>
   <RepositoryUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</RepositoryUrl>
-  <PackageOutputPath>C:\Users\adamh\source\localPackages</PackageOutputPath>
+  <PackageOutputPath>C:\Users\adamh\source\LocalPackages</PackageOutputPath>
+  <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+  <PackageIcon>packageIcon.png</PackageIcon>
 
  </PropertyGroup>
  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
   <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-  <Version>0.0.2-beta</Version>
+  <Version>0.0.3-beta</Version>
  </PropertyGroup>
  <ItemGroup>
   <None Remove="EvalPluginYaml\Empathy.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\CoherenceExplain.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\EmpathyExplain.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\FluencyExplain.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\GptGroundedness2Explain.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\GptGroundednessExplain.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\GptSimilarityExplain.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\HelpfulnessExplain.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\PerceivedIntelligenceExplain.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\PerceivedIntelligenceNonRagExplain.yaml" />
+  <None Remove="EvalPluginYaml\ExplainPlusScore\RelevanceExplain.yaml" />
   <None Remove="EvalPluginYaml\Fluency.yaml" />
   <None Remove="evalpluginyaml\Helpfulness.yaml" />
   <None Remove="EvalPluginYaml\PerceivedIntelligenceNonRag.yaml" />
@@ -25,16 +37,28 @@
 
  <ItemGroup>
   <EmbeddedResource Include="EvalPluginYaml\*.yaml" />
+  <EmbeddedResource Include="EvalPluginYaml\ExplainPlusScore\*.yaml" />
  </ItemGroup>
 
  <ItemGroup>
-  <Compile Remove="IInputModel.cs" />
+   <Content Include="Images\packageIcon.png">
+     <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+     <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+   </Content>
+ </ItemGroup>
+
+
+ <ItemGroup>
+  <PackageReference Include="Microsoft.SemanticKernel" Version="1.17.1" />
+  <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.17.1-alpha" />
+  <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.17.1" />
  </ItemGroup>
 
  <ItemGroup>
-  <PackageReference Include="Microsoft.SemanticKernel" Version="1.16.1" />
-  <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.16.1-alpha" />
-  <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.16.1" />
+   <None Include="Images\packageIcon.png">
+     <Pack>True</Pack>
+     <PackagePath>\</PackagePath>
+   </None>
  </ItemGroup>
 
 </Project>

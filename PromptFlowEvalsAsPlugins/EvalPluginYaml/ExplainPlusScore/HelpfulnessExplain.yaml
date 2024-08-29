@@ -1,0 +1,65 @@
+name: HelpfulnessExplain
+description: Generates a helpfulness score, 1-5 by comparing the gpt-3.5 generated answer to the question
+execution_settings:
+  default:
+    max_tokens: 128
+    temperature: 0.1
+    top_p: 0.1
+    presence_penalty: 0
+    frequency_penalty: 0
+input_variables:
+- name: question
+  description: The question asked and answered
+  default: ''
+- name: answer
+  description: generated Answer.
+  default: ''
+template: |
+ 
+ Helpfulness measures the ability to provide useful and actionable information or assistance. It involves understanding the user's needs and responding with relevant and practical advice. Consider the relevance, accuracy, and clarity of the responses when evaluating helpfulness. Given the statement or question and response, score the helpfulness of the response between one to five stars using the following rating scale:
+
+ 1 star: the response is not helpful at all
+ 2 stars: the response is minimally helpful
+ 3 stars: the response is somewhat helpful
+ 4 stars: the response is very helpful
+ 5 stars: the response is exceptionally helpful
+
+ This rating value should always be an integer between 1 and 5. So, the rating produced should be 1 or 2 or 3 or 4 or 5.
+ Respond with an explanation of your score and the score number.
+
+ ### Examples
+
+ question: How do I change my car's oil?
+ response: Just look it up online.
+ stars: 1
+
+ question: I'm having trouble sleeping at night. Any advice?
+ response: Try to relax more.
+ stars: 2
+
+ question: How can I improve my time management skills?
+ response: Consider making a to-do list to keep track of your tasks.
+ stars: 3
+
+ question: What are some effective ways to save money on groceries?
+ response: You can save money by planning your meals, making a shopping list, and buying items in bulk when possible.
+ stars: 4
+
+ question: I'm moving to a new city for work. What should I consider during the move?
+ response: When moving to a new city for work, consider researching the cost of living, finding a convenient place to live near your workplace, understanding the local transportation options, and getting to know the community. Additionally, make sure to transfer utilities, update your address with important institutions, and explore local amenities.
+ stars: 5
+
+  ### Output Format
+ Output must be in the following json format
+ ```json
+ {
+    "explanation": "<Reasons for the rating score>",
+    "score": <number 1 - 5>
+ }
+ ```
+
+ ### Real Work
+
+ question: {{$question}}
+ answer: {{$answer}}
+ stars:    

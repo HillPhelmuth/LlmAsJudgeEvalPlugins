@@ -10,16 +10,38 @@ using Azure.AI.OpenAI;
 
 namespace PromptFlowEvalsAsPlugins;
 
-public class EvalService(Kernel kernel)
+public class EvalService
 {
-	public async Task<ResultScore> ExecuteEval(InputModel inputModel)
+	private readonly Kernel _kernel;
+
+	public EvalService(Kernel kernel)
 	{
-		var currentKernel = kernel.Clone();
+		_kernel = kernel;
+	}
+
+	public Dictionary<string, KernelFunction> EvalFunctions { get; } = [];
+
+	public void AddEvalFunction(string name, string prompt, PromptExecutionSettings settings, bool overrideExisting = false)
+	{
+		var function = KernelFunctionFactory.CreateFromPrompt(prompt, settings, name);
+		AddEvalFunction(name, function, overrideExisting);
+	}
+	public void AddEvalFunction(string name, KernelFunction function, bool overrideExisting = false)
+	{
+		if (overrideExisting)
+			EvalFunctions[name] = function;
+		else
+			EvalFunctions.TryAdd(name, function);
+	}
+	public async Task<ResultScore> ExecuteEval(IInputModel inputModel)
+	{
+		var currentKernel = _kernel.Clone();
 		if (currentKernel.Services.GetService<IChatCompletionService>() is null && currentKernel.Services.GetService<ITextGenerationService>() is null)
 		{
 			throw new Exception("Kernel must have a chat completion service or text generation service to execute an eval");
 		}
-		var evalPlugin = currentKernel.ImportEvalPlugin();
+
+		var evalPlugin = EvalFunctions.Count == 0 ? currentKernel.ImportEvalPlugin() : KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
 		var settings = new OpenAIPromptExecutionSettings
 		{
 			MaxTokens = 1,
@@ -36,7 +58,7 @@ public class EvalService(Kernel kernel)
 		var tokenStrings = logProbs.TokenLogProbabilityResults.AsTokenStrings()[0];
 		return new ResultScore(inputModel.FunctionName, tokenStrings);
 	}
-	
+
 	public static async Task<ResultScore> ExecuteEval(InputModel inputModel, Kernel evalKernel)
 	{
 		var kernel = evalKernel.Clone();
@@ -48,18 +70,30 @@ public class EvalService(Kernel kernel)
 		var result = await kernel.InvokeAsync(evalPlugin[inputModel.FunctionName], inputModel.RequiredInputs);
 		return new ResultScore(inputModel.FunctionName, result);
 	}
-	public static async Task<ResultScore> ExecuteScorePlusEval(InputModel inputModel, Kernel kernel)
+	public async Task<ResultScore> ExecuteScorePlusEval(IInputModel inputModel)
 	{
+		var kernel = _kernel.Clone();
 		if (kernel.Services.GetService<IChatCompletionService>() is null && kernel.Services.GetService<ITextGenerationService>() is null)
 		{
 			throw new Exception("Kernel must have a chat completion service or text generation service to execute an eval");
 		}
-		var evalPlugin = kernel.ImportEvalPlugin();
-		var settings = new OpenAIPromptExecutionSettings { ResponseFormat = "json_object", ChatSystemPrompt = "You must respond in the requested json format" };
+		var evalPlugin = EvalFunctions.Count == 0 ? kernel.ImportEvalPlugin() : KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
+		var settings = new OpenAIPromptExecutionSettings
+		{
+			MaxTokens = 256,
+			Temperature = 0.1,
+			TopP = 0.1,
+			ResponseFormat = "json_object",
+			ChatSystemPrompt = "You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric. You must respond in the requested json format",
+			Logprobs = true,
+			TopLogprobs = 5
+		};
 		var finalArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
 		var result = await kernel.InvokeAsync(evalPlugin[inputModel.FunctionName], finalArgs);
+		var logProbs = result.Metadata?["LogProbabilityInfo"] as ChatChoiceLogProbabilityInfo;
+		var tokenStrings = logProbs.TokenLogProbabilityResults.AsTokenStrings();
 		var scoreResult = result.GetTypedResult<ScorePlusResponse>();
-		return new ResultScore(inputModel.FunctionName, scoreResult);
+		return new ResultScore(inputModel.FunctionName, scoreResult, tokenStrings);
 	}
 	public static Dictionary<string, double> AggregateResults(IEnumerable<ResultScore> resultScores, bool useLogProbs = false)
 	{
@@ -90,12 +124,12 @@ public class EvalService(Kernel kernel)
 
 public class ScorePlusResponse
 {
-	[JsonPropertyName("referenceAnswer")]
-	public string? ReferenceAnswer { get; set; }
-	[JsonPropertyName("qualityScoreReasoning")]
+	//[JsonPropertyName("referenceAnswer")]
+	//public string? ReferenceAnswer { get; set; }
+	[JsonPropertyName("explanation")]
 	public string? QualityScoreReasoning { get; set; }
-	[JsonPropertyName("qualityScore")]
-	public string? QualityScore { get; set; }
+	[JsonPropertyName("score")]
+	public int? QualityScore { get; set; }
 }
 internal class ScorePlusFunctionResult
 {

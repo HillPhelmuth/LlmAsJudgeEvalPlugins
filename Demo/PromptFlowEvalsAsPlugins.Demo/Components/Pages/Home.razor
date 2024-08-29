@@ -3,53 +3,64 @@
 <PageTitle>Home</PageTitle>
 <RadzenButton Variant="Variant.Text" Text="Reset All" Click="Reset" Size="ButtonSize.ExtraSmall"></RadzenButton>
 <RadzenButton Variant="Variant.Text" Text="Clear Evals" Click="ClearEvals" Size="ButtonSize.Small"></RadzenButton>
-<RadzenTabs>
-	<Tabs>
-		<RadzenTabsItem Text="Non-Rag Evals">
-			<RadzenRow>
-				<RadzenColumn Size="6">
-					<QnAGenerator @ref=_qnAGenerator EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate"></QnAGenerator>
-				</RadzenColumn>
-				<RadzenColumn Size="6">
-					<EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
-				</RadzenColumn>
-			</RadzenRow>
-		</RadzenTabsItem>
-		<RadzenTabsItem Text="Rag Evals">
-			<RadzenRow>
-				<RadzenColumn Size="6">
-					<AddRagContent @ref=_addRagContent EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate"></AddRagContent>
-				</RadzenColumn>
-				<RadzenColumn Size="6">
-					<EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
-				</RadzenColumn>
-			</RadzenRow>
-		</RadzenTabsItem>
-		<RadzenTabsItem Text="Prompts and Content">
-			<RadzenRow>
-				<RadzenColumn Size="8" Offset="2">
-					<RadzenAccordion Multiple="false">
-						<Items>
-							@foreach (var template in _evalTemplates.Values)
-							{
-								<RadzenAccordionItem Text="@($"EVAL - {template.Name}")" >
-									<RadzenText TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center">Description: @template.Description</RadzenText>
-									<RadzenCard Style="word-wrap: break-word;
+		<RadzenTabs>
+			<Tabs>
+				<RadzenTabsItem Text="Non-Rag Evals">
+					<RadzenRow>
+						<RadzenColumn Size="6">
+							<QnAGenerator @ref=_qnAGenerator EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate"></QnAGenerator>
+						</RadzenColumn>
+						<RadzenColumn Size="6">
+							<EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
+						</RadzenColumn>
+					</RadzenRow>
+				</RadzenTabsItem>
+                <RadzenTabsItem Text="Rag Evals">
+                    <RadzenRow>
+                        <RadzenColumn Size="6">
+                            <AddRagContent @ref=_addRagContent EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate"></AddRagContent>
+                        </RadzenColumn>
+                        <RadzenColumn Size="6">
+                            <EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Explain and Score Evals">
+                    <RadzenRow>
+                        <RadzenColumn Size="6">
+                            <QnAGenerator @ref=_qnAGenerator EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate" WithExplanation="true"></QnAGenerator>
+                        </RadzenColumn>
+                        <RadzenColumn Size="6">
+                            <EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Prompts and Content">
+                    <RadzenRow>
+                        <RadzenColumn Size="8" Offset="2">
+                            <RadzenAccordion Multiple="false">
+                                <Items>
+                                    @foreach (var template in _evalTemplates.Values)
+                                    {
+                                        <RadzenAccordionItem Text="@($"EVAL - {template.Name}")">
+                                            <RadzenText TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center">Description: @template.Description</RadzenText>
+                                            <RadzenCard Style="word-wrap: break-word;
 									                   overflow-wrap: break-word;
 									                   white-space: normal;
 									                   overflow: hidden;
 									                   width: 100%;">
-										@((MarkupString)AsHtml(template.Template))
-									</RadzenCard>
-								</RadzenAccordionItem>
-							}
-							<RadzenAccordionItem Text="Default RAG Content">
-								<embed style="width:100%; height:25rem" src="@_pdfUri" />
-							</RadzenAccordionItem>
-						</Items>
-					</RadzenAccordion>
-				</RadzenColumn>
-			</RadzenRow>
-		</RadzenTabsItem>
-	</Tabs>
-</RadzenTabs>
+                                                @((MarkupString)AsHtml(template.Template))
+                                            </RadzenCard>
+                                        </RadzenAccordionItem>
+                                    }
+                                    <RadzenAccordionItem Text="Default RAG Content">
+                                        <embed style="width:100%; height:25rem" src="@_pdfUri" />
+                                    </RadzenAccordionItem>
+                                </Items>
+                            </RadzenAccordion>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenTabsItem>
+               
+			</Tabs>
+		</RadzenTabs>

@@ -14,5 +14,16 @@ public enum EvalType
     PerceivedIntelligenceNonRag,
     Fluency,
     Empathy,
-    Helpfulness
+    Helpfulness,
+    GptGroundednessExplain,
+    GptGroundedness2Explain,
+    GptSimilarityExplain,
+    RelevanceExplain,
+    CoherenceExplain,
+    PerceivedIntelligenceExplain,
+    PerceivedIntelligenceNonRagExplain,
+    FluencyExplain,
+    EmpathyExplain,
+    HelpfulnessExplain
+    
 }

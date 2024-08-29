@@ -12,20 +12,27 @@
 						@((MarkupString)AsHtml(display.Answer))
 					</RadzenCard>
 				</RadzenTabsItem>
-				<RadzenTabsItem Visible="@(display.ResultScore.LogProbResults != null)" Text="Result Probabilities">
-					<RadzenCard>
-						<RadzenDataGrid TItem="TokenString" Data="@display.ResultScore.LogProbResults" AllowSorting="true" Density="Density.Compact">
-							<Columns>
-								<RadzenDataGridColumn TItem="TokenString" Property="StringValue" Title="Value" Width="50%"></RadzenDataGridColumn>
-								<RadzenDataGridColumn TItem="TokenString" Title="Probability" Width="50%">
-									<Template Context="tokenString">
-										<RadzenText TextStyle="TextStyle.Body2" Text="@tokenString.NormalizedLogProbability.ToString("P3")"></RadzenText>
-									</Template>
-								</RadzenDataGridColumn>
-							</Columns>
-						</RadzenDataGrid>
-					</RadzenCard>
-				</RadzenTabsItem>
+                <RadzenTabsItem Visible="@(display.ResultScore.LogProbResults != null)" Text="Result Probabilities">
+                    <RadzenCard>
+                        <RadzenDataGrid TItem="TokenString" Data="@display.ResultScore.LogProbResults" AllowSorting="true" Density="Density.Compact">
+                            <Columns>
+                                <RadzenDataGridColumn TItem="TokenString" Property="StringValue" Title="Value" Width="50%"></RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="TokenString" Title="Probability" Width="50%">
+                                    <Template Context="tokenString">
+                                        <RadzenText TextStyle="TextStyle.Body2" Text="@tokenString.NormalizedLogProbability.ToString("P3")"></RadzenText>
+                                    </Template>
+                                </RadzenDataGridColumn>
+                            </Columns>
+                        </RadzenDataGrid>
+                    </RadzenCard>
+                </RadzenTabsItem>
+                <RadzenTabsItem Visible="@(!string.IsNullOrEmpty(display.ResultScore.Reasoning))" Text="Explanation">
+					<RadzenCard Style="word-wrap: break-word;
+                           overflow-wrap: break-word;
+                           white-space: normal;
+                           overflow: hidden;
+                           width: 100%;"> @((MarkupString)AsHtml(display.ResultScore.Reasoning))</RadzenCard>
+                </RadzenTabsItem>
 				<RadzenTabsItem Visible="@(!string.IsNullOrEmpty(display.Context))" Text="Retreived Content">
 					<RadzenCard Style="word-wrap: break-word;
 					                   overflow-wrap: break-word;

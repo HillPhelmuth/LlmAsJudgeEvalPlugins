@@ -1,0 +1,51 @@
+description: Evaluate the groundedness, using a score of 1-10, of generated answer
+  in the retreived context
+execution_settings:
+  default:
+    max_tokens: 128
+    temperature: 0.0
+    top_p: 0.0
+    presence_penalty: 0
+    frequency_penalty: 0
+input_variables:
+- name: context
+  description: The context retreived from vector store
+  default: ''
+- name: answer
+  description: GPT-3.5-turbo generated Answer.
+  default: ''
+- name: question
+  description: The question asked
+  default: ''
+name: GptGroundedness2Explain
+template: |
+    user:
+    ## Instructions
+
+    * There are many chatbots that can answer users questions based on the context given from different sources like search results, or snippets from books/papers. They try to understand users's question and then get context by either performing search from search engines, databases or books/papers for relevant content. Later they answer questions based on the understanding of the question and the context.
+    * Your goal is to score the question, answer and context from 1 to 10 based on below:
+        * Score 10 if the answer is stating facts that are all present in the given context
+        * Score 1 if the answer is stating things that none of them present in the given context
+        * If there're multiple facts in the answer and some of them present in the given context while some of them not, score between 1 to 10 based on fraction of information supported by context
+    * Explain your score before you provide it.
+   
+     ## Output Format
+     Output must be in the following json format
+     ```json
+     {
+        "explanation": "<Reasons for the rating score>",
+        "score": <number 1 - 10>
+     }
+     ```
+    ## Real work
+
+    ### Question
+    {{$question}}
+
+    ### Answer
+    {{$answer}}
+
+    ### Context
+    {{$context}}
+
+    ### Score    

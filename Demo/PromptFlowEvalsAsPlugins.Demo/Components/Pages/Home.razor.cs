@@ -14,6 +14,7 @@ public partial class Home
     private EvalDisplay _evalDisplay;
     private QnAGenerator? _qnAGenerator;
     private AddRagContent? _addRagContent;
+    private QnAGenerator? _explainQnAGenerator;
     private Dictionary<string, double> _standardAggResults = [];
     private Dictionary<string, double> _logProbAggResults = [];
     private Dictionary<string, PromptTemplateConfig> _evalTemplates = [];
