@@ -1,67 +1,65 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
- <PropertyGroup>
-  <TargetFramework>net8.0</TargetFramework>
-  <ImplicitUsings>enable</ImplicitUsings>
-  <Nullable>enable</Nullable>
-  <NoWarn>SKEXP0010</NoWarn>
-	 <RootNamespace>HillPhelmuth.SemanticKernel.LlmAsJudgeEvals</RootNamespace>
-  <Title>Run "LLM as Judge" Evals Using Semantic Kernel</Title>
-  <PackageProjectUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</PackageProjectUrl>
-  <RepositoryUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</RepositoryUrl>
-  <PackageOutputPath>C:\Users\adamh\source\LocalPackages</PackageOutputPath>
-  <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-  <PackageIcon>packageIcon.png</PackageIcon>
-  <Version>0.0.1-beta</Version>
-  <Authors>HillPhelmuth</Authors>
-  <Description>Enable seamless execution of LLM (Large Language Model) evaluations using Semantic Kernel. This library provides tools and abstractions for running automated assessments where LLMs serve as judges, offering structured, consistent, and scalable evaluation methods. Ideal for AI-driven projects that require evaluative feedback, scoring, or comparative analysis across various use cases. Easily integrates with Semantic Kernel for smooth, flexible LLM operations in .NET environments.</Description>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<NoWarn>SKEXP0010</NoWarn>
+		<RootNamespace>HillPhelmuth.SemanticKernel.LlmAsJudgeEvals</RootNamespace>
+		<Title>Run "LLM as Judge" Evals Using Semantic Kernel</Title>
+		<PackageProjectUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</RepositoryUrl>
+		<PackageIcon>packageIcon.png</PackageIcon>
+		<Version>0.0.1-beta</Version>
+		<Authors>HillPhelmuth</Authors>
+		<Description>Enable seamless execution of LLM (Large Language Model) evaluations using Semantic Kernel. This library provides tools and abstractions for running automated assessments where LLMs serve as judges, offering structured, consistent, and scalable evaluation methods. Ideal for AI-driven projects that require evaluative feedback, scoring, or comparative analysis across various use cases. Easily integrates with Semantic Kernel for smooth, flexible LLM operations in .NET environments.</Description>
+		<PackageReadmeFile>Readme.md</PackageReadmeFile>
+		<PackageTags>LLM, Semantic Kernel, AI, Evaluation, Judge, Machine Learning, NLP, Natural Language Processing, AI Evaluation, Automated Scoring, .NET, C#, AI Feedback, Semantic, Language Model, LLM Judge, Large Language Model</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<IncludeSymbols>True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
- </PropertyGroup>
- <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-  <Version>0.0.4-beta</Version>
- </PropertyGroup>
- <ItemGroup>
-  <None Remove="EvalPluginYaml\Empathy.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\CoherenceExplain.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\EmpathyExplain.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\FluencyExplain.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\GptGroundedness2Explain.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\GptGroundednessExplain.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\GptSimilarityExplain.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\HelpfulnessExplain.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\PerceivedIntelligenceExplain.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\PerceivedIntelligenceNonRagExplain.yaml" />
-  <None Remove="EvalPluginYaml\ExplainPlusScore\RelevanceExplain.yaml" />
-  <None Remove="EvalPluginYaml\Fluency.yaml" />
-  <None Remove="evalpluginyaml\Helpfulness.yaml" />
-  <None Remove="EvalPluginYaml\PerceivedIntelligenceNonRag.yaml" />
- </ItemGroup>
-
- <ItemGroup>
-  <EmbeddedResource Include="EvalPluginYaml\*.yaml" />
-  <EmbeddedResource Include="EvalPluginYaml\ExplainPlusScore\*.yaml" />
- </ItemGroup>
-
- <ItemGroup>
-   <Content Include="Images\packageIcon.png">
-     <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-     <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-   </Content>
- </ItemGroup>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<PackageOutputPath>C:\Users\adamh\source\LocalPackages</PackageOutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Version>0.0.1-beta</Version>
+	</PropertyGroup>
 
 
- <ItemGroup>
-  <PackageReference Include="Microsoft.SemanticKernel" Version="1.18.2" />
-  <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.18.2-alpha" />
-  <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.18.2" />
- </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="EvalPluginYaml\*.yaml" />
+		<EmbeddedResource Include="EvalPluginYaml\ExplainPlusScore\*.yaml" />
+	</ItemGroup>
 
- <ItemGroup>
-   <None Include="Images\packageIcon.png">
-     <Pack>True</Pack>
-     <PackagePath>\</PackagePath>
-   </None>
- </ItemGroup>
+	<ItemGroup>
+		<Content Include="Images\packageIcon.png">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.18.2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.18.2-alpha" />
+		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.18.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="Images\packageIcon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Readme.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 
 </Project>
