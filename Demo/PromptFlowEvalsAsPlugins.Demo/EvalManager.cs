@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;

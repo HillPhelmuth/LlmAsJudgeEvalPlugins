@@ -1,8 +1,8 @@
-﻿using Microsoft.SemanticKernel;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.Json;
+using Microsoft.SemanticKernel;
 
-namespace PromptFlowEvalsAsPlugins;
+namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
 public static class Helpers
 {

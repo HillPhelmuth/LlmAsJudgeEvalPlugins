@@ -1,6 +1,6 @@
-﻿using Azure.AI.OpenAI;
+﻿using OpenAI.Chat;
 
-namespace PromptFlowEvalsAsPlugins;
+namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
 public record TokenString
 {
@@ -35,15 +35,15 @@ public class TokenProb(string stringValue, double normLogProb)
 }
 public static class LogProbExts
 {
-	public static List<TokenString> AsTokenStrings(this IEnumerable<ChatTokenLogProbabilityResult> logProbContentItems)
+	public static List<TokenString> AsTokenStrings(this IReadOnlyList<ChatTokenLogProbabilityInfo> logProbContentItems)
 	{
 		var result = new List<TokenString>();
 		foreach (var logProb in logProbContentItems)
 		{
 			var tokenString = new TokenString(logProb.Token, logProb.ToLinearProb());
-			if (logProb.TopLogProbabilityEntries is { Count: > 0 })
+			if (logProb.TopLogProbabilities is { Count: > 0 })
 			{
-				var innerResult = logProb.TopLogProbabilityEntries.Select(item => new TokenString(item.Token, item.ToLinearProb())).ToList();
+				var innerResult = logProb.TopLogProbabilities.Select(item => new TokenString(item.Token, item.ToLinearProb())).ToList();
 				tokenString.TopLogProbs = innerResult;
 			}
 			result.Add(tokenString);
@@ -87,7 +87,7 @@ public static class LogProbExts
 		}
 		//return tokenProbs.Select(token => new TokenProb(token.StringValue, token.Probability / sum));
 	}
-	public static double ToLinearProb(this ChatTokenLogProbabilityResult logProbabilityResult) => Math.Exp(logProbabilityResult.LogProbability);
+	public static double ToLinearProb(this ChatTokenTopLogProbabilityInfo logProbabilityResult) => Math.Exp(logProbabilityResult.LogProbability);
 
 	public static double ToLinearProb(this ChatTokenLogProbabilityInfo logProbInfo) => Math.Exp(logProbInfo.LogProbability);
 }

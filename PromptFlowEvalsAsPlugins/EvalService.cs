@@ -1,14 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.TextGeneration;
-using System.Reflection;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using Azure.AI.OpenAI;
+using OpenAI.Chat;
 
-namespace PromptFlowEvalsAsPlugins;
+namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
 public class EvalService
 {
@@ -33,7 +32,19 @@ public class EvalService
 		else
 			EvalFunctions.TryAdd(name, function);
 	}
-	public async Task<ResultScore> ExecuteEval(IInputModel inputModel)
+	public void AddEvalFunctionFromYaml(Stream yamlStream, string name, bool overrideExisting = false)
+    {
+        var yamlText = new StreamReader(yamlStream).ReadToEnd();
+        var function = _kernel.CreateFunctionFromPromptYaml(yamlText);
+        AddEvalFunction(name, function, overrideExisting);
+    }
+
+    public void AddEvalFunctionFromYaml(string yamlText, string name, bool overrideExisting = false)
+    {
+		var function = _kernel.CreateFunctionFromPromptYaml(yamlText);
+        AddEvalFunction(name, function, overrideExisting);
+    }
+    public async Task<ResultScore> ExecuteEval(IInputModel inputModel)
 	{
 		var currentKernel = _kernel.Clone();
 		if (currentKernel.Services.GetService<IChatCompletionService>() is null && currentKernel.Services.GetService<ITextGenerationService>() is null)
@@ -51,11 +62,11 @@ public class EvalService
 			Logprobs = true,
 			TopLogprobs = 5
 		};
-
+		
 		var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { "default", settings } });
 		var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], kernelArgs);
-		var logProbs = result.Metadata?["LogProbabilityInfo"] as ChatChoiceLogProbabilityInfo;
-		var tokenStrings = logProbs.TokenLogProbabilityResults.AsTokenStrings()[0];
+		var logProbs = result.Metadata?["ContentTokenLogProbabilities"] as IReadOnlyList<ChatTokenLogProbabilityInfo>;
+		var tokenStrings = logProbs.AsTokenStrings()[0];
 		return new ResultScore(inputModel.FunctionName, tokenStrings);
 	}
 
@@ -90,8 +101,8 @@ public class EvalService
 		};
 		var finalArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
 		var result = await kernel.InvokeAsync(evalPlugin[inputModel.FunctionName], finalArgs);
-		var logProbs = result.Metadata?["LogProbabilityInfo"] as ChatChoiceLogProbabilityInfo;
-		var tokenStrings = logProbs.TokenLogProbabilityResults.AsTokenStrings();
+		var logProbs = result.Metadata?["LogProbabilityInfo"] as IReadOnlyList<ChatTokenLogProbabilityInfo>;
+		var tokenStrings = logProbs?.AsTokenStrings();
 		var scoreResult = result.GetTypedResult<ScorePlusResponse>();
 		return new ResultScore(inputModel.FunctionName, scoreResult, tokenStrings);
 	}

@@ -1,4 +1,5 @@
-﻿<RadzenDataGrid @ref=_grid Data="EvalResultDisplays" TItem="EvalResultDisplay" AllowSorting=true AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Density="Density.Compact" AllowPaging=true PageSize="12">
+﻿@using HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
+<RadzenDataGrid @ref=_grid Data="EvalResultDisplays" TItem="EvalResultDisplay" AllowSorting=true AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Density="Density.Compact" AllowPaging=true PageSize="12">
 	<Template Context="display">
 		<RadzenTabs>
 			<Tabs>

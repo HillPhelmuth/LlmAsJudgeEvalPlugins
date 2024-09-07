@@ -1,4 +1,4 @@
-﻿namespace PromptFlowEvalsAsPlugins;
+﻿namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
 /// <summary>
 /// Represents the evaluation type.

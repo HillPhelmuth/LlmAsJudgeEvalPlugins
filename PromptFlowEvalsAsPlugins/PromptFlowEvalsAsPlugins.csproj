@@ -5,18 +5,21 @@
   <ImplicitUsings>enable</ImplicitUsings>
   <Nullable>enable</Nullable>
   <NoWarn>SKEXP0010</NoWarn>
-
-  <Title>PromptFlow Eval Flows or Custom Evals as SemanticKernel Plugins</Title>
+	 <RootNamespace>HillPhelmuth.SemanticKernel.LlmAsJudgeEvals</RootNamespace>
+  <Title>Run "LLM as Judge" Evals Using Semantic Kernel</Title>
   <PackageProjectUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</PackageProjectUrl>
   <RepositoryUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</RepositoryUrl>
   <PackageOutputPath>C:\Users\adamh\source\LocalPackages</PackageOutputPath>
   <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   <PackageIcon>packageIcon.png</PackageIcon>
+  <Version>0.0.1-beta</Version>
+  <Authors>HillPhelmuth</Authors>
+  <Description>Enable seamless execution of LLM (Large Language Model) evaluations using Semantic Kernel. This library provides tools and abstractions for running automated assessments where LLMs serve as judges, offering structured, consistent, and scalable evaluation methods. Ideal for AI-driven projects that require evaluative feedback, scoring, or comparative analysis across various use cases. Easily integrates with Semantic Kernel for smooth, flexible LLM operations in .NET environments.</Description>
 
  </PropertyGroup>
  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
   <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-  <Version>0.0.3-beta</Version>
+  <Version>0.0.4-beta</Version>
  </PropertyGroup>
  <ItemGroup>
   <None Remove="EvalPluginYaml\Empathy.yaml" />
@@ -49,9 +52,9 @@
 
 
  <ItemGroup>
-  <PackageReference Include="Microsoft.SemanticKernel" Version="1.17.1" />
-  <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.17.1-alpha" />
-  <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.17.1" />
+  <PackageReference Include="Microsoft.SemanticKernel" Version="1.18.2" />
+  <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.18.2-alpha" />
+  <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.18.2" />
  </ItemGroup>
 
  <ItemGroup>

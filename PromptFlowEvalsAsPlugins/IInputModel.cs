@@ -1,6 +1,6 @@
 ﻿using Microsoft.SemanticKernel;
 
-namespace PromptFlowEvalsAsPlugins;
+namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
 public interface IInputModel
 {

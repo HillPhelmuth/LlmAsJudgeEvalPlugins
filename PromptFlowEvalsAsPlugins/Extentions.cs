@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using Microsoft.SemanticKernel;
-using static PromptFlowEvalsAsPlugins.Helpers;
+using static HillPhelmuth.SemanticKernel.LlmAsJudgeEvals.Helpers;
 
-namespace PromptFlowEvalsAsPlugins;
+namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
 public static class Extentions
 {
