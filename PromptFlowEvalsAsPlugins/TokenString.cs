@@ -4,7 +4,7 @@ namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
 public record TokenString
 {
-	public TokenString(string StringValue, double LogProb, int Token = 0)
+	internal TokenString(string StringValue, double LogProb, int Token = 0)
 	{
 		this.Token = Token;
 		this.LogProb = LogProb;
@@ -12,18 +12,18 @@ public record TokenString
 		NormalizedLogProbability = LogProb;
 	}
 
-	public string StringValue { get; set; }
+	public string StringValue { get; }
 	public List<TokenString> TopLogProbs { get; set; } = [];
-	public double NormalizedLogProbability { get; set; }
+	public double NormalizedLogProbability { get; }
 	public int Token { get; init; }
 	public double LogProb { get; init; }
-	public TokenProb AsTokenProb()
+	internal TokenProb AsTokenProb()
 	{
 		return new TokenProb(StringValue, NormalizedLogProbability);
 	}
 
 }
-public class TokenProb(string stringValue, double normLogProb)
+internal class TokenProb(string stringValue, double normLogProb)
 {
 	public string StringValue { get; set; } = stringValue;
 	public double Probability { get; set; } = normLogProb;
@@ -33,9 +33,9 @@ public class TokenProb(string stringValue, double normLogProb)
         return $"Token: {StringValue}, Probability: {Probability}";
     }
 }
-public static class LogProbExts
+internal static class LogProbExts
 {
-	public static List<TokenString> AsTokenStrings(this IReadOnlyList<ChatTokenLogProbabilityInfo> logProbContentItems)
+	internal static List<TokenString> AsTokenStrings(this IReadOnlyList<ChatTokenLogProbabilityInfo> logProbContentItems)
 	{
 		var result = new List<TokenString>();
 		foreach (var logProb in logProbContentItems)
@@ -50,7 +50,7 @@ public static class LogProbExts
 		}
 		return result;
 	}
-	public static double CalculateWeightedScore(this IEnumerable<TokenProb> tokenProbs)
+	internal static double CalculateWeightedScore(this IEnumerable<TokenProb> tokenProbs)
 	{
 		tokenProbs.ToList().ForEach(tp => Console.WriteLine(tp.ToString()));
 		var validTokens = tokenProbs
@@ -70,7 +70,7 @@ public static class LogProbExts
 
 		return weightedSum;
 	}
-	public static IEnumerable<TokenProb> NormalizeValues(this IEnumerable<TokenProb> tokenProbs)
+	internal static IEnumerable<TokenProb> NormalizeValues(this IEnumerable<TokenProb> tokenProbs)
 	{
 		
 		double sum = tokenProbs.Sum(x => x.Probability);
@@ -87,7 +87,7 @@ public static class LogProbExts
 		}
 		//return tokenProbs.Select(token => new TokenProb(token.StringValue, token.Probability / sum));
 	}
-	public static double ToLinearProb(this ChatTokenTopLogProbabilityInfo logProbabilityResult) => Math.Exp(logProbabilityResult.LogProbability);
+	private static double ToLinearProb(this ChatTokenTopLogProbabilityInfo logProbabilityResult) => Math.Exp(logProbabilityResult.LogProbability);
 
-	public static double ToLinearProb(this ChatTokenLogProbabilityInfo logProbInfo) => Math.Exp(logProbInfo.LogProbability);
+	private static double ToLinearProb(this ChatTokenLogProbabilityInfo logProbInfo) => Math.Exp(logProbInfo.LogProbability);
 }

@@ -10,7 +10,6 @@
 		<PackageProjectUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</RepositoryUrl>
 		<PackageIcon>packageIcon.png</PackageIcon>
-		<Version>0.0.1-beta</Version>
 		<Authors>HillPhelmuth</Authors>
 		<Description>Enable seamless execution of LLM (Large Language Model) evaluations using Semantic Kernel. This library provides tools and abstractions for running automated assessments where LLMs serve as judges, offering structured, consistent, and scalable evaluation methods. Ideal for AI-driven projects that require evaluative feedback, scoring, or comparative analysis across various use cases. Easily integrates with Semantic Kernel for smooth, flexible LLM operations in .NET environments.</Description>
 		<PackageReadmeFile>Readme.md</PackageReadmeFile>
@@ -18,6 +17,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<IncludeSymbols>True</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageId>HillPhelmuth.SemanticKernel.LlmAsJudgeEvals</PackageId>
 
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -25,7 +25,7 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>0.0.1-beta</Version>
+		<Version>0.0.2-beta</Version>
 	</PropertyGroup>
 
 

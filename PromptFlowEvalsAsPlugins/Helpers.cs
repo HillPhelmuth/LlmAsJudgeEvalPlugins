@@ -34,14 +34,4 @@ public static class Helpers
 	    }
 	    return result;
     }
-    public static byte[] ReadFromAssembly(string fileName)
-    {
-	    var assembly = Assembly.GetExecutingAssembly();
-	    var jsonName = assembly.GetManifestResourceNames()
-		    .SingleOrDefault(s => s.EndsWith(fileName, StringComparison.OrdinalIgnoreCase)) ?? "";
-	    using var stream = assembly.GetManifestResourceStream(jsonName);
-	    using var memoryStream = new MemoryStream();
-	    stream.CopyTo(memoryStream);
-	    return memoryStream.ToArray();
-    }
 }
