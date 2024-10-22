@@ -26,7 +26,7 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>0.0.3-beta</Version>
+		<Version>0.1.0-beta</Version>
 	</PropertyGroup>
 
 
@@ -44,9 +44,9 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SemanticKernel" Version="1.18.2" />
-		<PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.18.2-alpha" />
-		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.18.2" />
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.24.1" />
+		<PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.24.1-alpha" />
+		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.24.1" />
 	</ItemGroup>
 
 	<ItemGroup>

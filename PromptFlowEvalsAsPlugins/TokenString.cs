@@ -35,7 +35,7 @@ internal class TokenProb(string stringValue, double normLogProb)
 }
 internal static class LogProbExts
 {
-	internal static List<TokenString> AsTokenStrings(this IReadOnlyList<ChatTokenLogProbabilityInfo> logProbContentItems)
+	internal static List<TokenString> AsTokenStrings(this IReadOnlyList<ChatTokenLogProbabilityDetails> logProbContentItems)
 	{
 		var result = new List<TokenString>();
 		foreach (var logProb in logProbContentItems)
@@ -87,7 +87,7 @@ internal static class LogProbExts
 		}
 		//return tokenProbs.Select(token => new TokenProb(token.StringValue, token.Probability / sum));
 	}
-	private static double ToLinearProb(this ChatTokenTopLogProbabilityInfo logProbabilityResult) => Math.Exp(logProbabilityResult.LogProbability);
+	private static double ToLinearProb(this ChatTokenTopLogProbabilityDetails logProbabilityResult) => Math.Exp(logProbabilityResult.LogProbability);
 
-	private static double ToLinearProb(this ChatTokenLogProbabilityInfo logProbInfo) => Math.Exp(logProbInfo.LogProbability);
+	private static double ToLinearProb(this ChatTokenLogProbabilityDetails logProbInfo) => Math.Exp(logProbInfo.LogProbability);
 }
