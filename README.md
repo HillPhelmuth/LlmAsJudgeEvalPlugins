@@ -10,7 +10,7 @@ This library provides a service for evaluating responses from Large Language Mod
 Install the package via NuGet:
 
 ```
-nuget install HillPhelmuth.SemanticKernel.LlmAsJudgeEvals -PreRelease
+nuget install HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
 ```
 
 ## Usage
