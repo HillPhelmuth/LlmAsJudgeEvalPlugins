@@ -1,11 +1,8 @@
 ﻿using Markdig;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace PromptFlowEvalsAsPlugins.Demo.Components.EvalInputs;
+namespace LlmAsJudgeEvalsAsPlugins.Demo.Components.EvalInputs;
 
 public partial class EvalDisplay : ComponentBase
 {

@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
+﻿using HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
+using Microsoft.AspNetCore.Components;
 
-namespace PromptFlowEvalsAsPlugins.Demo.Components.EvalInputs;
+namespace LlmAsJudgeEvalsAsPlugins.Demo.Components.EvalInputs;
 
 public partial class QnAGenerator : ComponentBase
 {

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LlmAsJudgeEvalsAsPlugins", "LlmAsJudgeEvalsAsPlugins\LlmAsJudgeEvalsAsPlugins.csproj", "{2018E2EE-3F2D-487B-A664-45B975E661E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PromptFlowEvalsAsPlugins.Demo", "Demo\PromptFlowEvalsAsPlugins.Demo\PromptFlowEvalsAsPlugins.Demo.csproj", "{B6DC903A-619D-4910-B943-C50292333746}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LlmAsJudgeEvalsAsPlugins.Demo", "Demo\LlmAsJudgeEvalsAsPlugins.Demo\LlmAsJudgeEvalsAsPlugins.Demo.csproj", "{B6DC903A-619D-4910-B943-C50292333746}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

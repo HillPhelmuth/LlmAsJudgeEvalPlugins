@@ -5,10 +5,10 @@ on:
     - main
 env:
   AZURE_WEBAPP_NAME: PromptFlowEvalsAsPluginsDemo
-  AZURE_WEBAPP_PACKAGE_PATH: Demo\PromptFlowEvalsAsPlugins.Demo\published
+  AZURE_WEBAPP_PACKAGE_PATH: Demo\LlmAsJudgeEvalsAsPlugins.Demo\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
-  WORKING_DIRECTORY: Demo\PromptFlowEvalsAsPlugins.Demo
+  WORKING_DIRECTORY: Demo\LlmAsJudgeEvalsAsPlugins.Demo
 jobs:
   build:
     runs-on: windows-latest

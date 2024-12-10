@@ -2,6 +2,9 @@
 
 namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
+/// <summary>
+/// Represents an input model for the Semantic Kernel Eval Function.
+/// </summary>
 public interface IInputModel
 {
     /// <summary>

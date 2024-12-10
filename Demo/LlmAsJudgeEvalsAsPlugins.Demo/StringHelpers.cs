@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Tiktoken;
 
-namespace PromptFlowEvalsAsPlugins.Demo;
+namespace LlmAsJudgeEvalsAsPlugins.Demo;
 
 public class StringHelpers
 {

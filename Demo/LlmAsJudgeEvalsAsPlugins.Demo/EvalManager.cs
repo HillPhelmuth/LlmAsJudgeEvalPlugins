@@ -8,7 +8,7 @@ using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel.Text;
 using UglyToad.PdfPig;
 
-namespace PromptFlowEvalsAsPlugins.Demo;
+namespace LlmAsJudgeEvalsAsPlugins.Demo;
 
 public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFactory)
 {

@@ -1,5 +1,5 @@
-using PromptFlowEvalsAsPlugins.Demo;
-using PromptFlowEvalsAsPlugins.Demo.Components;
+using LlmAsJudgeEvalsAsPlugins.Demo;
+using LlmAsJudgeEvalsAsPlugins.Demo.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +11,7 @@ builder.Services.AddSignalR(o =>
     o.MaximumReceiveMessageSize = null;
 });
 builder.Services.AddLogging(o => o.AddConsole());
-//builder.Logging.AddConsole();
-//builder.Services.AddSingleton<ILoggerFactory, LoggerFactory>();
+
 builder.Services.AddScoped<EvalManager>();
 var app = builder.Build();
 

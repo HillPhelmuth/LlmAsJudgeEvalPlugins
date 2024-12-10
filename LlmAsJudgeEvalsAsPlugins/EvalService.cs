@@ -85,8 +85,9 @@ public class EvalService
     /// Executes the evaluation using the specified input model.
     /// </summary>
     /// <param name="inputModel">The input model for the evaluation.</param>
+    /// <param name="settings">optional <see cref="T:Microsoft.SemanticKernel.PromptExecutionSettings"/>. Defaults to preset <see cref="T:Microsoft.SemanticKernel.Connectors.OpenAI.OpenAIPromptExecutionSettings"/></param>
     /// <returns>The result score of the evaluation.</returns>
-    public async Task<ResultScore> ExecuteEval(IInputModel inputModel)
+    public async Task<ResultScore> ExecuteEval(IInputModel inputModel, PromptExecutionSettings? settings = null)
     {
         var currentKernel = _kernel.Clone();
         if (currentKernel.Services.GetService<IChatCompletionService>() is null && currentKernel.Services.GetService<ITextGenerationService>() is null)
@@ -95,7 +96,7 @@ public class EvalService
         }
 
         var evalPlugin = EvalFunctions.Count == 0 ? currentKernel.ImportEvalPlugin() : KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
-        var settings = new OpenAIPromptExecutionSettings
+        settings ??= new OpenAIPromptExecutionSettings
         {
             MaxTokens = 1,
             Temperature = 0.1,

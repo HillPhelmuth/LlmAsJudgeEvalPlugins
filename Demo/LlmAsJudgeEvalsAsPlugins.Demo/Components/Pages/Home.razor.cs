@@ -1,10 +1,10 @@
-﻿using Markdig;
+﻿using LlmAsJudgeEvalsAsPlugins.Demo.Components.EvalInputs;
+using LlmAsJudgeEvalsAsPlugins.Demo.Components.EvalsRag;
+using Markdig;
 using Microsoft.AspNetCore.Components;
 using Microsoft.SemanticKernel;
-using PromptFlowEvalsAsPlugins.Demo.Components.EvalInputs;
-using PromptFlowEvalsAsPlugins.Demo.Components.EvalsRag;
 
-namespace PromptFlowEvalsAsPlugins.Demo.Components.Pages;
+namespace LlmAsJudgeEvalsAsPlugins.Demo.Components.Pages;
 
 public partial class Home
 {
