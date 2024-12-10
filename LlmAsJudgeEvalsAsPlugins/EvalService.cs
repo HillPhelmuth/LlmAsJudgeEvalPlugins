@@ -113,11 +113,12 @@ public class EvalService
     }
 
     /// <summary>
-    /// Executes the evaluation with score plus using the specified input model.
+    /// Executes the evaluation with score plus a generated explanation using the specified input model.
     /// </summary>
     /// <param name="inputModel">The input model for the evaluation.</param>
+    /// <param name="settings">optional <see cref="T:Microsoft.SemanticKernel.PromptExecutionSettings"/>. Defaults to preset <see cref="T:Microsoft.SemanticKernel.Connectors.OpenAI.OpenAIPromptExecutionSettings"/></param>
     /// <returns>The result score of the evaluation.</returns>
-    public async Task<ResultScore> ExecuteScorePlusEval(IInputModel inputModel)
+    public async Task<ResultScore> ExecuteScorePlusEval(IInputModel inputModel, PromptExecutionSettings? settings = null)
     {
         var kernel = _kernel.Clone();
         if (kernel.Services.GetService<IChatCompletionService>() is null && kernel.Services.GetService<ITextGenerationService>() is null)
@@ -125,9 +126,9 @@ public class EvalService
             throw new Exception("Kernel must have a chat completion service or text generation service to execute an eval");
         }
         var evalPlugin = EvalFunctions.Count == 0 ? kernel.ImportEvalPlugin() : KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
-        var settings = new OpenAIPromptExecutionSettings
+        settings ??= new OpenAIPromptExecutionSettings
         {
-            MaxTokens = 256,
+            MaxTokens = 512,
             Temperature = 0.1,
             TopP = 0.1,
             ResponseFormat = "json_object",
@@ -175,8 +176,14 @@ public class EvalService
 /// </summary>
 public class ScorePlusResponse
 {
+    /// <summary>
+    /// Gets or sets the reasoning behind the quality score.
+    /// </summary>
     [JsonPropertyName("explanation")]
     public string? QualityScoreReasoning { get; set; }
+    /// <summary>
+    /// Gets or sets the quality score.
+    /// </summary>
     [JsonPropertyName("score")]
     public int? QualityScore { get; set; }
 }

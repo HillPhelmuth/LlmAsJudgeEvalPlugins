@@ -51,8 +51,8 @@ public partial class AddRagContent : ComponentBase
 	private class QnAForm
 	{
 		public string SystemPrompt { get; set; } = "";
-        public string AnswerModel { get; set; } = "gpt-3.5-turbo";
-        public string EvalModel { get; set; } = "gpt-3.5-turbo";
+        public string AnswerModel { get; set; } = "gpt-4o-mini";
+        public string EvalModel { get; set; } = "gpt-4o-mini";
         public List<UserInput> UserInputs { get; set; } = [new UserInput("")];
 
 	}
@@ -63,7 +63,7 @@ public partial class AddRagContent : ComponentBase
 	{
 		public string Input { get; set; } = Input;
 	}
-    private List<string> _availableModels = ["gpt-3.5-turbo", "gpt-4o-mini", "gpt-4o"];
+    private List<string> _availableModels = ["gpt-3.5-turbo", "gpt-4o-mini"];
     private QnAForm _qnaForm = new();
 	private class UserInputGenForm
 	{

@@ -21,10 +21,11 @@
     <PackageReference Include="PdfPig" Version="0.1.8" />
     <PackageReference Include="Radzen.Blazor" Version="4.34.3" />
     <PackageReference Include="Tiktoken" Version="2.0.3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.32.0-alpha" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\PromptFlowEvalsAsPlugins\PromptFlowEvalsAsPlugins.csproj" />
+    <ProjectReference Include="..\..\PromptFlowEvalsAsPlugins\LlmAsJudgeEvalsAsPlugins.csproj" />
   </ItemGroup>
 
 </Project>

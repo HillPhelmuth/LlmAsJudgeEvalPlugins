@@ -25,14 +25,14 @@ public partial class QnAGenerator : ComponentBase
     private class QnAForm
     {
         public string SystemPrompt { get; set; } = "";
-        public string AnswerModel { get; set; } = "gpt-3.5-turbo";
-        public string EvalModel { get; set; } = "gpt-3.5-turbo";
+        public string AnswerModel { get; set; } = "gpt-4o-mini";
+        public string EvalModel { get; set; } = "gpt-4o-mini";
         public List<UserInput> UserInputs { get; set; } = [new UserInput("")];
 
     }
     private bool _isGenerating;
     private bool _isEvaluating;
-    private List<string> _availableModels = ["gpt-3.5-turbo", "gpt-4o-mini", "gpt-4o"];
+    private List<string> _availableModels = ["gpt-3.5-turbo", "gpt-4o-mini"];
     private record UserInput(string Input)
     {
         public string Input { get; set; } = Input;
