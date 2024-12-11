@@ -43,7 +43,7 @@ var evalService = new EvalService(kernel);
 var coherenceInput = InputModel.CoherenceModel("This is the answer to evaluate.", "This is the question or prompt that generated the answer");
 
 // Execute the evaluation
-var result = await evalService.ExecuteEval(inputModel);
+var result = await evalService.ExecuteEval(coherenceInput);
 
 
 Console.WriteLine($"Evaluation score: {result.Score}");
