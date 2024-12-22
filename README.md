@@ -10,7 +10,7 @@ This library provides a service for evaluating responses from Large Language Mod
 Install the package via NuGet:
 
 ```
-nuget install HillPhelmuth.SemanticKernel.LlmAsJudgeEvals -PreRelease
+nuget install HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
 ```
 
 ## Usage
@@ -43,7 +43,7 @@ var evalService = new EvalService(kernel);
 var coherenceInput = InputModel.CoherenceModel("This is the answer to evaluate.", "This is the question or prompt that generated the answer");
 
 // Execute the evaluation
-var result = await evalService.ExecuteEval(inputModel);
+var result = await evalService.ExecuteEval(coherenceInput);
 
 
 Console.WriteLine($"Evaluation score: {result.Score}");
