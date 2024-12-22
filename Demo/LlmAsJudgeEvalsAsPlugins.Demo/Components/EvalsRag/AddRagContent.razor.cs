@@ -15,8 +15,9 @@ public partial class AddRagContent : ComponentBase
 	public EventCallback<Dictionary<string, double>> StandardResultsAggregated { get; set; }
 	[Parameter]
 	public EventCallback<Dictionary<string, double>> LogProbResultsAggregrated { get; set; }
-
-	private class FileUpload
+    [Parameter]
+    public bool WithExplanation { get; set; }
+    private class FileUpload
 	{
 		public string? FileName { get; set; }
 		public string? FileBase64 { get; set; }
@@ -140,9 +141,9 @@ public partial class AddRagContent : ComponentBase
 		Console.WriteLine($"SystemPrompt At Submit: {_qnaForm.SystemPrompt}");
 		var systemPrompt = _qnaForm.SystemPrompt;
 		var userInputs = qnaForm.UserInputs.Select(ui => ui.Input).ToList();
-		var inputModels = await EvalManager.CreateRagInputModels(systemPrompt, userInputs, qnaForm.AnswerModel);
+		var inputModels = await EvalManager.CreateRagInputModels(systemPrompt, userInputs, qnaForm.AnswerModel, WithExplanation);
 		var results = new List<EvalResultDisplay>();
-		await foreach (var result in EvalManager.ExecuteEvalsAsync(inputModels, qnaForm.EvalModel))
+		await foreach (var result in EvalManager.ExecuteEvalsAsync(inputModels, qnaForm.EvalModel, WithExplanation))
 		{
 			results.Add(result);
 			await EvalResultGenerated.InvokeAsync(result);

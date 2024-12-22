@@ -30,7 +30,17 @@
                 <RadzenTabsItem Text="Explain and Score Evals">
                     <RadzenRow>
                         <RadzenColumn Size="6">
-                            <QnAGenerator @ref=_qnAGenerator EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate" WithExplanation="true"></QnAGenerator>
+                            <QnAGenerator @ref=_explainQnAGenerator EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate" WithExplanation="true"></QnAGenerator>
+                        </RadzenColumn>
+                        <RadzenColumn Size="6">
+                            <EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Explain and Score Rag Evals">
+                    <RadzenRow>
+                        <RadzenColumn Size="6">
+                    <AddRagContent @ref=_explainAddRagContent EvalResultGenerated="HandleAddEval" StandardResultsAggregated="HandleAggregate" LogProbResultsAggregrated="HandleLogProbAggregate" WithExplanation="true"></AddRagContent>
                         </RadzenColumn>
                         <RadzenColumn Size="6">
                             <EvalDisplay EvalResultDisplays="_evalResults" @ref=_evalDisplay LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>

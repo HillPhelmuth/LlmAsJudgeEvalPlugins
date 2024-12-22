@@ -15,6 +15,7 @@ public partial class Home
     private QnAGenerator? _qnAGenerator;
     private AddRagContent? _addRagContent;
     private QnAGenerator? _explainQnAGenerator;
+    private AddRagContent? _explainAddRagContent;
     private Dictionary<string, double> _standardAggResults = [];
     private Dictionary<string, double> _logProbAggResults = [];
     private Dictionary<string, PromptTemplateConfig> _evalTemplates = [];
@@ -54,6 +55,8 @@ public partial class Home
         _logProbAggResults = [];
         _qnAGenerator?.Reset();
         _addRagContent?.Reset();
+        _explainQnAGenerator?.Reset();
+        _explainAddRagContent?.Reset();
         StateHasChanged();
     }
     private string AsHtml(string? text)

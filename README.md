@@ -5,6 +5,8 @@ This library provides a service for evaluating responses from Large Language Mod
 
 **For a more precise evaluation score, the library utilizes `logprobs` and calculates a weighted total of probabilities for each evaluation criterion.**
 
+Check out the [LLM-as-judge Demo](https://promptflowevalsaspluginsdemo.azurewebsites.net/)
+
 ## Installation
 
 Install the package via NuGet:

@@ -86,7 +86,8 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 		return inputs;
 	}
 	private const string CollectionName = "ragCollection";
-	public async Task<List<IInputModel>> CreateRagInputModels(string systemPrompt, List<string> userQuestions, string model = "gpt-3.5-turbo")
+	public async Task<List<IInputModel>> CreateRagInputModels(string systemPrompt, List<string> userQuestions,
+        string model = "gpt-3.5-turbo", bool withExplain = false)
 	{
 		if (!systemPrompt.Contains("$context"))
 		{
@@ -107,13 +108,13 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 			chatHistory.AddUserMessage(question);
 			var response = await chat.GetChatMessageContentAsync(chatHistory, settings, kernel);
 			var answer = response.Content;
-			var groundedness = InputModel.GroundednessModel(answer, question, context);
+			var groundedness = withExplain ? InputModel.GroundednessExplainModel(answer, question, context) : InputModel.GroundednessModel(answer, question, context);
 			inputs.Add(groundedness);
-			var groundedness2 = InputModel.Groundedness2Model(answer, question, context);
+            var groundedness2 = withExplain ? InputModel.Groundedness2ExplainModel(answer, question, context) : InputModel.Groundedness2Model(answer, question, context);
 			inputs.Add(groundedness2);
-			var ragIntelligence = InputModel.PerceivedIntelligenceModel(answer, question, context);
+            var ragIntelligence = withExplain ? InputModel.PerceivedIntelligenceExplainModel(answer, question, context) : InputModel.PerceivedIntelligenceModel(answer, question, context);
 			inputs.Add(ragIntelligence);
-			var relevance = InputModel.RelevanceModel(answer,question, context);
+            var relevance = withExplain ? InputModel.RelevanceExplainModel(answer, question, context) : InputModel.RelevanceModel(answer, question, context);
 			inputs.Add(relevance);
 		}
 		return inputs;
