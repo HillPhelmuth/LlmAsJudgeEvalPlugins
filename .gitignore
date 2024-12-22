@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Demo/PromptFlowEvalsAsPlugins.Demo/memoryItems.json
+/LlmAsJudgeEvalsAsPlugins/EvalPluginYaml/ExcessiveAgency.yaml
+/LlmAsJudgeEvalsAsPlugins/EvalPluginYaml/RoleAdherence.yaml

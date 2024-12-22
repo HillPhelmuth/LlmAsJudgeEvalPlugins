@@ -51,8 +51,8 @@ template: |
     Output must be in the following json format
     ```json
     {
-      "explanation": "<Reasons for the rating score>",
-      "score": <number 1 - 5>
+      "explanation": "[Reasons for the rating score]",
+      "score": [number 1 - 5]
     }
     ```
 

@@ -19,52 +19,146 @@ input_variables:
   default: ''
 name: GptSimilarityExplain
 template: |
-    System:
-    You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric.
+ You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric.
 
-    User:
-    Equivalence, as a metric, measures the similarity between the predicted answer and the correct answer. If the information and content in the predicted answer is similar or equivalent to the correct answer, then the value of the Equivalence metric should be high, else it should be low. Given the question, correct answer, and predicted answer, determine the value of Equivalence metric using the following rating scale:
-    One star: the predicted answer is not at all similar to the correct answer
-    Two stars: the predicted answer is mostly not similar to the correct answer
-    Three stars: the predicted answer is somewhat similar to the correct answer
-    Four stars: the predicted answer is mostly similar to the correct answer
-    Five stars: the predicted answer is completely similar to the correct answer
+ Equivalence, as a metric, measures the similarity between the predicted answer and the correct answer. If the information and content in the predicted answer are similar or equivalent to the correct answer, then the value of the Equivalence metric should be high; otherwise, it should be low. Given the question, correct answer, and predicted answer, determine the value of the Equivalence metric using the following rating scale:
 
-    This rating value should always be an integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
+ - **1 star**: The predicted answer is not at all similar to the correct answer.
+ - **2 stars**: The predicted answer is mostly not similar to the correct answer.
+ - **3 stars**: The predicted answer is somewhat similar to the correct answer.
+ - **4 stars**: The predicted answer is mostly similar to the correct answer.
+ - **5 stars**: The predicted answer is completely similar to the correct answer.
 
-    The examples below show the Equivalence score for a question, a correct answer, and a predicted answer.
-    **Just respond with the score number, nothing else.**
+ The rating value must always be an integer between 1 and 5, with no fractional values.
 
-    ### Examples
+ ### Evaluation Guidelines
 
-    question: What is the role of ribosomes?
-    correct answer: Ribosomes are cellular structures responsible for protein synthesis. They interpret the genetic information carried by messenger RNA (mRNA) and use it to assemble amino acids into proteins.
-    predicted answer: Ribosomes participate in carbohydrate breakdown by removing nutrients from complex sugar molecules.
-    stars: 1
+ 1. **Similarity Assessment**:
+  - Focus on **semantic similarity** (how closely the meaning aligns) and **factual accuracy** (whether the information is correct).
+  - Evaluate how much of the critical information in the correct answer is present in the predicted answer. Critical information is the key data or central points necessary to answer the question accurately.
+ 2. **Edge Cases**:
+  - If the predicted answer is incomplete or partially correct, assign a lower score and explain what is missing.
+  - If the predicted answer is factually incorrect but shares structural or linguistic similarities with the correct answer, mention the factual inaccuracies in the explanation.
+  - If the predicted answer includes irrelevant or extraneous information, focus only on the relevance and accuracy of the information directly related to the question and correct answer.
+ 3. **Consistency**:
+  - Ensure that your explanation aligns directly with the score provided. The explanation should justify the rating concisely and clearly.
 
-    question: Why did the Titanic sink?
-    correct answer: The Titanic sank after it struck an iceberg during its maiden voyage in 1912. The impact caused the ship's hull to breach, allowing water to flood into the vessel. The ship's design, lifeboat shortage, and lack of timely rescue efforts contributed to the tragic loss of life.
-    predicted answer: The sinking of the Titanic was a result of a large iceberg collision. This caused the ship to take on water and eventually sink, leading to the death of many passengers due to a shortage of lifeboats and insufficient rescue attempts.
-    stars: 2
+ ### Output Format
 
-    question: What causes seasons on Earth?
-    correct answer: Seasons on Earth are caused by the tilt of the Earth's axis and its revolution around the Sun. As the Earth orbits the Sun, the tilt causes different parts of the planet to receive varying amounts of sunlight, resulting in changes in temperature and weather patterns.
-    predicted answer: Seasons occur because of the Earth's rotation and its elliptical orbit around the Sun. The tilt of the Earth's axis causes regions to be subjected to different sunlight intensities, which leads to temperature fluctuations and alternating weather conditions.
-    stars: 3
+ Your output must strictly adhere to the following JSON format:
 
-    question: How does photosynthesis work?
-    correct answer: Photosynthesis is a process by which green plants and some other organisms convert light energy into chemical energy. This occurs as light is absorbed by chlorophyll molecules, and then carbon dioxide and water are converted into glucose and oxygen through a series of reactions.
-    predicted answer: In photosynthesis, sunlight is transformed into nutrients by plants and certain microorganisms. Light is captured by chlorophyll molecules, followed by the conversion of carbon dioxide and water into sugar and oxygen through multiple reactions.
-    stars: 4
+ ```json
+ {
+ "explanation": "[Provide a concise explanation for the score]",
+ "score": [integer from 1 to 5]
+ }
+ ```
 
-    question: What are the health benefits of regular exercise?
-    correct answer: Regular exercise can help maintain a healthy weight, increase muscle and bone strength, and reduce the risk of chronic diseases. It also promotes mental well-being by reducing stress and improving overall mood.
-    predicted answer: Routine physical activity can contribute to maintaining ideal body weight, enhancing muscle and bone strength, and preventing chronic illnesses. In addition, it supports mental health by alleviating stress and augmenting general mood.
-    stars: 5
+ ### Examples
 
-    ### Real Work
+ **Example 1**
+ **Input**:
 
-    question: {{$question}}
-    correct answer: {{$ground_truth}}
-    predicted answer: {{$answer}}
-    stars:    
+ - **Question**: What is the role of ribosomes?
+ - **Correct Answer**: Ribosomes are cellular structures responsible for protein synthesis. They interpret the genetic information carried by messenger RNA (mRNA) and use it to assemble amino acids into proteins.
+ - **Predicted Answer**: Ribosomes participate in carbohydrate breakdown by removing nutrients from complex sugar molecules.
+
+ **Output**:
+
+ ```json
+ {
+ "explanation": "The predicted answer is not at all similar to the correct answer and contains completely unrelated information.",
+ "score": 1
+ }
+ ```
+
+ * * *
+
+ **Example 2**
+ **Input**:
+
+ - **Question**: Why did the Titanic sink?
+ - **Correct Answer**: The Titanic sank after it struck an iceberg during its maiden voyage in 1912. The impact caused the ship's hull to breach, allowing water to flood into the vessel. The ship's design, lifeboat shortage, and lack of timely rescue efforts contributed to the tragic loss of life.
+ - **Predicted Answer**: The sinking of the Titanic was a result of a large iceberg collision. This caused the ship to take on water and eventually sink, leading to the death of many passengers due to a shortage of lifeboats and insufficient rescue attempts.
+
+ **Output**:
+
+ ```json
+ {
+ "explanation": "The predicted answer is mostly not similar to the correct answer, as it only partially overlaps in mentioning the iceberg collision but omits other critical details such as the ship's design and lack of timely rescue efforts.",
+ "score": 2
+ }
+ ```
+
+ * * *
+
+ **Example 3**
+ **Input**:
+
+ - **Question**: What causes seasons on Earth?
+ - **Correct Answer**: Seasons on Earth are caused by the tilt of the Earth's axis and its revolution around the Sun. As the Earth orbits the Sun, the tilt causes different parts of the planet to receive varying amounts of sunlight, resulting in changes in temperature and weather patterns.
+ - **Predicted Answer**: Seasons occur because of the Earth’s rotation and its elliptical orbit around the Sun. The tilt of the Earth’s axis causes regions to be subjected to different sunlight intensities, which leads to temperature fluctuations and alternating weather conditions.
+
+ **Output**:
+
+ ```json
+ {
+ "explanation": "The predicted answer is somewhat similar to the correct answer, as it captures the general idea but introduces inaccuracies about Earth's elliptical orbit and rotation.",
+ "score": 3
+ }
+ ```
+
+ * * *
+
+ **Example 4**
+ **Input**:
+
+ - **Question**: How does photosynthesis work?
+ - **Correct Answer**: Photosynthesis is a process by which green plants and some other organisms convert light energy into chemical energy. This occurs as light is absorbed by chlorophyll molecules, and then carbon dioxide and water are converted into glucose and oxygen through a series of reactions.
+ - **Predicted Answer**: In photosynthesis, sunlight is transformed into nutrients by plants and certain microorganisms. Light is captured by chlorophyll molecules, followed by the conversion of carbon dioxide and water into sugar and oxygen through multiple reactions.
+
+ **Output**:
+
+ ```json
+ {
+ "explanation": "The predicted answer is mostly similar to the correct answer, with only minor differences in phrasing and terminology.",
+ "score": 4
+ }
+ ```
+
+ * * *
+
+ **Example 5**
+ **Input**:
+
+ - **Question**: What are the health benefits of regular exercise?
+ - **Correct Answer**: Regular exercise can help maintain a healthy weight, increase muscle and bone strength, and reduce the risk of chronic diseases. It also promotes mental well-being by reducing stress and improving overall mood.
+ - **Predicted Answer**: Routine physical activity can contribute to maintaining ideal body weight, enhancing muscle and bone strength, and preventing chronic illnesses. In addition, it supports mental health by alleviating stress and augmenting general mood.
+
+ **Output**:
+
+ ```json
+ {
+ "explanation": "The predicted answer is completely similar to the correct answer, with no significant differences in meaning or detail.",
+ "score": 5
+ }
+ ```
+
+ * * *
+
+ ### Real Work
+
+ **Input**:
+
+ - **Question**: {{$question}}
+ - **Correct Answer**: {{$ground_truth}}
+ - **Predicted Answer**: {{$answer}}
+
+ **Output**:
+
+ ```json
+ {
+ "explanation": "[Provide a concise explanation for the score]",
+ "score": [integer from 1 to 5]
+ }
+ ```

@@ -33,8 +33,8 @@ template: |
      Output must be in the following json format
      ```json
      {
-        "explanation": "<Reasons for the rating score>",
-        "score": <number 1 - 10>
+        "explanation": "[Reasons for the rating score]",
+        "score": [number 1 - 10]
      }
      ```
 
@@ -49,4 +49,4 @@ template: |
     ## Context
     {{$context}}
 
-    ## Score    
+    ## Output    

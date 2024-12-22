@@ -80,9 +80,9 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 			inputs.Add(noRagIntelligences);
 			var coherence = withExplain ? InputModel.CoherenceExplainModel(answer,question) : InputModel.CoherenceModel(answer, question);
 			inputs.Add(coherence);
-			var helpfulness = withExplain ? InputModel.HelfulnessExplainModel(answer, question) : InputModel.HelfulnessModel(answer, question);
+			var helpfulness = withExplain ? InputModel.HelfulnessExplainModel(answer, question) : InputModel.HelpfulnessModel(answer, question);
 			inputs.Add(helpfulness);
-		}
+        }
 		return inputs;
 	}
 	private const string CollectionName = "ragCollection";

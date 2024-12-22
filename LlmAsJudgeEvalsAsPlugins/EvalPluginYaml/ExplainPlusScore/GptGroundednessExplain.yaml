@@ -48,7 +48,16 @@ template: |
     #### Example Task #4 Output:
     1
 
-    Reminder: The return values for each task should be correctly formatted as an integer between 1 and 5. Do not repeat the context.
+    ### Output Format
+
+    Output must strictly follow the JSON format below
+
+    ```json
+    {
+    "explanation": "[Reasons for the rating score]",
+    "score": number 1 - 5
+    }
+    ```
 
     #### Actual Task Input:
     {"CONTEXT": {{$context}}, "ANSWER": {{$answer}}}

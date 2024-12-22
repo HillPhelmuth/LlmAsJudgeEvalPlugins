@@ -111,12 +111,13 @@ public class ResultScore
     public ResultScore(string name, ScorePlusResponse? scorePlusResponse, IEnumerable<TokenString> tokenStrings)
     {
         EvalName = name;
+        Console.WriteLine(string.Join("", tokenStrings.Select(x => x.StringValue)));
         var logProb = GetTokenAfterScore(tokenStrings);
-        var logProbVals = logProb.TopLogProbs;
+        var logProbVals = logProb?.TopLogProbs;
         var output = logProb?.StringValue;
         LogProbResults = logProbVals;
         EvalName = name;
-        ProbScore = logProbVals.Select(x => x.AsTokenProb()).NormalizeValues().CalculateWeightedScore();
+        ProbScore = logProbVals?.Select(x => x.AsTokenProb()).NormalizeValues().CalculateWeightedScore() ?? -1;
         if (int.TryParse(output, out var parsedScore))
         {
             Score = parsedScore;

@@ -153,7 +153,7 @@ public class InputModel : IInputModel
 	/// <param name="answer">The response being evaluated.</param>
 	/// <param name="question">The question.</param>
 	/// <returns>The input model for helpfulness evaluation.</returns>
-	public static InputModel HelfulnessModel(string answer, string question) => CreateCoreEvalInputModel(EvalType.Helpfulness, new KernelArguments
+	public static InputModel HelpfulnessModel(string answer, string question) => CreateCoreEvalInputModel(EvalType.Helpfulness, new KernelArguments
 	{
 		["answer"] = answer,
 		["question"] = question,

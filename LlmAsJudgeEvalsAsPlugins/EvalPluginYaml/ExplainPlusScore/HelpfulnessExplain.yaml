@@ -16,50 +16,107 @@ input_variables:
   default: ''
 template: |
  
- Helpfulness measures the ability to provide useful and actionable information or assistance. It involves understanding the user's needs and responding with relevant and practical advice. Consider the relevance, accuracy, and clarity of the responses when evaluating helpfulness. Given the statement or question and response, score the helpfulness of the response between one to five stars using the following rating scale:
+ Helpfulness measures the ability to provide useful and actionable information or assistance. It involves understanding the user’s needs and responding with relevant, accurate, clear, and practical advice. Additionally, consider whether the response maintains an appropriate tone and avoids unnecessary complexity. Given the statement or question and response, score the helpfulness of the response between one to five stars using the following rating scale:
 
- 1 star: the response is not helpful at all
- 2 stars: the response is minimally helpful
- 3 stars: the response is somewhat helpful
- 4 stars: the response is very helpful
- 5 stars: the response is exceptionally helpful
+ 1 star: The response is not helpful at all.
 
- This rating value should always be an integer between 1 and 5. So, the rating produced should be 1 or 2 or 3 or 4 or 5.
- Respond with an explanation of your score and the score number.
+ 2 stars: The response is minimally helpful.
+
+ 3 stars: The response is somewhat helpful.
+
+ 4 stars: The response is very helpful.
+
+ 5 stars: The response is exceptionally helpful.
+
+ The rating value must always be an integer between 1 and 5. So, the rating produced should be 1, 2, 3, 4, or 5.
+
+ Respond with an explanation of your score and the score number. Clearly justify your rating by referencing specific aspects of the response, such as relevance, accuracy, clarity, tone, or practicality.
+
+ ### Evaluation Guidelines
+
+ **Relevance**: Does the response directly address the question or statement?
+
+ **Accuracy**: Are the facts or suggestions correct, reliable, and well-informed?
+
+ **Clarity**: Is the response easy to understand, concise, and free of ambiguity?
+
+ **Tone**: Does the response maintain a professional, respectful, and appropriate tone?
+
+ **Practicality**: Are the suggestions actionable, realistic, and useful?
+
+ For borderline cases where a response falls between two ratings, make a judgment based on the overall evaluation of these criteria.
 
  ### Examples
 
- question: How do I change my car's oil?
+ **Example 1**
+
+ question: How do I change my car’s oil?
+
  response: Just look it up online.
+
  stars: 1
 
- question: I'm having trouble sleeping at night. Any advice?
+ explanation: The response is unhelpful because it does not provide any specific or actionable advice. Simply telling someone to "look it up online" fails to address the user’s need for guidance.
+
+ **Example 2**
+
+ question: I’m having trouble sleeping at night. Any advice?
+
  response: Try to relax more.
+
  stars: 2
 
+ explanation: The response is minimally helpful because it provides overly general advice without suggesting specific relaxation techniques or addressing common causes of sleep issues.
+
+ **Example 3**
+
  question: How can I improve my time management skills?
+
  response: Consider making a to-do list to keep track of your tasks.
+
  stars: 3
 
+ explanation: The response is somewhat helpful because it provides a practical suggestion, but it lacks depth. Additional advice, such as prioritizing tasks or setting deadlines, would improve its helpfulness.
+
+ **Example 4**
+
  question: What are some effective ways to save money on groceries?
+
  response: You can save money by planning your meals, making a shopping list, and buying items in bulk when possible.
+
  stars: 4
 
- question: I'm moving to a new city for work. What should I consider during the move?
+ explanation: The response is very helpful because it provides clear and actionable advice, but it could be enhanced with additional tips like using coupons or comparing prices.
+
+ **Example 5**
+
+ question: I’m moving to a new city for work. What should I consider during the move?
+
  response: When moving to a new city for work, consider researching the cost of living, finding a convenient place to live near your workplace, understanding the local transportation options, and getting to know the community. Additionally, make sure to transfer utilities, update your address with important institutions, and explore local amenities.
+
  stars: 5
 
-  ### Output Format
- Output must be in the following json format
+ explanation: The response is exceptionally helpful because it is comprehensive, relevant, and provides detailed, actionable advice covering multiple important aspects of the move.
+
+ ### Output Format
+
+ Output must strictly follow the JSON format below
+
  ```json
  {
-    "explanation": "<Reasons for the rating score>",
-    "score": <number 1 - 5>
+  "explanation": "[Reasons for the rating score]",
+  "score": number 1 - 5
  }
  ```
+
+ ### Additional Notes
+
+ - Pay attention to borderline cases and use the evaluation criteria to make a fair judgment.
+ - Ensure your output adheres strictly to the specified JSON format to avoid errors.
 
  ### Real Work
 
  question: {{$question}}
- answer: {{$answer}}
- stars:    
+
+ response: {{$answer}}
+   
