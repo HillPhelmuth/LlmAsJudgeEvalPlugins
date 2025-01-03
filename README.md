@@ -1,4 +1,3 @@
-
 # LlmAsJudgeEvals
 
 This library provides a service for evaluating responses from Large Language Models (LLMs) using the LLM itself as a judge. It leverages Semantic Kernel to define and execute evaluation functions based on prompt templates. 
@@ -19,22 +18,25 @@ nuget install HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
 
 ### Built-in Evaluation Functions
 
-The package includes a set of built-in evaluation functions, each focusing on a specific aspect of LLM output quality:
+The package includes a comprehensive set of built-in evaluation functions, each with an accompanying "Explain" version that provides detailed reasoning:
 
-* **Coherence:** Evaluates the logical flow and consistency of the response.
-* **Empathy:** Assesses the level of empathy and understanding conveyed in the response.
-* **Fluency:** Measures the smoothness and naturalness of the language used.
-* **GptGroundedness:** Determines how well the response is grounded in factual information.
-* **GptGroundedness2:** An alternative approach to evaluating groundedness.
-* **GptSimilarity:**  Compares the response to a reference text or objectively correct answer for similarity.
-* **Helpfulness:**  Assesses the degree to which the response is helpful and informative.
-* **PerceivedIntelligence:** Evaluates the perceived intelligence and knowledge reflected in the response.
-* **PerceivedIntelligenceNonRag:** A variant of PerceivedIntelligence tailored for non-Retrieval Augmented Generation (RAG) models.
-* **Relevance:** Measures the relevance of the response to the given prompt or question and a reference text for RAG.
+* **Groundedness (1-5):** Evaluates factual accuracy and support in context
+* **Groundedness2 (1-10):** Alternative groundedness evaluation with finer granularity
+* **Similarity:** Measures response similarity to reference text
+* **Relevance:** Assesses response relevance to prompt/question
+* **Coherence:** Evaluates logical flow and consistency
+* **Perceived Intelligence:** Rates apparent knowledge and reasoning (with/without RAG)
+* **Fluency:** Measures natural language quality
+* **Empathy:** Assesses emotional understanding
+* **Helpfulness:** Evaluates practical value of response
 
+Each function has an "Explain" variant (e.g., GroundednessExplain, CoherenceExplain) that provides:
+- Numerical score
+- Detailed reasoning
+- Chain-of-thought analysis
+- Probability-weighted score
 
 ```csharp
-
 // Initialize the Semantic Kernel
 var kernel = Kernel.CreateBuilder().AddOpenAIChatCompletion("openai-model-name", "openai-apiKey").Build();
 
@@ -47,9 +49,34 @@ var coherenceInput = InputModel.CoherenceModel("This is the answer to evaluate."
 // Execute the evaluation
 var result = await evalService.ExecuteEval(coherenceInput);
 
-
 Console.WriteLine($"Evaluation score: {result.Score}");
 
+// Execute evaluation with detailed explanation
+var resultWithExplanation = await evalService.ExecuteScorePlusEval(inputModel);
+
+Console.WriteLine($"Score: {resultWithExplanation.Score}");
+Console.WriteLine($"Reasoning: {resultWithExplanation.Reasoning}");
+Console.WriteLine($"Chain of Thought: {resultWithExplanation.ChainOfThought}");
+```
+
+### Factory Methods for Easy Access
+
+```csharp
+var coherenceInput = InputModel.CoherenceModel(answer, question);
+var groundednessInput = InputModel.GroundednessModel(answer, question, context);
+var coherenceWithExplanationInput = InputModel.CoherenceExplainModel(answer, question);
+```
+
+### Example Output (Score Plus Explanation)
+
+```json
+{
+    "EvalName": "CoherenceExplain",
+    "Score": 4,
+    "Reasoning": "The answer is mostly coherent with good flow and clear organization. It addresses the question directly and maintains logical connections between ideas.",
+    "ChainOfThought": "1. First, I examined how the sentences connect\n2. Checked if ideas flow naturally\n3. Verified if the response stays focused on the question\n4. Assessed overall clarity and organization\n5. Considered natural language use",
+    "ProbScore": 3.92
+}
 ```
 
 ### Custom Evaluation Functions
@@ -78,15 +105,15 @@ var inputModel = new InputModel
 // Execute the evaluation
 var result = await evalService.ExecuteEval(inputModel);
 
-
 Console.WriteLine($"Evaluation score: {result.Score}");
 ```
 
 ## Features
 
-* **Define evaluation functions using prompt templates:**  You can define evaluation functions using prompt templates written in YAML. 
+* **Define evaluation functions using prompt templates:** You can define evaluation functions using prompt templates written in YAML. 
 * **Execute evaluations:** The `EvalService` provides methods for executing evaluations on input data.
-* **Aggregate results:**  The `EvalService` can aggregate evaluation scores across multiple inputs.
-* **Built-in evaluation functions:** The package includes a set of pre-defined evaluation functions based on common evaluation metrics.
+* **Score Plus Explanation:** Get detailed explanations and chain-of-thought reasoning along with scores.
+* **Aggregate results:** The `EvalService` can aggregate evaluation scores across multiple inputs.
+* **Built-in evaluation functions:** Pre-defined functions for common evaluation metrics.
 * **Logprobs-based scoring:** Leverages `logprobs` for a more granular and precise evaluation score.
 
