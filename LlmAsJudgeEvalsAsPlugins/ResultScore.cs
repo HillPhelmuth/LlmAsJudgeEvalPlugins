@@ -31,6 +31,10 @@ public class ResultScore
     /// Gets or sets the reasoning behind the quality score.
     /// </summary>
     public string? Reasoning { get; set; }
+    /// <summary>
+    /// Gets or sets the chain of thought for the evaluation.
+    /// </summary>
+    public string? ChainOfThought { get; set; }
 
     /// <summary>
     /// Gets or sets the reference answer for the evaluation.
@@ -127,6 +131,7 @@ public class ResultScore
             Output = output;
         }
         Reasoning = scorePlusResponse?.QualityScoreReasoning;
+        ChainOfThought = scorePlusResponse?.ChainOfThought;
     }
     private static TokenString? GetTokenAfterScore(IEnumerable<TokenString> tokens)
     {

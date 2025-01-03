@@ -1,4 +1,4 @@
-description: Generates a coherence score, 1-5 by comparing the gpt-3.5 generated answer to the question
+description: Generates a coherence score, 1-5 by comparing the model generated answer to the question
 execution_settings:
   default:
     max_tokens: 128
@@ -11,7 +11,7 @@ input_variables:
   description: The question asked and answered
   default: ''
 - name: answer
-  description: GPT-3.5-turbo generated Answer.
+  description: model generated Answer.
   default: ''
 name: CoherenceExplain
 template: |
@@ -51,6 +51,7 @@ template: |
     Output must be in the following json format
     ```json
     {
+      "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
       "explanation": "[Reasons for the rating score]",
       "score": [number 1 - 5]
     }

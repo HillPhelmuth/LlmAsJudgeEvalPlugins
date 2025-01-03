@@ -13,6 +13,15 @@ namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 /// </summary>
 public class EvalService
 {
+    private const string? ChatSystemPrompt =
+            """
+            # Instruction
+            ## Goal
+            ### You are an expert in evaluating the quality of a RESPONSE from an intelligent system based on provided definition and data. Your goal will involve answering the questions below using the information provided.
+            - **Definition**: You are given a definition of the communication trait that is being evaluated to help guide your Score.
+            - **Data**: Your input data include CONTEXT, QUERY, and RESPONSE.
+            - **Tasks**: To complete your evaluation you will be asked to evaluate the Data in different ways.
+            """;
     private readonly Kernel _kernel;
 
     /// <summary>
@@ -99,14 +108,14 @@ public class EvalService
         settings ??= new OpenAIPromptExecutionSettings
         {
             MaxTokens = 1,
-            Temperature = 0.1,
-            TopP = 0.1,
-            ChatSystemPrompt = "You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric. Your response must always be a single numerical value.",
+            Temperature = 0.0,
+            TopP = 0.0,
+            ChatSystemPrompt = ChatSystemPrompt,
             Logprobs = true,
             TopLogprobs = 5
         };
 
-        var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { "default", settings } });
+        var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
         var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], kernelArgs);
         var logProbs = result.Metadata?["ContentTokenLogProbabilities"] as IReadOnlyList<ChatTokenLogProbabilityDetails>;
         var tokenStrings = logProbs.AsTokenStrings()[0];
@@ -129,11 +138,10 @@ public class EvalService
         var evalPlugin = EvalFunctions.Count == 0 ? kernel.ImportEvalPlugin() : KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
         settings ??= new OpenAIPromptExecutionSettings
         {
-            MaxTokens = 512,
-            Temperature = 0.1,
-            TopP = 0.1,
+            MaxTokens = 800,
+            Temperature = 0.0,
             ResponseFormat = "json_object",
-            ChatSystemPrompt = "You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric. You must respond in the requested json format",
+            ChatSystemPrompt = ChatSystemPrompt,
             Logprobs = true,
             TopLogprobs = 5
         };
@@ -177,6 +185,11 @@ public class EvalService
 /// </summary>
 public class ScorePlusResponse
 {
+    /// <summary>
+    /// chain of thought for the response
+    /// </summary>
+    [JsonPropertyName("thoughtChain")]
+    public string? ChainOfThought { get; set; }
     /// <summary>
     /// Gets or sets the reasoning behind the quality score.
     /// </summary>

@@ -15,12 +15,11 @@ input_variables:
   description: The objectively true answer
   default: ''
 - name: answer
-  description: GPT-3.5-turbo generated Answer.
+  description: model generated Answer.
   default: ''
 name: GptSimilarityExplain
 template: |
- You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric.
-
+ 
  Equivalence, as a metric, measures the similarity between the predicted answer and the correct answer. If the information and content in the predicted answer are similar or equivalent to the correct answer, then the value of the Equivalence metric should be high; otherwise, it should be low. Given the question, correct answer, and predicted answer, determine the value of the Equivalence metric using the following rating scale:
 
  - **1 star**: The predicted answer is not at all similar to the correct answer.
@@ -49,6 +48,7 @@ template: |
 
  ```json
  {
+ "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
  "explanation": "[Provide a concise explanation for the score]",
  "score": [integer from 1 to 5]
  }
@@ -67,6 +67,7 @@ template: |
 
  ```json
  {
+ "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
  "explanation": "The predicted answer is not at all similar to the correct answer and contains completely unrelated information.",
  "score": 1
  }
@@ -85,6 +86,7 @@ template: |
 
  ```json
  {
+ "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
  "explanation": "The predicted answer is mostly not similar to the correct answer, as it only partially overlaps in mentioning the iceberg collision but omits other critical details such as the ship's design and lack of timely rescue efforts.",
  "score": 2
  }
@@ -103,6 +105,7 @@ template: |
 
  ```json
  {
+ "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
  "explanation": "The predicted answer is somewhat similar to the correct answer, as it captures the general idea but introduces inaccuracies about Earth's elliptical orbit and rotation.",
  "score": 3
  }
@@ -121,6 +124,7 @@ template: |
 
  ```json
  {
+ "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
  "explanation": "The predicted answer is mostly similar to the correct answer, with only minor differences in phrasing and terminology.",
  "score": 4
  }
@@ -139,6 +143,7 @@ template: |
 
  ```json
  {
+ "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
  "explanation": "The predicted answer is completely similar to the correct answer, with no significant differences in meaning or detail.",
  "score": 5
  }
@@ -155,10 +160,3 @@ template: |
  - **Predicted Answer**: {{$answer}}
 
  **Output**:
-
- ```json
- {
- "explanation": "[Provide a concise explanation for the score]",
- "score": [integer from 1 to 5]
- }
- ```

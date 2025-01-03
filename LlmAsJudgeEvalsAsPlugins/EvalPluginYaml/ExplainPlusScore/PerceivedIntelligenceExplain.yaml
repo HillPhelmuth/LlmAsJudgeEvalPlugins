@@ -11,7 +11,7 @@ input_variables:
   description: The context retreived from vector store
   default: ''
 - name: answer
-  description: GPT-3.5-turbo generated Answer.
+  description: model generated Answer.
   default: ''
 - name: question
   description: The question asked
@@ -33,6 +33,7 @@ template: |
      Output must be in the following json format
      ```json
      {
+        "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
         "explanation": "[Reasons for the rating score]",
         "score": [number 1 - 10]
      }

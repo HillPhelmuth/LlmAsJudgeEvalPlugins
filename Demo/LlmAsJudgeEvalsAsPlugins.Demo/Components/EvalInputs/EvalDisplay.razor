@@ -28,11 +28,18 @@
                     </RadzenCard>
                 </RadzenTabsItem>
                 <RadzenTabsItem Visible="@(!string.IsNullOrEmpty(display.ResultScore.Reasoning))" Text="Explanation">
-					<RadzenCard Style="word-wrap: break-word;
+                    <RadzenCard Style="word-wrap: break-word;
                            overflow-wrap: break-word;
                            white-space: normal;
                            overflow: hidden;
                            width: 100%;"> @((MarkupString)AsHtml(display.ResultScore.Reasoning))</RadzenCard>
+                </RadzenTabsItem>
+				<RadzenTabsItem Visible="@(!string.IsNullOrEmpty(display.ResultScore.ChainOfThought))" Text="Chain Of Thought">
+                    <RadzenCard Style="word-wrap: break-word;
+                           overflow-wrap: break-word;
+                           white-space: normal;
+                           overflow: hidden;
+                           width: 100%;"> @((MarkupString)AsHtml(display.ResultScore.ChainOfThought))</RadzenCard>
                 </RadzenTabsItem>
 				<RadzenTabsItem Visible="@(!string.IsNullOrEmpty(display.Context))" Text="Retreived Content">
 					<RadzenCard Style="word-wrap: break-word;

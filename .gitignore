@@ -364,4 +364,5 @@ FodyWeavers.xsd
 /Demo/PromptFlowEvalsAsPlugins.Demo/memoryItems.json
 /LlmAsJudgeEvalsAsPlugins/EvalPluginYaml/ExcessiveAgency.yaml
 /LlmAsJudgeEvalsAsPlugins/EvalPluginYaml/RoleAdherence.yaml
+/LlmAsJudgeEvalsAsPlugins/EvalPluginYaml/ExplainPlusScore/GptGroundedness2Explain_old.yaml
 /Demo/LlmAsJudgeEvalsAsPlugins.Demo/memoryItems.json

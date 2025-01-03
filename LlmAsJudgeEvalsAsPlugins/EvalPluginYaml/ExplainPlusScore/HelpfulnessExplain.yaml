@@ -1,5 +1,5 @@
 name: HelpfulnessExplain
-description: Generates a helpfulness score, 1-5 by comparing the gpt-3.5 generated answer to the question
+description: Generates a helpfulness score, 1-5 by comparing the model generated answer to the question
 execution_settings:
   default:
     max_tokens: 128
@@ -104,6 +104,7 @@ template: |
 
  ```json
  {
+  "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
   "explanation": "[Reasons for the rating score]",
   "score": number 1 - 5
  }
