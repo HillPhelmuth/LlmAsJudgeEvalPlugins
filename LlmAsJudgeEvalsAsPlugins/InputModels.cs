@@ -158,15 +158,26 @@ public class InputModel : IInputModel
 		["answer"] = answer,
 		["question"] = question,
 	});
+    /// <summary>
+    /// Creates an input model for retrieval evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="question">The question being evaluated.</param>
+    /// <param name="context">The context/RAG content.</param>
+    /// <returns>The input model for retrieval evaluation.</returns>
+    public static InputModel RetrievalModel(string question, string context) => CreateCoreEvalInputModel(EvalType.Retrieval, new KernelArguments
+    {
+        ["question"] = question,
+        ["context"] = context
+    });
 
-	/// <summary>
-	/// Creates an input model for groundedness explain evaluation. Scores 1-5
-	/// </summary>
-	/// <param name="answer">The response being evaluated.</param>
-	/// <param name="question">The question.</param>
-	/// <param name="context">The context/RAG content.</param>
-	/// <returns>The input model for groundedness explain evaluation.</returns>
-	public static InputModel GroundednessExplainModel(string answer, string question, string context) => CreateCoreEvalInputModel(EvalType.GptGroundednessExplain, new KernelArguments
+    /// <summary>
+    /// Creates an input model for groundedness explain evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The response being evaluated.</param>
+    /// <param name="question">The question.</param>
+    /// <param name="context">The context/RAG content.</param>
+    /// <returns>The input model for groundedness explain evaluation.</returns>
+    public static InputModel GroundednessExplainModel(string answer, string question, string context) => CreateCoreEvalInputModel(EvalType.GptGroundednessExplain, new KernelArguments
 	{
 		["answer"] = answer,
 		["context"] = context,
@@ -287,5 +298,16 @@ public class InputModel : IInputModel
 		["answer"] = answer,
 		["question"] = question,
 	});
-	
+    /// <summary>
+    /// Creates an input model for retrieval explain evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="question">The question being evaluated.</param>
+    /// <param name="context">The context/RAG content.</param>
+    /// <returns>The input model for retrieval explain evaluation.</returns>
+    public static InputModel RetrievalExplainModel(string question, string context) => CreateCoreEvalInputModel(EvalType.RetrievalExplain, new KernelArguments
+    {
+        ["question"] = question,
+        ["context"] = context
+    });
+
 }

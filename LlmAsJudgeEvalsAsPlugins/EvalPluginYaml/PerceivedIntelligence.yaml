@@ -11,7 +11,7 @@ input_variables:
   description: The context retreived from vector store
   default: ''
 - name: answer
-  description: GPT-3.5-turbo generated Answer.
+  description: model generated Answer.
   default: ''
 - name: question
   description: The question asked

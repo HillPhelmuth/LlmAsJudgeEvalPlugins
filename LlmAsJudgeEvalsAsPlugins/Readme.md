@@ -71,16 +71,17 @@ Console.WriteLine($"Evaluation score: {result.Score}");
 * **Execute evaluations:** The `EvalService` provides methods for executing evaluations on input data.
 * **Score Plus Explanation:** Use `ExecuteScorePlusEval` to get detailed explanations and chain-of-thought reasoning along with scores.
 * **Aggregate results:**  The `EvalService` can aggregate evaluation scores across multiple inputs.
-* **Built-in evaluation functions:** The package includes pre-defined evaluation functions for:
-  - Groundedness (1-5 score)
-  - Groundedness2 (1-10 score)
-  - Similarity
-  - Relevance
-  - Coherence
-  - Perceived Intelligence (with and without RAG context)
-  - Fluency
-  - Empathy
-  - Helpfulness
+### Built-in evaluation functions: The package includes pre-defined evaluation functions for:
+* **Groundedness (1-5):** Evaluates factual accuracy and support in context
+* **Groundedness2 (1-10):** Alternative groundedness evaluation with finer granularity
+* **Similarity:** Measures response similarity to reference text
+* **Relevance:** Assesses response relevance to prompt/question
+* **Coherence:** Evaluates logical flow and consistency
+* **Perceived Intelligence:** Rates apparent knowledge and reasoning (with/without RAG)
+* **Fluency:** Measures natural language quality
+* **Empathy:** Assesses emotional understanding
+* **Helpfulness:** Evaluates practical value of response
+* **Retrieval:** Evaluates the retrieved content based on the query
 
 Each evaluation function has a corresponding "Explain" version that provides detailed explanations and chain-of-thought reasoning along with the score. For example:
 - GroundednessExplain

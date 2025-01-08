@@ -1,4 +1,4 @@
-description: Generates a empathy score, 1-5 by comparing the gpt-3.5 generated answer to the question
+description: Generates a empathy score, 1-5 by comparing the model generated answer to the question
 execution_settings:
   default:
     max_tokens: 128

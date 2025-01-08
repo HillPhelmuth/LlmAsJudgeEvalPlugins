@@ -4,7 +4,11 @@ using static HillPhelmuth.SemanticKernel.LlmAsJudgeEvals.Helpers;
 
 namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
-public static class Extentions
+/// <summary>
+/// Provides extension methods for the Kernel class to import and create evaluation plugins,
+/// convert to prompt template configurations, and get typed results from function results.
+/// </summary>
+public static class Extensions
 {
     /// <summary>
     /// Imports an evaluation plugin into the kernel.

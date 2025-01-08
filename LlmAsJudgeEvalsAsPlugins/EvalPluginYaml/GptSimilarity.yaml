@@ -15,7 +15,7 @@ input_variables:
   description: The objectively true answer
   default: ''
 - name: answer
-  description: GPT-3.5-turbo generated Answer.
+  description: model generated Answer.
   default: ''
 name: GptSimilarity
 template: |

@@ -40,15 +40,15 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 		{
 			var result = addExplain ? await evalService.ExecuteScorePlusEval(input): await evalService.ExecuteEval(input);
 			var question = input.RequiredInputs["question"]!.ToString();
-			var answer = input.RequiredInputs["answer"]!.ToString();
+            var hasAnswer = input.RequiredInputs.TryGetValue("answer", out var answer);
 			if (input.RequiredInputs.ContainsName("context"))
 			{
 				var context = input.RequiredInputs["context"]!.ToString();
-				yield return new EvalResultDisplay(question!, answer!, result) { Context = context };
+				yield return new EvalResultDisplay(question!, answer?.ToString() ?? "", result) { Context = context };
 			}
 			else
 			{
-				yield return new EvalResultDisplay(question!, answer!, result);
+				yield return new EvalResultDisplay(question!, answer?.ToString() ?? "", result);
 			}
 		}
 	}
@@ -116,7 +116,9 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 			inputs.Add(ragIntelligence);
             var relevance = withExplain ? InputModel.RelevanceExplainModel(answer, question, context) : InputModel.RelevanceModel(answer, question, context);
 			inputs.Add(relevance);
-		}
+			var retrieval = withExplain ? InputModel.RetrievalExplainModel(question, context) : InputModel.RetrievalModel(question, context);
+            inputs.Add(retrieval);
+        }
 		return inputs;
 	}
 	private async Task<string> SearchContext(string question, ISemanticTextMemory memory)

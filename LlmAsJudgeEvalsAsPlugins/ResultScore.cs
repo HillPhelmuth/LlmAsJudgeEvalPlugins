@@ -95,7 +95,7 @@ public class ResultScore
         var logProbVals = logProb.TopLogProbs;
         LogProbResults = logProbVals;
         EvalName = name;
-        ProbScore = logProbVals.Select(x => x.AsTokenProb()).NormalizeValues().CalculateWeightedScore();
+        ProbScore = logProbVals.Select(x => x.AsTokenProb()).CalculateWeightedScore();
         if (int.TryParse(logProb.StringValue, out var parsedScore))
         {
             Score = parsedScore;
@@ -121,7 +121,7 @@ public class ResultScore
         var output = logProb?.StringValue;
         LogProbResults = logProbVals;
         EvalName = name;
-        ProbScore = logProbVals?.Select(x => x.AsTokenProb()).NormalizeValues().CalculateWeightedScore() ?? -1;
+        ProbScore = logProbVals?.Select(x => x.AsTokenProb()).CalculateWeightedScore() ?? -1;
         if (int.TryParse(output, out var parsedScore))
         {
             Score = parsedScore;

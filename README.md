@@ -29,6 +29,7 @@ The package includes a comprehensive set of built-in evaluation functions, each 
 * **Fluency:** Measures natural language quality
 * **Empathy:** Assesses emotional understanding
 * **Helpfulness:** Evaluates practical value of response
+* **Retrieval:** Evaluates the retrieved content based on the query
 
 Each function has an "Explain" variant (e.g., GroundednessExplain, CoherenceExplain) that provides:
 - Numerical score
