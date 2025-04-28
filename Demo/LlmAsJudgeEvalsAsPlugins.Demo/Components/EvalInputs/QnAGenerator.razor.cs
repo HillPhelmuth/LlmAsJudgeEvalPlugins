@@ -1,4 +1,5 @@
 ﻿using HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
+using LlmAsJudgeEvalsAsPlugins.Demo.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace LlmAsJudgeEvalsAsPlugins.Demo.Components.EvalInputs;
@@ -19,21 +20,11 @@ public partial class QnAGenerator : ComponentBase
     public double Temp { get; set; }
     [CascadingParameter]
     public double TopP { get; set; }
-    private class QnAForm
-    {
-        public string SystemPrompt { get; set; } = "";
-        public string AnswerModel { get; set; } = "gpt-4o-mini";
-        public string EvalModel { get; set; } = "gpt-4o-mini";
-        public List<UserInput> UserInputs { get; set; } = [new UserInput("")];
-
-    }
+    
     private bool _isGenerating;
     private bool _isEvaluating;
-    private List<string> _availableModels = ["gpt-3.5-turbo", "gpt-4o-mini"];
-    private record UserInput(string Input)
-    {
-        public string Input { get; set; } = Input;
-    }
+    //private List<string> _availableModels = ["gpt-4.1-mini","gpt-4.1-nano", "gpt-4o-mini"];
+
 
     private QnAForm _qnaForm = new();
     private class UserInputGenForm
@@ -81,7 +72,7 @@ public partial class QnAGenerator : ComponentBase
         Console.WriteLine($"SystemPrompt At Submit: {_qnaForm.SystemPrompt}");
         var systemPrompt = _qnaForm.SystemPrompt;
         var userInputs = qnaForm.UserInputs.Select(ui => ui.Input).ToList();
-        var inputModels = await EvalManager.CreateNonRagInputModels(systemPrompt, userInputs, qnaForm.AnswerModel, WithExplanation);
+        var inputModels = await EvalManager.CreateNonRagInputModels(systemPrompt, userInputs, qnaForm.AnswerModel, WithExplanation, qnaForm.AltSystemPrompt);
         var results = new List<EvalResultDisplay>();
         await foreach (var result in EvalManager.ExecuteEvalsAsync(inputModels, qnaForm.EvalModel, WithExplanation))
         {

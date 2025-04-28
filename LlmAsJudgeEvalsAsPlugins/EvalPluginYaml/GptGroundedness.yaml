@@ -25,7 +25,7 @@ template: |
     You will be presented with a CONTEXT and an ANSWER about that CONTEXT. You need to decide whether the ANSWER is entailed by the CONTEXT by choosing one of the following rating:
     1. 5: The ANSWER follows logically from the information contained in the CONTEXT.
     2. 1: The ANSWER is logically false from the information contained in the CONTEXT.
-    3. an integer score between 1 and 5 and if such integer score does not exists, use 1: It is not possible to determine whether the ANSWER is true or false without further information.
+    3. an (ASCII) integer score between 1 and 5 and if such integer score does not exists, use 1: It is not possible to determine whether the ANSWER is true or false without further information.
 
     Read the passage of information thoroughly and select the correct answer from the three answer labels. Read the CONTEXT thoroughly to ensure you know what the CONTEXT entails.
 

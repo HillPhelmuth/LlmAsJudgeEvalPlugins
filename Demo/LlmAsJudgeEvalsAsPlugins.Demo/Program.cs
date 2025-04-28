@@ -1,5 +1,6 @@
 using LlmAsJudgeEvalsAsPlugins.Demo;
 using LlmAsJudgeEvalsAsPlugins.Demo.Components;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddSignalR(o =>
     o.MaximumReceiveMessageSize = null;
 });
 builder.Services.AddLogging(o => o.AddConsole());
-
+builder.Services.AddRadzenComponents();
 builder.Services.AddScoped<EvalManager>();
 var app = builder.Build();
 

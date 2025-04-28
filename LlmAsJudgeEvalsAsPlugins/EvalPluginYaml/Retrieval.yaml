@@ -18,7 +18,7 @@ template: |
  # Definition
  **Retrieval** refers to measuring how relevant the context chunks are to address a query and how the most relevant context chunks are surfaced at the top of the list. It emphasizes the extraction and ranking of the most relevant information at the top, without introducing bias from external knowledge and ignoring factual correctness. It assesses the relevance and effectiveness of the retrieved context chunks with respect to the query.
 
-  This rating value should always be an integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
+  This rating value should always be an ASCII integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
  **Just respond with the score number, nothing else.**
 
  # Ratings

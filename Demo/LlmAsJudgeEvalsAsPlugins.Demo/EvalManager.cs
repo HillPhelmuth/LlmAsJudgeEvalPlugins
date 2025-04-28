@@ -60,7 +60,7 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 		var result = await kernel.InvokeAsync(function);
 		return [.. result.GetValue<string>()!.Split("\n")];
 	}
-	public async Task<List<IInputModel>> CreateNonRagInputModels(string systemPrompt, List<string> userQustions, string model = "gpt-3.5-turbo", bool withExplain = false)
+	public async Task<List<IInputModel>> CreateNonRagInputModels(string systemPrompt, List<string> userQustions, string model = "gpt-3.5-turbo", bool withExplain = false, string altSysPrompt = "")
 	{
 		var kernel = CreateKernel(model);
 		var inputs = new List<IInputModel>();
@@ -82,6 +82,10 @@ public class EvalManager(IConfiguration configuration, ILoggerFactory loggerFact
 			inputs.Add(coherence);
 			var helpfulness = withExplain ? InputModel.HelfulnessExplainModel(answer, question) : InputModel.HelpfulnessModel(answer, question);
 			inputs.Add(helpfulness);
+            var roleAdherence = withExplain ? InputModel.RoleAdherenceExplainModel(answer, question, altSysPrompt) : InputModel.RoleAdherenceModel(answer, question, altSysPrompt);
+            inputs.Add(roleAdherence);
+            var excessiveAgency = withExplain ? InputModel.ExcessiveAgencyExplainModel(answer, question, altSysPrompt) : InputModel.ExcessiveAgencyModel(answer, question, altSysPrompt);
+            inputs.Add(excessiveAgency);
         }
 		return inputs;
 	}

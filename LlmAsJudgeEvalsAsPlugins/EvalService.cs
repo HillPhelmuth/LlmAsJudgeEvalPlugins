@@ -95,11 +95,17 @@ public class EvalService
     /// </summary>
     /// <param name="inputModel">The input model for the evaluation.</param>
     /// <param name="settings">optional <see cref="T:Microsoft.SemanticKernel.PromptExecutionSettings"/>. Defaults to preset <see cref="T:Microsoft.SemanticKernel.Connectors.OpenAI.OpenAIPromptExecutionSettings"/></param>
+    /// <param name="serviceId">optional service id for keyed <see cref="IChatCompletionService"/></param>
     /// <returns>The result score of the evaluation.</returns>
-    public async Task<ResultScore> ExecuteEval(IInputModel inputModel, PromptExecutionSettings? settings = null)
+    public async Task<ResultScore> ExecuteEval(IInputModel inputModel, PromptExecutionSettings? settings = null, string? serviceId = null)
     {
         var currentKernel = _kernel.Clone();
-        if (currentKernel.Services.GetService<IChatCompletionService>() is null && currentKernel.Services.GetService<ITextGenerationService>() is null)
+        var missingChatService = currentKernel.Services.GetService<IChatCompletionService>() is null && currentKernel.Services.GetService<ITextGenerationService>() is null;
+        if (!string.IsNullOrEmpty(serviceId))
+        {
+            missingChatService = currentKernel.Services.GetKeyedService<IChatCompletionService>(serviceId) is null && currentKernel.Services.GetKeyedService<ITextGenerationService>(serviceId) is null;
+        }
+        if (missingChatService)
         {
             throw new Exception("Kernel must have a chat completion service or text generation service to execute an eval");
         }
@@ -112,7 +118,8 @@ public class EvalService
             TopP = 0.0,
             ChatSystemPrompt = ChatSystemPrompt,
             Logprobs = true,
-            TopLogprobs = 5
+            TopLogprobs = 5,
+            
         };
 
         var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });

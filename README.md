@@ -10,8 +10,13 @@ Check out the [LLM-as-judge Demo](https://promptflowevalsaspluginsdemo.azurewebs
 
 Install the package via NuGet:
 
+**powershell:**
 ```
-nuget install HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
+Install-Package HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
+```
+**dotnet cli:**
+```
+dotnet add package HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
 ```
 
 ## Usage
@@ -30,6 +35,8 @@ The package includes a comprehensive set of built-in evaluation functions, each 
 * **Empathy:** Assesses emotional understanding
 * **Helpfulness:** Evaluates practical value of response
 * **Retrieval:** Evaluates the retrieved content based on the query
+* **Role Adherence (1-5):** Measures how well the response maintains the persona, style, and constraints specified in the instructions or assigned role
+* **Excessive Agency (1-5):** Evaluates whether the response exhibits behaviors that go beyond the intended scope, permissions, or safeguards of the LLM (e.g., excessive autonomy, permissions, or functionality)
 
 Each function has an "Explain" variant (e.g., GroundednessExplain, CoherenceExplain) that provides:
 - Numerical score

@@ -1,26 +1,27 @@
-﻿<RadzenRow>
+﻿@using LlmAsJudgeEvalsAsPlugins.Demo.Models
+<RadzenRow>
     <RadzenColumn Size="12">
 
         <RadzenCard>
             <RadzenTemplateForm Data="_userInputGenForm" TItem="UserInputGenForm" Submit="SubmitInputGen">
                 <RadzenFormField Text="Topic">
                     <ChildContent>
-                        <RadzenTextBox Name="Topic" @bind-Value=_userInputGenForm.Topic></RadzenTextBox>
+                        <RadzenTextBox Name="Topic" @bind-Value="_userInputGenForm.Topic"></RadzenTextBox>
                     </ChildContent>
                     <Helper>
                         <RadzenText TextStyle="TextStyle.Caption" Text="On what topic should the generated questions be?"></RadzenText>
-                        <RadzenRequiredValidator Component="Topic" Popup=true Style="position:absolute" Text="Topic is required"></RadzenRequiredValidator>
+                        <RadzenRequiredValidator Component="Topic" Popup="true" Style="position:absolute" Text="Topic is required"></RadzenRequiredValidator>
                     </Helper>
                 </RadzenFormField>
                 <RadzenFormField Text="Number">
                     <ChildContent>
-                        <RadzenNumeric @bind-Value=_userInputGenForm.NumQuestions></RadzenNumeric>
+                        <RadzenNumeric @bind-Value="_userInputGenForm.NumQuestions"></RadzenNumeric>
                     </ChildContent>
                     <Helper>
                         <RadzenText TextStyle="TextStyle.Caption" Text="Number of questions to generate"></RadzenText>
                     </Helper>
                 </RadzenFormField>
-                <RadzenButton ButtonType="ButtonType.Submit" Text="Generate" IsBusy=_isGenerating BusyText="Generating..." Style="margin-top:.5rem"></RadzenButton>
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Generate" IsBusy="_isGenerating" BusyText="Generating..." Style="margin-top:.5rem"></RadzenButton>
             </RadzenTemplateForm>
         </RadzenCard>
     </RadzenColumn>
@@ -33,11 +34,20 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Info" Size="ButtonSize.ExtraSmall" Text="NeutralAI sample" Click="@(() => SelectSample("You are the hurdy-gurdy man. Respond in song lyrics"))"></RadzenButton>
                 <RadzenFormField Text="System Prompt" Style="width:100%">
                     <ChildContent>
-                        <RadzenTextArea Name="System" @bind-Value=_qnaForm.SystemPrompt Style="width:100%; height:7rem"></RadzenTextArea>
+                        <RadzenTextArea Name="System" @bind-Value="_qnaForm.SystemPrompt" Style="width:100%; height:7rem"></RadzenTextArea>
                     </ChildContent>
                     <Helper>
                         <RadzenText TextStyle="TextStyle.Caption" Text="Enter the system prompt to evaluate"></RadzenText>
-                        <RadzenRequiredValidator Component="System" Popup=true Style="position:absolute" Text="System prompt is required"></RadzenRequiredValidator>
+                        <RadzenRequiredValidator Component="System" Popup="true" Style="position:absolute" Text="System prompt is required"></RadzenRequiredValidator>
+                    </Helper>
+                </RadzenFormField>
+                <RadzenFormField Text="Alternative System Prompt" Style="width:100%">
+                    <ChildContent>
+                        <RadzenTextArea Name="AltSystem" @bind-Value="_qnaForm.AltSystemPrompt" Style="width:100%; height:5rem"></RadzenTextArea>
+                    </ChildContent>
+                    <Helper>
+                        <RadzenText TextStyle="TextStyle.Caption" Text="An alternative system prompt to test the evals that require it."></RadzenText>
+                        
                     </Helper>
                 </RadzenFormField>
                 <RadzenRow>
@@ -53,12 +63,12 @@
                     </RadzenColumn>
                     <RadzenColumn Size="2">
                         <RadzenFormField Text="Answer Model" Style="width:7rem;font-size:90%">
-                            <RadzenDropDown Data="_availableModels" @bind-Value="_qnaForm.AnswerModel"></RadzenDropDown>
+                            <RadzenDropDown Data="LlmModels.AvailableModels" @bind-Value="_qnaForm.AnswerModel"></RadzenDropDown>
                         </RadzenFormField>
                         <RadzenFormField Text="Eval Model" Style="width:7rem;font-size:90%">
-                            <RadzenDropDown Data="_availableModels" @bind-Value="_qnaForm.EvalModel"></RadzenDropDown>
+                            <RadzenDropDown Data="LlmModels.AvailableModels" @bind-Value="_qnaForm.EvalModel"></RadzenDropDown>
                         </RadzenFormField>
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Evaluate" IsBusy=_isEvaluating BusyText="Evaluating..."></RadzenButton>
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Evaluate" IsBusy="_isEvaluating" BusyText="Evaluating..."></RadzenButton>
                     </RadzenColumn>
                 </RadzenRow>
 

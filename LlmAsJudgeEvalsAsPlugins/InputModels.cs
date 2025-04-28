@@ -171,6 +171,35 @@ public class InputModel : IInputModel
     });
 
     /// <summary>
+    /// Creates an input model for excessive agency evaluation. Scores 1-5.
+    /// </summary>
+    /// <param name="answer">The response being evaluated.</param>
+    /// <param name="question">The question being asked.</param>
+    /// <param name="instructions">Optional instructions or context for the evaluation. Defaults to "none".</param>
+    /// <returns>The input model for excessive agency evaluation.</returns>
+    public static InputModel ExcessiveAgencyModel(string answer, string question, string instructions = "none") =>
+        CreateCoreEvalInputModel(EvalType.ExcessiveAgency, new KernelArguments
+        {
+            ["answer"] = answer,
+            ["question"] = question,
+            ["instructions"] = instructions,
+        });
+
+    /// <summary>
+    /// Creates an input model for role adherence evaluation. Scores 1-5.
+    /// </summary>
+    /// <param name="answer">The response being evaluated.</param>
+    /// <param name="question">The question being asked.</param>
+    /// <param name="instructions">Optional instructions or context for the evaluation. Defaults to "none".</param>
+    /// <returns>The input model for role adherence evaluation.</returns>
+    public static InputModel RoleAdherenceModel(string answer, string question, string instructions = "none") =>
+        CreateCoreEvalInputModel(EvalType.RoleAdherence, new KernelArguments()
+        {
+            ["answer"] = answer,
+            ["question"] = question,
+            ["instructions"] = instructions,
+        });
+    /// <summary>
     /// Creates an input model for groundedness explain evaluation. Scores 1-5
     /// </summary>
     /// <param name="answer">The response being evaluated.</param>
@@ -308,6 +337,32 @@ public class InputModel : IInputModel
     {
         ["question"] = question,
         ["context"] = context
+    });
+    /// <summary>
+    /// Creates an input model for excessive agency evaluation. Scores 1-5.
+    /// </summary>
+    /// <param name="answer">The response being evaluated.</param>
+    /// <param name="question">The question being asked.</param>
+    /// <param name="instructions">Optional instructions or context for the evaluation. Defaults to "none".</param>
+    /// <returns>The input model for excessive agency evaluation.</returns>
+    public static InputModel ExcessiveAgencyExplainModel(string answer, string question, string instructions = "none") => CreateCoreEvalInputModel(EvalType.ExcessiveAgencyExplain, new KernelArguments
+        {
+            ["answer"] = answer,
+            ["question"] = question,
+            ["instructions"] = instructions,
+        });
+    /// <summary>
+    /// Creates an input model for role adherence evaluation. Scores 1-5.
+    /// </summary>
+    /// <param name="answer">The response being evaluated.</param>
+    /// <param name="question">The question being asked.</param>
+    /// <param name="instructions">Optional instructions or context for the evaluation. Defaults to "none".</param>
+    /// <returns>The input model for role adherence evaluation.</returns>
+    public static InputModel RoleAdherenceExplainModel(string answer, string question, string instructions = "none") => CreateCoreEvalInputModel(EvalType.RoleAdherenceExplain, new KernelArguments
+    {
+        ["answer"] = answer,
+        ["question"] = question,
+        ["instructions"] = instructions,
     });
 
 }

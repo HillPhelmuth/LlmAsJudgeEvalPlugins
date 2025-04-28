@@ -1,5 +1,5 @@
 ﻿@using HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
-<RadzenDataGrid @ref=_grid Data="EvalResultDisplays" TItem="EvalResultDisplay" AllowSorting=true AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Density="Density.Compact" AllowPaging=true PageSize="12">
+<RadzenDataGrid @ref=_grid Data="EvalResultDisplays" TItem="EvalResultDisplay" AllowSorting=true AllowFiltering="true" ShowPagingSummary="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Density="Density.Compact" AllowPaging=true PageSize="12">
 	<Template Context="display">
 		<RadzenTabs>
 			<Tabs>
@@ -86,7 +86,7 @@
 				{
 					<RadzenCard>
 						<RadzenText TextStyle="TextStyle.Body1">@agg.Key -</RadzenText>
-						<RadzenText TextStyle="TextStyle.Caption">@agg.Value @(agg.Key.Contains("PerceivedIntelligence") || agg.Key == "GptGroundedness2" ? " / 10" : " / 5")</RadzenText>
+						<RadzenText TextStyle="TextStyle.Caption">@agg.Value.ToString("N3") @(agg.Key.Contains("PerceivedIntelligence") || agg.Key == "GptGroundedness2" ? " / 10" : " / 5")</RadzenText>
 					</RadzenCard>
 				}
 			</RadzenCard>

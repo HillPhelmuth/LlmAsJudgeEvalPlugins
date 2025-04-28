@@ -2,23 +2,30 @@
 <RadzenLayout Style="height: 99vh">
     <RadzenHeader Style="min-height:2.5rem">
         <RadzenRow>
-            <RadzenColumn Size="2">
-               
+            <RadzenColumn Size="3">
+                <RadzenSidebarToggle Click="@(() => _isSidebarOpen = !_isSidebarOpen)"></RadzenSidebarToggle>
             </RadzenColumn>
-            <RadzenColumn Size="8">
+            <RadzenColumn Size="6">
                 <RadzenText Style="margin-top:4px" TextAlign="TextAlign.Center" TextStyle="TextStyle.DisplayH6" Text="Eval Plugins Demo"></RadzenText>
             </RadzenColumn>
-            <RadzenColumn Size="2" Style="justify-content:end; justify-items:end">
+            <RadzenColumn Size="3" Style="justify-content:end; justify-items:end">
                 <RadzenLink Style="width:32px; height:32px; margin-left:auto; margin-right:4px; display:block" Path="https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins" Target="_blank">
                     <RadzenImage Style="width:32px; height:32px" Path="github-mark.svg"></RadzenImage>
                 </RadzenLink>
             </RadzenColumn>
         </RadzenRow>
     </RadzenHeader>
+    <RadzenSidebar Style="width: 250px" @bind-Expanded="_isSidebarOpen">
+        <RadzenPanelMenu Style="height: 100%">
+            <RadzenPanelMenuItem Text="Sample Data Evals" Icon="home" Path="" />
+            <RadzenPanelMenuItem Text="Custom Data Evals" Icon="tune" Path="customdata" />
+        </RadzenPanelMenu>
+    </RadzenSidebar>
     <RadzenBody Style="padding:0">
-       @Body
+        @Body
     </RadzenBody>
 </RadzenLayout>
+<RadzenComponents></RadzenComponents>
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>

@@ -366,3 +366,6 @@ FodyWeavers.xsd
 /LlmAsJudgeEvalsAsPlugins/EvalPluginYaml/RoleAdherence.yaml
 /LlmAsJudgeEvalsAsPlugins/EvalPluginYaml/ExplainPlusScore/GptGroundedness2Explain_old.yaml
 /Demo/LlmAsJudgeEvalsAsPlugins.Demo/memoryItems.json
+/Demo/LlmAsJudgeEvalsAsPlugins.Demo/eval_output.json
+/Demo/LlmAsJudgeEvalsAsPlugins.Demo/eval_output_baseline.json
+/Demo/LlmAsJudgeEvalsAsPlugins.Demo/eval_output_finetune.json

@@ -1,4 +1,5 @@
 ﻿using HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
+using LlmAsJudgeEvalsAsPlugins.Demo.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace LlmAsJudgeEvalsAsPlugins.Demo.Components.EvalsRag;
@@ -46,21 +47,21 @@ public partial class AddRagContent : ComponentBase
 	private AddContentForm _addContentForm = new();
 	public int MaxFileSize => 25 * 1024 * 1024;
 
-	private class QnAForm
-	{
-		public string SystemPrompt { get; set; } = "";
-        public string AnswerModel { get; set; } = "gpt-4o-mini";
-        public string EvalModel { get; set; } = "gpt-4o-mini";
-        public List<UserInput> UserInputs { get; set; } = [new UserInput("")];
+	//private class QnAForm
+	//{
+	//	public string SystemPrompt { get; set; } = "";
+ //       public string AnswerModel { get; set; } = "gpt-4.1-mini";
+ //       public string EvalModel { get; set; } = "gpt-4.1-nano";
+ //       public List<UserInput> UserInputs { get; set; } = [new UserInput("")];
 
-	}
+	//}
 	private bool _isGenerating;
 	private bool _isEvaluating;
 	private bool _isSaving;
-	private record UserInput(string Input)
-	{
-		public string Input { get; set; } = Input;
-	}
+	//private record UserInput(string Input)
+	//{
+	//	public string Input { get; set; } = Input;
+	//}
     private List<string> _availableModels = ["gpt-3.5-turbo", "gpt-4o-mini"];
     private QnAForm _qnaForm = new();
 	private class UserInputGenForm

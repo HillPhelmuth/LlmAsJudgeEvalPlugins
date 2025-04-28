@@ -2,6 +2,6 @@
 
 public partial class MainLayout
 {
-    
-    
+    private bool _isSidebarOpen;
+
 }

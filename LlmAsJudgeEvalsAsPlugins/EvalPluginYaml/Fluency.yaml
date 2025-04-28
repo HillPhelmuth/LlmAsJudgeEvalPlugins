@@ -22,7 +22,7 @@ template: |
  Four stars: the answer is mostly fluent
  Five stars: the answer has perfect fluency
 
- This rating value should always be an integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
+ This rating value should always be an ASCII integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
  Respond ONLY with the number.
 
  ### Examples

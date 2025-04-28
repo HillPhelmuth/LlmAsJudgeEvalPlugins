@@ -1,0 +1,53 @@
+﻿@using HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
+@page "/customdata"
+<RadzenRow>
+    <RadzenColumn Size="5" >
+        <RadzenTemplateForm TItem="FileUploadData" Data="_fileUploadData" Submit="HandleFile" Style="margin-left:auto;margin:auto; width:max-content">
+            <RadzenFileInput Name="Fileupload" Error="HandleError" MaxFileSize="FileUploadData.MaxFileSize" ChooseText="Upload Eval Data" @bind-FileName="@_fileUploadData.FileName" TValue="byte[]" @bind-Value="@_fileUploadData.FileBytes" @bind-FileSize="_fileUploadData.FileSize" Accept="application/json-lines"></RadzenFileInput><br/>
+            <RadzenRequiredValidator Component="Fileupload" Popup="true" Style="position:absolute"></RadzenRequiredValidator>
+            <RadzenFormField Text="Eval Types">
+                <ChildContent>
+                    <RadzenDropDown Name="EvalType" Multiple="true" Chips="true" @bind-Value="_fileUploadData.EvalTypes" Data="@(Enum.GetValues<EvalType>())" MaxSelectedLabels="3"></RadzenDropDown>
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="EvalType" Text="Select at least one eval type"></RadzenRequiredValidator>
+                </Helper>
+            </RadzenFormField>
+            <RadzenFormField>
+                <RadzenDropDown @bind-Value="_fileUploadData.EvalModel" Data="LlmModels.AvailableModels"></RadzenDropDown>
+            </RadzenFormField>
+            @if (_fileUploadData.FileBytes is not null && _fileUploadData.EvalTypes.Count > 0)
+            {
+                <br />
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Upload" Size="ButtonSize.Small"></RadzenButton>
+            }
+        </RadzenTemplateForm>
+        @if (_showMappingForm)
+        {
+            <RadzenText Text="Field Mapping" TextAlign="TextAlign.Center" TextStyle="TextStyle.DisplayH6"></RadzenText>
+            <RadzenText Text="Add or Modify Required Input Field Mapping For Selected Evals" TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle1"></RadzenText>
+            <RadzenTemplateForm TItem="PropertyMappingForm" Data="_propertyMappingForm" Submit="HandleMappingSubmit">
+                @foreach (var prop in _propertyMappingForm.Mappings)
+                {
+                    <RadzenFormField Text="Required Key">
+                        <ChildContent>
+                            <RadzenTextBox Name="@nameof(PropertyMappingItem.RequiredKey)" Value="@prop.RequiredKey" ReadOnly="true"></RadzenTextBox>
+                        </ChildContent>
+                    </RadzenFormField>
+                    <RadzenFormField Text="Mapped Key">
+                        <ChildContent>
+                            <RadzenDropDown TValue="string" Data="_propertyNames" Name="@($"{nameof(PropertyMappingItem.JsonPropertyName)}_{_propertyMappingForm.Mappings.IndexOf(prop)}")" @bind-Value="@prop.JsonPropertyName"></RadzenDropDown>
+                        </ChildContent>
+                        <Helper>
+                            <RadzenRequiredValidator Component="@($"{nameof(PropertyMappingItem.JsonPropertyName)}_{_propertyMappingForm.Mappings.IndexOf(prop)}")"></RadzenRequiredValidator>
+                        </Helper>
+                    </RadzenFormField><br />
+                }
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Save & Run" IsBusy="_isBusy" BusyText="Evaluating..."></RadzenButton>
+            </RadzenTemplateForm>
+        }
+    </RadzenColumn>
+    <RadzenColumn Size="6">
+        <EvalDisplay EvalResultDisplays="_evalResults" @ref="_evalDisplay" LogProbAggregatedResults="_logProbAggResults" StandardAggregatedResults="_standardAggResults"></EvalDisplay>
+    </RadzenColumn>
+</RadzenRow>

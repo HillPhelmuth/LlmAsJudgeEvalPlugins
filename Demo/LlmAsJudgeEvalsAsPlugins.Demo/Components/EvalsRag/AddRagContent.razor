@@ -1,4 +1,5 @@
-﻿<RadzenRow>
+﻿
+<RadzenRow>
 	<RadzenColumn Size="12">
 		<RadzenCard>
 			<RadzenTemplateForm Data="_addContentForm" TItem="AddContentForm" Submit="SubmitContent">
@@ -79,10 +80,10 @@
 						</RadzenColumn>
 						<RadzenColumn Size="3">
 							<RadzenFormField Text="Answer Model" Style="width:7rem;font-size:90%">
-								<RadzenDropDown Data="_availableModels" @bind-Value="_qnaForm.AnswerModel"></RadzenDropDown>
+								<RadzenDropDown Data="LlmModels.AvailableModels" @bind-Value="_qnaForm.AnswerModel"></RadzenDropDown>
 							</RadzenFormField>
 							<RadzenFormField Text="Eval Model" Style="width:7rem;font-size:90%">
-								<RadzenDropDown Data="_availableModels" @bind-Value="_qnaForm.EvalModel"></RadzenDropDown>
+								<RadzenDropDown Data="LlmModels.AvailableModels" @bind-Value="_qnaForm.EvalModel"></RadzenDropDown>
 							</RadzenFormField>
 							<RadzenButton ButtonType="ButtonType.Submit" Text="Evaluate" IsBusy=_isEvaluating BusyText="Evaluating..."></RadzenButton>
 						</RadzenColumn>

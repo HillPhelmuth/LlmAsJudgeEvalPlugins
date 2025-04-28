@@ -44,8 +44,8 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SemanticKernel" Version="1.32.0" />
-		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.32.0" />
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.47.0" />
+		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.47.0" />
 	</ItemGroup>
 
 	<ItemGroup>
