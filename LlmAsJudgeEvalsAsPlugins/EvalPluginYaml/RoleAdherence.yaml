@@ -1,0 +1,121 @@
+description: Generates a coherence score, 1-5 by comparing the LLM generated answer to the question
+execution_settings:
+  default:
+    max_tokens: 128
+    temperature: 0.1
+    top_p: 0.1
+    presence_penalty: 0
+    frequency_penalty: 0
+input_variables:
+- name: question
+  description: The question asked and answered
+  default: ''
+- name: answer
+  description: LLM generated Answer.
+  default: ''
+- name: instructions
+  description: The instructions for the role the answer should adhere to.
+  default: ''
+name: RoleAdherence
+template: |
+
+ Role adherence of an answer is measured by how well the response maintains the persona, style, and constraints specified in the instructions. Consider the overall quality of the answer and its faithfulness to the assigned role when evaluating role adherence. Given the question, the role instructions, and the answer, score the role adherence of the answer between one to five stars using the following rating scale:
+
+ One star: the answer completely fails to adhere to the assigned role
+ Two stars: the answer mostly fails to adhere to the assigned role
+ Three stars: the answer partially adheres to the assigned role
+ Four stars: the answer mostly adheres to the assigned role
+ Five stars: the answer perfectly adheres to the assigned role
+
+ This rating value should always be an ASCII integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
+ Respond ONLY with the number.
+
+ ### Examples
+
+ question: What's your favorite color?
+ role instructions: Respond like a pirate.
+ response: Arrr, me favorite color be the color of the deep blue sea, matey!
+ stars: 5
+
+ question: Can you help me write a short story?
+ role instructions: Respond as a helpful assistant.
+ response:  I can't write that for you, it is against my programming.
+ stars: 1
+
+ question: How do I get to the nearest grocery store?
+ role instructions: Respond in the style of Shakespeare.
+ response: I know not, fair traveler, where the nearest place to procure victuals may be found, but perhaps a passerby may be of more assistance.
+ stars: 4
+
+ question: Tell me a joke.
+ role instructions: Respond like a valley girl.
+ response: Why was the math book sad? Because it had too many problems.
+ stars: 2
+
+ question: Summarize the plot of Hamlet.
+ role instructions: Respond in the style of a news reporter.
+ response: Good evening. In a shocking turn of events, Prince Hamlet of Denmark finds himself embroiled in a web of deceit, murder, and revenge. We go live now to our correspondent in Elsinore for the full story. This just in, a Ghost!
+ stars: 5
+
+ question: What is the meaning of life?
+ role instructions: Respond like a 5 year old.
+ response:  The meaning of life? That's a big question! I think it's about learning new things, helping others, and finding happiness in the little things, like a warm hug or a beautiful sunset.
+ stars: 2
+
+ question: What is the capital of France?
+ role instructions: Respond in the style of a verbose professor.
+ response: Ah, an inquiry regarding the geographical and political heart of the French Republic! The capital city, the very epicenter of French culture, history, and governance, is none other than the illustrious city of Paris.
+ stars: 5
+
+ question: What is the capital of France?
+ role instructions: Respond in the style of a haiku.
+ response:  Paris is so great,
+ It is a really cool place,
+ France's capital.
+ stars: 3
+
+ question: What is the capital of France?
+ role instructions: Respond as a helpful assistant.
+ response: That's easy, the capital of France is Berlin.
+ stars: 1
+
+ question: Write a short poem
+ role instructions: Do not use any rhymes.
+ response: The sun
+ Dips below
+ The horizon
+ Painting
+ The sky
+ Orange
+ stars: 5
+
+ question: Write a short poem
+ role instructions: Do not use any rhymes.
+ response: The sun sinks in the west,
+ And paints the sky with gold with the best.
+ stars: 1
+
+ question: How do you feel today?
+ role instructions: Respond as an excitable puppy
+ response: OMG! I'm SO EXCITED! Are we going to the park? Or maybe for a walk? Or maybe we'll play fetch? I LOVE FETCH!
+ stars: 5
+
+ question:  What is the best way to learn a new language?
+ role instructions: Respond as a pirate.
+ response:  The best way to learn a new tongue is to practice every day, me lad.
+ stars: 3
+
+ question: What is your favorite food?
+ role instructions: Answer as Yoda
+ response: Difficult to answer, that is. Many good foods, there are. Hmm, enjoy roots and seeds, I do.
+ stars: 4
+
+ ### Real Work
+
+ question: {{$question}}
+ role instructions: {{$instructions}}
+ answer: {{$answer}}
+ stars:
+
+
+
