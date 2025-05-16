@@ -169,6 +169,7 @@ public class EvalService
     /// </summary>
     /// <param name="inputModel">The input model for the evaluation.</param>
     /// <param name="settings">optional <see cref="T:Microsoft.SemanticKernel.PromptExecutionSettings"/>. Defaults to preset <see cref="T:Microsoft.SemanticKernel.Connectors.OpenAI.OpenAIPromptExecutionSettings"/></param>
+    /// <param name="serviceId">optional service id for keyed <see cref="IChatCompletionService"/></param>
     /// <returns>The result score of the evaluation.</returns>
     public async Task<ResultScore> ExecuteScorePlusEval(IInputModel inputModel, PromptExecutionSettings? settings = null, string? serviceId = null)
     {

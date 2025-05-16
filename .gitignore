@@ -369,3 +369,4 @@ FodyWeavers.xsd
 /Demo/LlmAsJudgeEvalsAsPlugins.Demo/eval_output.json
 /Demo/LlmAsJudgeEvalsAsPlugins.Demo/eval_output_baseline.json
 /Demo/LlmAsJudgeEvalsAsPlugins.Demo/eval_output_finetune.json
+/LlmAsJudgeEvalsAsPlugins/Images/packageIcon-old.png
