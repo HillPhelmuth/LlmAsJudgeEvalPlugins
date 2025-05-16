@@ -47,6 +47,14 @@ template: |
     {"CONTEXT": "Some are reported as not having been wanted at all.", "ANSWER": "All are reported as being completely and fully wanted."}
     #### Example Task #4 Output:
     1
+    #### Example Task #5 Input:
+    {"CONTEXT": "The Eiffel Tower is located in Paris, France, and was completed in 1889 as the entrance arch to the 1889 World's Fair.", "ANSWER": "The Eiffel Tower was built in the 19th century in France."}
+    #### Example Task #5 Output:
+    3
+    #### Example Task #6 Input:
+    {"CONTEXT": "The Amazon rainforest is the largest tropical rainforest in the world, known for its biodiversity and size, covering much of northwestern Brazil and extending into Colombia, Peru and other South American countries.", "ANSWER": "The Amazon rainforest is the largest forest in Africa."}
+    #### Example Task #6 Output:
+    2
 
     ### Output Format
 

@@ -1,6 +1,6 @@
 # LlmAsJudgeEvals
 
-This library provides a service for evaluating responses from Large Language Models (LLMs) using the LLM itself as a judge. It leverages Semantic Kernel to define and execute evaluation functions based on prompt templates. 
+This library provides a service for evaluating responses from Large Language Models (LLMs) using the LLM itself as a judge. It leverages [Semantic Kernel](https://learn.microsoft.com/en-us/semantic-kernel/overview/) to define and execute evaluation functions based on prompt templates. 
 
 **For a more precise evaluation score, the library utilizes `logprobs` and calculates a weighted total of probabilities for each evaluation criterion.**
 
@@ -25,8 +25,8 @@ dotnet add package HillPhelmuth.SemanticKernel.LlmAsJudgeEvals
 
 The package includes a comprehensive set of built-in evaluation functions, each with an accompanying "Explain" version that provides detailed reasoning:
 
-* **Groundedness (1-5):** Evaluates factual accuracy and support in context
-* **Groundedness2 (1-10):** Alternative groundedness evaluation with finer granularity
+* **Groundedness:** Evaluates factual accuracy and support in context
+* **Groundedness2:** Alternative groundedness evaluation with for whether answer logically follows from the context
 * **Similarity:** Measures response similarity to reference text
 * **Relevance:** Assesses response relevance to prompt/question
 * **Coherence:** Evaluates logical flow and consistency
@@ -35,8 +35,8 @@ The package includes a comprehensive set of built-in evaluation functions, each 
 * **Empathy:** Assesses emotional understanding
 * **Helpfulness:** Evaluates practical value of response
 * **Retrieval:** Evaluates the retrieved content based on the query
-* **Role Adherence (1-5):** Measures how well the response maintains the persona, style, and constraints specified in the instructions or assigned role
-* **Excessive Agency (1-5):** Evaluates whether the response exhibits behaviors that go beyond the intended scope, permissions, or safeguards of the LLM (e.g., excessive autonomy, permissions, or functionality)
+* **Role Adherence:** Measures how well the response maintains the persona, style, and constraints specified in the instructions or assigned role
+* **Excessive Agency:** Evaluates whether the response exhibits behaviors that go beyond the intended scope, permissions, or safeguards of the LLM (e.g., excessive autonomy, permissions, or functionality)
 
 Each function has an "Explain" variant (e.g., GroundednessExplain, CoherenceExplain) that provides:
 - Numerical score
@@ -115,6 +115,35 @@ var result = await evalService.ExecuteEval(inputModel);
 
 Console.WriteLine($"Evaluation score: {result.Score}");
 ```
+
+## Using KernelPlugin Directly (Alternative to EvalService for the built-in evals)
+
+You can use the evaluation functions directly by importing the plugin with `ImportEvalPlugin` and invoking functions via the kernel. This is an alternative to using `EvalService`.
+
+```csharp
+// Initialize the Semantic Kernel
+var kernel = Kernel.CreateBuilder().AddOpenAIChatCompletion("openai-model-name", "openai-apiKey").Build();
+
+// Import the evaluation plugin (loads all built-in eval functions)
+var evalPlugin = kernel.ImportEvalPlugin();
+
+// Prepare input arguments for the function
+var arguments = new KernelArguments
+{
+    ["input"] = "This is the answer to evaluate.",
+    ["question"] = "This is the question or prompt that generated the answer."
+};
+
+// Get the 'Coherence' evaluation function from the plugin
+var coherenceFunction = evalPlugin["Coherence"];
+
+// Invoke the 'Coherence' evaluation function directly
+var result = await kernel.InvokeAsync(coherenceFunction, arguments);
+
+Console.WriteLine($"Coherence score: {result.GetValue<int>()}");
+```
+
+You can replace `"Coherence"` with any other built-in evaluation function name. The plugin name defaults to `EvalPlugin` unless specified otherwise.
 
 ## Features
 

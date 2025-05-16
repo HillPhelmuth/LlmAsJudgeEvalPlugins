@@ -1,12 +1,15 @@
 ﻿using System.Text;
 using System.Text.Json;
 using HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
+using Microsoft.Extensions.AI;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel.Text;
+using OpenAI;
 using UglyToad.PdfPig;
+
 
 namespace LlmAsJudgeEvalsAsPlugins.Demo;
 

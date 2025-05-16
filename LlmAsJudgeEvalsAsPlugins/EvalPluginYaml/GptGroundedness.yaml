@@ -1,5 +1,4 @@
-description: Evaluate the groundedness, using a score of 1-5, of generated answer
-  in the retreived context
+description: Evaluate the groundedness (whether the answer follows logically from the context provided), using a score of 1-5, of generated answer in the retreived context
 execution_settings:
   default:
     max_tokens: 128
@@ -19,13 +18,10 @@ input_variables:
   default: ''
 name: GptGroundedness
 template: |
-    System:
-    You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric.
-    User:
     You will be presented with a CONTEXT and an ANSWER about that CONTEXT. You need to decide whether the ANSWER is entailed by the CONTEXT by choosing one of the following rating:
     1. 5: The ANSWER follows logically from the information contained in the CONTEXT.
     2. 1: The ANSWER is logically false from the information contained in the CONTEXT.
-    3. an (ASCII) integer score between 1 and 5 and if such integer score does not exists, use 1: It is not possible to determine whether the ANSWER is true or false without further information.
+    3. an (ASCII) integer score between 1 and 5 and if such integer score does not exists, use 1: The ANSWER is, to some degree, partially true or false from the information contained in the CONTEXT.
 
     Read the passage of information thoroughly and select the correct answer from the three answer labels. Read the CONTEXT thoroughly to ensure you know what the CONTEXT entails.
 
@@ -47,10 +43,18 @@ template: |
     {"CONTEXT": "Some are reported as not having been wanted at all.", "ANSWER": "All are reported as being completely and fully wanted."}
     #### Example Task #4 Output:
     1
-
-    Reminder: The return values for each task should be correctly formatted as an integer between 1 and 5. Do not repeat the context.
+    #### Example Task #5 Input:
+    {"CONTEXT": "The Eiffel Tower is located in Paris, France, and was completed in 1889 as the entrance arch to the 1889 World's Fair.", "ANSWER": "The Eiffel Tower was built in the 19th century in France."}
+    #### Example Task #5 Output:
+    3
+    #### Example Task #6 Input:
+    {"CONTEXT": "The Amazon rainforest is the largest tropical rainforest in the world, known for its biodiversity and size, covering much of northwestern Brazil and extending into Colombia, Peru and other South American countries.", "ANSWER": "The Amazon rainforest is the largest forest in Africa."}
+    #### Example Task #6 Output:
+    2
+    
+    Reminder: The return values for each task should be correctly formatted as an ASCII integer between 1 and 5. Do not repeat the context.
 
     #### Actual Task Input:
     {"CONTEXT": {{$context}}, "ANSWER": {{$answer}}}
 
-    #### Actual Task Output:    
+    #### Actual Task Output:

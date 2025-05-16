@@ -1,10 +1,13 @@
 ﻿using System.Text.Json.Serialization;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel.TextGeneration;
+using OpenAI;
 using OpenAI.Chat;
+#pragma warning disable SKEXP0001
 
 namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
@@ -19,24 +22,54 @@ public class EvalService
             ## Goal
             ### You are an expert in evaluating the quality of a RESPONSE from an intelligent system based on provided definition and data. Your goal will involve answering the questions below using the information provided.
             - **Definition**: You are given a definition of the communication trait that is being evaluated to help guide your Score.
-            - **Data**: Your input data include CONTEXT, QUERY, and RESPONSE.
             - **Tasks**: To complete your evaluation you will be asked to evaluate the Data in different ways.
             """;
     private readonly Kernel _kernel;
+    private readonly Func<string, KernelFunction> _createFunctionFromYaml;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvalService"/> class.
+    /// Initializes a new instance of the <see cref="EvalService"/> class using a <see cref="Kernel"/> instance.
     /// </summary>
     /// <param name="kernel">The kernel instance.</param>
-    public EvalService(Kernel kernel)
+    /// <param name="createFunctionFromYaml">Optional delegate for creating KernelFunction from YAML.</param>
+    public EvalService(Kernel kernel, Func<string, KernelFunction>? createFunctionFromYaml = null)
     {
         _kernel = kernel;
+        _createFunctionFromYaml = createFunctionFromYaml ?? (yaml => _kernel.CreateFunctionFromPromptYaml(yaml));
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EvalService"/> class using an <see cref="OpenAIClient"/>.
+    /// </summary>
+    /// <param name="openAiClient">The OpenAI client to use for chat completion services.</param>
+    /// <param name="model">The model to use for evals. Defaults to gpt-4.1-nano</param>
+    public EvalService(OpenAIClient openAiClient, string? model = null)
+    {
+        model ??= "gpt-4.1-nano";
+        var builder = Kernel.CreateBuilder();
+        builder.Services.AddSingleton<IChatCompletionService>(new OpenAIChatCompletionService(model, openAiClient));
+        _kernel = builder.Build();
+        _createFunctionFromYaml = yaml => _kernel.CreateFunctionFromPromptYaml(yaml);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EvalService"/> class using an <see cref="IChatClient"/>.
+    /// </summary>
+    /// <param name="chatClient">The chat client to use for chat completion services.</param>
+    public EvalService(IChatClient chatClient)
+    {
+        var builder = Kernel.CreateBuilder();
+        var chatService = chatClient.AsChatCompletionService();
+        builder.Services.AddSingleton(chatService);
+        _kernel = builder.Build();
+        _createFunctionFromYaml = yaml => _kernel.CreateFunctionFromPromptYaml(yaml);
     }
 
     /// <summary>
     /// Gets the evaluation functions.
     /// </summary>
-    private Dictionary<string, KernelFunction> EvalFunctions { get; } =[];
+    private Dictionary<string, KernelFunction> EvalFunctions { get; } = [];
+    
 
     /// <summary>
     /// Adds an evaluation function using the specified prompt and settings.
@@ -74,7 +107,7 @@ public class EvalService
     public void AddEvalFunctionFromYaml(Stream yamlStream, string name, bool overrideExisting = false)
     {
         var yamlText = new StreamReader(yamlStream).ReadToEnd();
-        var function = _kernel.CreateFunctionFromPromptYaml(yamlText);
+        var function = _createFunctionFromYaml(yamlText);
         AddEvalFunction(name, function, overrideExisting);
     }
 
@@ -86,7 +119,7 @@ public class EvalService
     /// <param name="overrideExisting">Specifies whether to override an existing evaluation function with the same name.</param>
     public void AddEvalFunctionFromYaml(string yamlText, string name, bool overrideExisting = false)
     {
-        var function = _kernel.CreateFunctionFromPromptYaml(yamlText);
+        var function = _createFunctionFromYaml(yamlText);
         AddEvalFunction(name, function, overrideExisting);
     }
 
@@ -119,12 +152,14 @@ public class EvalService
             ChatSystemPrompt = ChatSystemPrompt,
             Logprobs = true,
             TopLogprobs = 5,
-            
+
         };
 
         var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
         var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], kernelArgs);
         var logProbs = result.Metadata?["ContentTokenLogProbabilities"] as IReadOnlyList<ChatTokenLogProbabilityDetails>;
+        if (logProbs is null || logProbs.Count == 0)
+            return new ResultScore(inputModel.FunctionName, result);
         var tokenStrings = logProbs.AsTokenStrings()[0];
         return new ResultScore(inputModel.FunctionName, tokenStrings);
     }
@@ -135,14 +170,19 @@ public class EvalService
     /// <param name="inputModel">The input model for the evaluation.</param>
     /// <param name="settings">optional <see cref="T:Microsoft.SemanticKernel.PromptExecutionSettings"/>. Defaults to preset <see cref="T:Microsoft.SemanticKernel.Connectors.OpenAI.OpenAIPromptExecutionSettings"/></param>
     /// <returns>The result score of the evaluation.</returns>
-    public async Task<ResultScore> ExecuteScorePlusEval(IInputModel inputModel, PromptExecutionSettings? settings = null)
+    public async Task<ResultScore> ExecuteScorePlusEval(IInputModel inputModel, PromptExecutionSettings? settings = null, string? serviceId = null)
     {
-        var kernel = _kernel.Clone();
-        if (kernel.Services.GetService<IChatCompletionService>() is null && kernel.Services.GetService<ITextGenerationService>() is null)
+        var currentKernel = _kernel.Clone();
+        var missingChatService = currentKernel.Services.GetService<IChatCompletionService>() is null && currentKernel.Services.GetService<ITextGenerationService>() is null;
+        if (!string.IsNullOrEmpty(serviceId))
+        {
+            missingChatService = currentKernel.Services.GetKeyedService<IChatCompletionService>(serviceId) is null && currentKernel.Services.GetKeyedService<ITextGenerationService>(serviceId) is null;
+        }
+        if (missingChatService)
         {
             throw new Exception("Kernel must have a chat completion service or text generation service to execute an eval");
         }
-        var evalPlugin = EvalFunctions.Count == 0 ? kernel.ImportEvalPlugin() : KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
+        var evalPlugin = EvalFunctions.Count == 0 ? currentKernel.ImportEvalPlugin() : KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
         settings ??= new OpenAIPromptExecutionSettings
         {
             MaxTokens = 800,
@@ -153,8 +193,10 @@ public class EvalService
             TopLogprobs = 5
         };
         var finalArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
-        var result = await kernel.InvokeAsync(evalPlugin[inputModel.FunctionName], finalArgs);
+        var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], finalArgs);
         var logProbs = result.Metadata?["ContentTokenLogProbabilities"] as IReadOnlyList<ChatTokenLogProbabilityDetails>;
+        if (logProbs is null || logProbs.Count == 0)
+            return new ResultScore(inputModel.FunctionName, result);
         var tokenStrings = logProbs?.AsTokenStrings();
         var scoreResult = result.GetTypedResult<ScorePlusResponse>();
         return new ResultScore(inputModel.FunctionName, scoreResult, tokenStrings);
@@ -184,6 +226,25 @@ public class EvalService
             Console.WriteLine(ex);
             return result;
         }
+    }
+    /// <summary>
+    /// Executes multiple evaluation functions asynchronously for the provided input models, then aggregates their results.
+    /// </summary>
+    /// <param name="inputModels">A collection of input models to evaluate.</param>
+    /// <param name="settings">Optional prompt execution settings to use for each evaluation. If null, default settings are used.</param>
+    /// <param name="serviceId">Optional service ID for selecting a keyed chat or text generation service.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a dictionary mapping evaluation names to their aggregated scores.
+    /// </returns>
+    public async Task<Dictionary<string, double>> ExecuteAndAggregateEvals(IEnumerable<IInputModel> inputModels, PromptExecutionSettings? settings = null, string? serviceId = null)
+    {
+        var resultScores = new List<ResultScore>();
+        foreach (var inputModel in inputModels)
+        {
+            var resultScore = await ExecuteEval(inputModel, settings, serviceId);
+            resultScores.Add(resultScore);
+        }
+        return AggregateResults(resultScores);
     }
 }
 

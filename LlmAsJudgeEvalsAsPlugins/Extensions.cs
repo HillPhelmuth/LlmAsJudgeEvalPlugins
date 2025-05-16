@@ -12,7 +12,10 @@ public static class Extensions
 {
     /// <summary>
     /// Imports an evaluation plugin into the kernel.
-    /// This can be used instead of <see cref="EvalService"/>
+    /// This can be used instead of <see cref="EvalService"/> and imports the predefined evaluation functions.
+    /// See <see cref="EvalType"/> for the list of available functions.
+    /// The plugin is created from prompt YAML files located in the assembly.
+    /// The plugin name is set to "EvalPlugin" by default.
     /// </summary>
     /// <param name="kernel">The kernel instance.</param>
     /// <param name="pluginName">The name of the plugin.</param>

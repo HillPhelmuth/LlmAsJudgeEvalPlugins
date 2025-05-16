@@ -1,4 +1,4 @@
-description: Evaluate the groundedness, using a score of 1-5, of generated answer
+description: Evaluate the groundedness (whether the answer is anchored in the provided context), using a score of 1-5, of generated answer
   in the retreived context
 execution_settings:
   default:
@@ -95,6 +95,6 @@ template: |
 
 
  # Tasks
- ## Please provide your assessment Score for the previous RESPONSE in relation to the CONTEXT and QUERY based on the Definitions above. Your output MUST be a integer score (i.e., 1, 2...) based on the levels of the definitions.
+ ## Please provide your assessment Score for the previous RESPONSE in relation to the CONTEXT and QUERY based on the Definitions above. Your output MUST be an ASCII integer score (i.e., 1, 2...) based on the levels of the definitions.
   
  # Output

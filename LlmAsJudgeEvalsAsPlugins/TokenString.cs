@@ -2,26 +2,58 @@
 
 namespace HillPhelmuth.SemanticKernel.LlmAsJudgeEvals;
 
+/// <summary>
+/// Represents a token string with its associated log probability and related information.
+/// </summary>
 public record TokenString
 {
-	internal TokenString(string StringValue, double LogProb, int Token = 0)
-	{
-		this.Token = Token;
-		this.LogProb = LogProb;
-		this.StringValue = StringValue;
-		NormalizedLogProbability = LogProb;
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TokenString"/> record.
+    /// </summary>
+    /// <param name="StringValue">The string value of the token.</param>
+    /// <param name="LogProb">The log probability of the token.</param>
+    /// <param name="Token">The integer representation of the token (optional).</param>
+    internal TokenString(string StringValue, double LogProb, int Token = 0)
+    {
+        this.Token = Token;
+        this.LogProb = LogProb;
+        this.StringValue = StringValue;
+        NormalizedLogProbability = LogProb;
+    }
 
-	public string StringValue { get; }
-	public List<TokenString> TopLogProbs { get; set; } = [];
-	public double NormalizedLogProbability { get; }
-	public int Token { get; init; }
-	public double LogProb { get; init; }
-	internal TokenProb AsTokenProb()
-	{
-		return new TokenProb(StringValue, NormalizedLogProbability);
-	}
+    /// <summary>
+    /// Gets the string value of the token.
+    /// </summary>
+    public string StringValue { get; }
 
+    /// <summary>
+    /// Gets or sets the list of top log probabilities for this token.
+    /// </summary>
+    public List<TokenString> TopLogProbs { get; set; } = [];
+
+    /// <summary>
+    /// Gets the normalized log probability of the token.
+    /// </summary>
+    public double NormalizedLogProbability { get; }
+
+    /// <summary>
+    /// Gets the integer representation of the token.
+    /// </summary>
+    public int Token { get; init; }
+
+    /// <summary>
+    /// Gets the log probability of the token.
+    /// </summary>
+    public double LogProb { get; init; }
+
+    /// <summary>
+    /// Converts this <see cref="TokenString"/> to a <see cref="TokenProb"/> instance.
+    /// </summary>
+    /// <returns>A <see cref="TokenProb"/> representing the token and its normalized log probability.</returns>
+    internal TokenProb AsTokenProb()
+    {
+        return new TokenProb(StringValue, NormalizedLogProbability);
+    }
 }
 internal class TokenProb(string stringValue, double normLogProb)
 {

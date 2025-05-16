@@ -62,13 +62,14 @@ public class InputModel : IInputModel
 		["question"] = question
 	});
 
-	/// <summary>
-	/// Creates an input model for relevance evaluation. Scores 1-5
-	/// </summary>
-	/// <param name="answer">The response being evaluated.</param>
-	/// <param name="context">The context/RAG content</param>
-	/// <returns>The input model for relevance evaluation.</returns>
-	public static InputModel RelevanceModel(string answer, string question, string context) => CreateCoreEvalInputModel(EvalType.Relevance, new KernelArguments
+    /// <summary>
+    /// Creates an input model for relevance evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The response being evaluated.</param>
+    /// <param name="question">The question</param>
+    /// <param name="context">The context/RAG content</param>
+    /// <returns>The input model for relevance evaluation.</returns>
+    public static InputModel RelevanceModel(string answer, string question, string context) => CreateCoreEvalInputModel(EvalType.Relevance, new KernelArguments
 	{
 		["answer"] = answer,
 		["context"] = context,
@@ -241,13 +242,14 @@ public class InputModel : IInputModel
 		["question"] = question
 	});
 
-	/// <summary>
-	/// Creates an input model for relevance explain evaluation. Scores 1-5
-	/// </summary>
-	/// <param name="answer">The response being evaluated.</param>
-	/// <param name="context">The context/RAG content</param>
-	/// <returns>The input model for relevance explain evaluation.</returns>
-	public static InputModel RelevanceExplainModel(string answer, string question, string context) => CreateCoreEvalInputModel(EvalType.RelevanceExplain, new KernelArguments
+    /// <summary>
+    /// Creates an input model for relevance explain evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The response being evaluated.</param>
+    /// <param name="question">The question</param>
+    /// <param name="context">The context/RAG content</param>
+    /// <returns>The input model for relevance explain evaluation.</returns>
+    public static InputModel RelevanceExplainModel(string answer, string question, string context) => CreateCoreEvalInputModel(EvalType.RelevanceExplain, new KernelArguments
 	{
 		["answer"] = answer,
 		["context"] = context,

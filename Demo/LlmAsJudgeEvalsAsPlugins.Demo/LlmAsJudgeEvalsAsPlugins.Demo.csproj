@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.4.3-preview.1.25230.7" />
     <PackageReference Include="PdfPig" Version="0.1.8" />
     <PackageReference Include="Radzen.Blazor" Version="6.0.9" />
     <PackageReference Include="Tiktoken" Version="2.0.3" />
