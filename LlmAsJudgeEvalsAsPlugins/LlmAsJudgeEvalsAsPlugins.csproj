@@ -21,12 +21,9 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<PackageOutputPath>C:\Users\adamh\source\LocalPackages</PackageOutputPath>
-	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>1.0.8</Version>
+		<Version>1.1.0</Version>
 	</PropertyGroup>
 
 

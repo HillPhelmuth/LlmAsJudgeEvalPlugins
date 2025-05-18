@@ -46,6 +46,10 @@ public class ResultScore
     /// </summary>
     public List<TokenString>? LogProbResults { get; set; }
 
+    internal ResultScore(string name)
+    {
+        EvalName = name;
+    }
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultScore"/> class with a function result.
     /// </summary>
@@ -133,9 +137,9 @@ public class ResultScore
         Reasoning = scorePlusResponse?.QualityScoreReasoning;
         ChainOfThought = scorePlusResponse?.ChainOfThought;
     }
-    private static TokenString? GetTokenAfterScore(IEnumerable<TokenString> tokens)
+    protected static TokenString? GetTokenAfterScore(IEnumerable<TokenString> tokens, string score = "\"score\": ", StringComparison stringComparison = StringComparison.Ordinal)
     {
-        var scoreString = "\"score\": ";
+        var scoreString = score;
         var currentString = string.Empty;
         var tokenList = tokens.ToList();
 
@@ -147,7 +151,7 @@ public class ResultScore
             if (currentString.Contains(scoreString))
             {
                 // Calculate the position immediately following the scoreString
-                var scoreEndIndex = currentString.IndexOf(scoreString, StringComparison.Ordinal) + scoreString.Length;
+                var scoreEndIndex = currentString.IndexOf(scoreString, stringComparison) + scoreString.Length;
 
                 // Find the token that follows the scoreString
                 var remainingString = currentString[scoreEndIndex..];

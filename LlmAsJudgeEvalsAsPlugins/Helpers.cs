@@ -22,16 +22,37 @@ public static class Helpers
     {
         PropertyNameCaseInsensitive = true
     };
+    internal static Dictionary<string, KernelFunction> GetFunctionsFromYaml()
+    {
+        var files = Enum.GetNames<EvalType>();
+        var result = new Dictionary<string, KernelFunction>();
+        foreach (var file in files)
+        {
+            var yamlText = ExtractFromAssembly<string>($"{file}.yaml");
+            var function = KernelFunctionYaml.FromPromptYaml(yamlText);
+            result.TryAdd(file, function);
+        }
+        return result;
+    }
+    /// <summary>
+    /// Retrieves prompt template configurations from embedded YAML resources for each <see cref="EvalType"/>.
+    /// </summary>
+    /// <param name="pluginName">
+    /// The name of the plugin to associate with the prompt templates. Defaults to "EvalPlugin".
+    /// </param>
+    /// <returns>
+    /// A dictionary mapping each <see cref="EvalType"/> name to its corresponding <see cref="PromptTemplateConfig"/>.
+    /// </returns>
     public static Dictionary<string, PromptTemplateConfig> GetPromptTemplateConfigs(string pluginName = "EvalPlugin")
     {
-	    var files = Enum.GetNames<EvalType>();
-	    var result = new Dictionary<string, PromptTemplateConfig>();
-	    foreach (var file in files)
-	    {
-		    var yamlText = ExtractFromAssembly<string>($"{file}.yaml");
-		    PromptTemplateConfig config = KernelFunctionYaml.ToPromptTemplateConfig(yamlText);
-		    result.Add(file, config);
-	    }
-	    return result;
+        var files = Enum.GetNames<EvalType>();
+        var result = new Dictionary<string, PromptTemplateConfig>();
+        foreach (var file in files)
+        {
+            var yamlText = ExtractFromAssembly<string>($"{file}.yaml");
+            PromptTemplateConfig config = KernelFunctionYaml.ToPromptTemplateConfig(yamlText);
+            result.Add(file, config);
+        }
+        return result;
     }
 }

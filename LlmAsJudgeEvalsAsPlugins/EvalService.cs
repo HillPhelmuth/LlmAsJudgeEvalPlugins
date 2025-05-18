@@ -69,7 +69,7 @@ public class EvalService
     /// Gets the evaluation functions.
     /// </summary>
     private Dictionary<string, KernelFunction> EvalFunctions { get; } = [];
-    
+
 
     /// <summary>
     /// Adds an evaluation function using the specified prompt and settings.
@@ -143,7 +143,14 @@ public class EvalService
             throw new Exception("Kernel must have a chat completion service or text generation service to execute an eval");
         }
 
-        var evalPlugin = EvalFunctions.Count == 0 ? currentKernel.ImportEvalPlugin() : KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
+        var importedEvalPluginFunctions = Helpers.GetFunctionsFromYaml();
+        foreach (var importedFunction in importedEvalPluginFunctions.Where(importedFunction => !EvalFunctions.ContainsKey(importedFunction.Key)))
+        {
+            EvalFunctions.Add(importedFunction.Key, importedFunction.Value);
+        }
+
+        var evalPlugin = KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
+        
         settings ??= new OpenAIPromptExecutionSettings
         {
             MaxTokens = 1,
@@ -183,7 +190,16 @@ public class EvalService
         {
             throw new Exception("Kernel must have a chat completion service or text generation service to execute an eval");
         }
-        var evalPlugin = EvalFunctions.Count == 0 ? currentKernel.ImportEvalPlugin() : KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
+
+
+        var importedEvalPluginFunctions = Helpers.GetFunctionsFromYaml();
+        foreach (var importedFunction in importedEvalPluginFunctions.Where(importedFunction => !EvalFunctions.ContainsKey(importedFunction.Key)))
+        {
+            EvalFunctions.Add(importedFunction.Key, importedFunction.Value);
+        }
+
+        var evalPlugin = KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
+
         settings ??= new OpenAIPromptExecutionSettings
         {
             MaxTokens = 800,
@@ -203,6 +219,61 @@ public class EvalService
         return new ResultScore(inputModel.FunctionName, scoreResult, tokenStrings);
     }
 
+    /// <summary>
+    /// Executes an evaluation function with a custom output type and score property.
+    /// </summary>
+    /// <typeparam name="T">The type of the expected result value in the evaluation output.</typeparam>
+    /// <param name="inputModel">The input model containing the function name and required arguments for the evaluation.</param>
+    /// <param name="scoreProperty">The property name in the result JSON that contains the score.</param>
+    /// <param name="settings">
+    /// Optional prompt execution settings to use for the evaluation. If null, default settings are used.
+    /// </param>
+    /// <param name="serviceId">
+    /// Optional service ID for selecting a keyed chat or text generation service.
+    /// </param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains a <see cref="ResultScore{T}"/> object
+    /// with the strongly-typed result value and score extracted from the evaluation output.
+    /// </returns>
+    /// <exception cref="Exception">
+    /// Thrown if the kernel does not have a chat completion service or text generation service to execute the evaluation.
+    /// </exception>
+    public async Task<ResultScore<T>> ExecuteEvalWithCustomOutput<T>(IInputModel inputModel, string scoreProperty,
+        PromptExecutionSettings? settings = null, string? serviceId = null)
+    {
+        var currentKernel = _kernel.Clone();
+        var missingChatService = currentKernel.Services.GetService<IChatCompletionService>() is null && currentKernel.Services.GetService<ITextGenerationService>() is null;
+        if (!string.IsNullOrEmpty(serviceId))
+        {
+            missingChatService = currentKernel.Services.GetKeyedService<IChatCompletionService>(serviceId) is null && currentKernel.Services.GetKeyedService<ITextGenerationService>(serviceId) is null;
+        }
+        if (missingChatService)
+        {
+            throw new Exception("Kernel must have a chat completion service or text generation service to execute an eval");
+        }
+        var importedEvalPluginFunctions = Helpers.GetFunctionsFromYaml();
+        foreach (var importedFunction in importedEvalPluginFunctions.Where(importedFunction => !EvalFunctions.ContainsKey(importedFunction.Key)))
+        {
+            EvalFunctions.Add(importedFunction.Key, importedFunction.Value);
+        }
+        var evalPlugin = KernelPluginFactory.CreateFromFunctions("EvalPlugin", "Evaluation functions", EvalFunctions.Values);
+        settings ??= new OpenAIPromptExecutionSettings
+        {
+            MaxTokens = 800,
+            Temperature = 0.0,
+            ResponseFormat = "json_object",
+            ChatSystemPrompt = ChatSystemPrompt,
+            Logprobs = true,
+            TopLogprobs = 5
+        };
+        var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
+        var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], kernelArgs);
+        var logProbs = result.Metadata?["ContentTokenLogProbabilities"] as IReadOnlyList<ChatTokenLogProbabilityDetails>;
+        if (logProbs is null || logProbs.Count == 0)
+            return new ResultScore<T>(inputModel.FunctionName, scoreProperty, result);
+        var tokenStrings = logProbs.AsTokenStrings();
+        return new ResultScore<T>(inputModel.FunctionName, scoreProperty, tokenStrings);
+    }
     /// <summary>
     /// Aggregates the results of multiple result scores.
     /// </summary>
