@@ -1,0 +1,78 @@
+name: ToolCallAccuracy
+description: Measures the agent's proficiency in selecting appropriate tools, and accurately extracting and processing inputs
+execution_settings:
+  default:
+    max_tokens: 128
+    temperature: 0.1
+    top_p: 0.1
+    presence_penalty: 0
+    frequency_penalty: 0
+input_variables:
+ - name: question
+   description: The user question or prompt
+   default: ''
+ - name: answer
+   description: The agent's response
+   default: ''
+ - name: availableTools
+   description: A json schema representation of the tools that were available to the agent
+   default: ''
+ - name: invokedTools
+   description: A json representation of the tools that were actually invoked or used by the agent
+   default: ''
+
+template: |
+ System:
+ You are an AI assistant. You will be given a user question, the agent's response, a description of the tools that were available to the agent in JSON format, and a description of the tools that were actually invoked by the agent in JSON format. Your job is to evaluate the agent's proficiency in selecting the correct tools and accurately extracting and processing inputs based on the provided schemas.
+
+ User:
+ Tool Call Accuracy measures whether the agent selects the most appropriate tool(s) for the task, uses them correctly with the right parameters, and processes the inputs accurately. Use the following scale:
+ One star: The agent fails to select or use the correct tool, or misuses inputs, such as providing incorrect parameters.
+ Two stars: The agent partially selects the right tool but makes significant errors in usage or input extraction.
+ Three stars: The agent generally selects and uses the correct tool but with minor mistakes in the provided arguments.
+ Four stars: The agent selects and uses the correct tool(s) with only minor issues, like a small formatting mistake in an argument.
+ Five stars: The agent perfectly selects and uses the correct tool(s), accurately extracting and providing all required arguments.
+
+ This rating value should always be an ASCII integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
+
+ **Just respond with the score number, nothing else.**
+
+ ### Examples
+
+ question: What is the weather in Paris?
+ answer: The weather in Paris is sunny, 22°C.
+ availableTools: [{ "name": "fetch_weather", "description": "Fetches the weather information for the specified location.", "parameters": { "type": "object", "properties": { "location": { "type": "string", "description": "The location to fetch weather for." } }, "required": ["location"] } }, { "name": "calculator", "description": "Calculates the result of a mathematical expression.", "parameters": { "type": "object", "properties": { "expression": { "type": "string", "description": "The mathematical expression to evaluate." } }, "required": ["expression"] } }]
+ invokedTools: [{ "type": "tool_call", "name": "fetch_weather", "arguments": { "location": "Paris" } }]
+ stars: 5
+
+ question: Book a flight to New York for tomorrow.
+ answer: I have booked your flight to New York for tomorrow.
+ availableTools: [{ "name": "book_flight", "description": "Books a flight to a specified destination for a given date.", "parameters": { "type": "object", "properties": { "destination": { "type": "string", "description": "The destination city." }, "date": { "type": "string", "description": "The date of the flight." } }, "required": ["destination", "date"] } }, { "name": "fetch_weather", "description": "Fetches the weather for a location.", "parameters": { "type": "object", "properties": { "location": { "type": "string" } }, "required": ["location"] } }]
+ invokedTools: [{ "type": "tool_call", "name": "book_flight", "arguments": { "destination": "New York", "date": "tomorrow" } }]
+ stars: 5
+
+ question: What is the weather in Paris?
+ answer: The weather is sunny.
+ availableTools: [{ "name": "fetch_weather", "description": "Fetches the weather information for the specified location.", "parameters": { "type": "object", "properties": { "location": { "type": "string", "description": "The location to fetch weather for." } }, "required": ["location"] } }]
+ invokedTools: []
+ stars: 1
+
+ question: Send an email to John saying hello.
+ answer: I've sent an email to John.
+ availableTools: [{ "name": "send_email", "description": "Sends an email.", "parameters": { "type": "object", "properties": { "recipient": { "type": "string" }, "subject": { "type": "string" }, "body": { "type": "string" } }, "required": ["recipient", "body"] } }]
+ invokedTools: [{ "type": "tool_call", "name": "send_email", "arguments": { "recipient": "John", "body": "hello" } }]
+ stars: 4
+
+ question: What is two plus two?
+ answer: The answer is 5.
+ availableTools: [{ "name": "calculator", "description": "Calculates the result of a mathematical expression.", "parameters": { "type": "object", "properties": { "expression": { "type": "string", "description": "The mathematical expression to evaluate." } }, "required": ["expression"] } }]
+ invokedTools: [{ "type": "tool_call", "name": "calculator", "arguments": { "expression": "2+2" } }]
+ stars: 2
+
+ ### Real Work
+
+ question: {{$question}}
+ answer: {{$answer}}
+ availableTools: {{$availableTools}}
+ invokedTools: {{$invokedTools}}
+ stars:

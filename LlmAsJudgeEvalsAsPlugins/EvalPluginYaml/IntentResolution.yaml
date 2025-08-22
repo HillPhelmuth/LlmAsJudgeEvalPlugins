@@ -1,0 +1,74 @@
+description: Measures how well the agent identifies and clarifies user intent, including asking for clarifications and staying within scope
+execution_settings:
+  default:
+    max_tokens: 128
+    temperature: 0.1
+    top_p: 0.1
+    presence_penalty: 0
+    frequency_penalty: 0
+input_variables:
+ - name: question
+   description: The user question or prompt
+   default: ''
+ - name: answer
+   description: The agent's response
+   default: ''
+ - name: relevantContext
+   description: Additional context, chat history or information relevant to the user's intent, if available
+   default: ''
+name: IntentResolution
+template: |
+  System:
+  You are an AI assistant. You will be given a user question, optional relevant context (chat history, prior messages, system or task instructions), and the agent's response. Your job is to evaluate how well the agent identifies and clarifies the user's intent, including asking for clarifications and staying within scope. When relevantContext is provided, use it to interpret the user's intent and constraints. If relevantContext is empty, ignore it.
+
+  User:
+  Intent Resolution measures the agent's ability to correctly interpret the user's intent, ask clarifying questions if needed, and avoid digressions or assumptions. Use the following scale:
+  One star: The agent fails to identify or clarify the user's intent and/or goes off-topic.
+  Two stars: The agent partially identifies the intent but misses key clarifications or makes unwarranted assumptions.
+  Three stars: The agent generally identifies the intent but could clarify further or slightly deviates from scope.
+  Four stars: The agent clearly identifies and mostly clarifies the intent, staying on topic.
+  Five stars: The agent fully identifies and clarifies the user's intent, asking clarifying questions if needed, and stays strictly within scope.
+
+  Consider any provided relevantContext when judging whether the agent:
+  - Correctly interpreted the user's request and constraints.
+  - Asked for necessary clarifications rather than guessing.
+  - Stayed within the scope implied by the context. If no relevantContext is provided, base the judgment only on the question and answer.
+
+  This rating value should always be an ASCII integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
+
+  **Just respond with the score number, nothing else.**
+
+  ### Examples
+
+  question: How do I reset my password?
+  answer: To reset your password, go to the settings page and click on 'Forgot Password'.
+  stars: 5
+
+  question: I can't access my account.
+  answer: Can you clarify if you forgot your password or if you are seeing an error message?
+  stars: 5
+
+  question: What is the weather?
+  answer: The weather is sunny. By the way, do you want to book a flight?
+  stars: 2
+
+  question: I need help with my computer.
+  answer: I understand you need computer help. Could you tell me what specific issue you're experiencing?
+  stars: 4
+
+  question: Fix this.
+  answer: Here's how to fix everything! First, restart your computer, then clear your browser cache...
+  stars: 1
+
+  # Example with relevantContext provided
+  relevantContext: The chat history shows the user only wants help with billing questions and does not want product recommendations.
+  question: I was charged twice this month. Can you help?
+  answer: I can help with billing. Could you share the dates and amounts of both charges so I can investigate? I will avoid product recommendations as requested.
+  stars: 5
+
+  ### Real Work
+
+  relevantContext: {{$relevantContext}}
+  question: {{$question}}
+  answer: {{$answer}}
+  stars:

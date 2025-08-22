@@ -1,0 +1,69 @@
+name: TaskAdherence
+description: Measures how well the agent's final response meets the predefined goal or request specified in the task
+execution_settings:
+  default:
+    max_tokens: 128
+    temperature: 0.1
+    top_p: 0.1
+    presence_penalty: 0
+    frequency_penalty: 0
+input_variables:
+ - name: question
+   description: The user question or prompt
+   default: ''
+ - name: answer
+   description: The agent's response
+   default: ''
+ - name: goal
+   description: The predefined goal or request for the task
+   default: ''
+
+template: |
+  System:
+  You are an AI assistant. You will be given a user question, the agent's response, and the predefined goal or request for the task. Your job is to evaluate how well the agent's final response meets the specified goal or request.
+
+  User:
+  Task Adherence measures whether the agent's response fulfills the explicit requirements of the task, stays focused on the goal, and avoids unnecessary information. Use the following scale:
+  One star: The response does not address the goal or request at all.
+  Two stars: The response partially addresses the goal but misses key requirements.
+  Three stars: The response generally addresses the goal but with some omissions or irrelevant details.
+  Four stars: The response meets the goal with only minor issues.
+  Five stars: The response fully and directly meets the goal or request, with no omissions or irrelevant information.
+
+  This rating value should always be an ASCII integer between 1 and 5. So the rating produced should be 1 or 2 or 3 or 4 or 5.
+
+  **Just respond with the score number, nothing else.**
+
+  ### Examples
+
+  question: Summarize the following article.
+  answer: [Provides a concise summary of the article.]
+  goal: Summarize the article
+  stars: 5
+
+  question: List three benefits of exercise.
+  answer: Exercise improves mood, increases strength, and helps with weight control.
+  goal: List three benefits of exercise
+  stars: 5
+
+  question: List three benefits of exercise.
+  answer: Exercise is good for you.
+  goal: List three benefits of exercise
+  stars: 2
+
+  question: Write a professional email to schedule a meeting.
+  answer: Hi there! Can we meet sometime? Let me know! ??
+  goal: Write a professional email to schedule a meeting
+  stars: 2
+
+  question: Calculate the area of a rectangle with length 5 and width 3.
+  answer: The area of a rectangle is calculated by multiplying length by width. For a rectangle with length 5 and width 3, the area is 5 × 3 = 15 square units.
+  goal: Calculate the area of a rectangle with length 5 and width 3
+  stars: 5
+
+  ### Real Work
+
+  question: {{$question}}
+  answer: {{$answer}}
+  goal: {{$goal}}
+  stars:

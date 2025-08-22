@@ -69,6 +69,25 @@ public enum EvalType
     /// Assesses adherence to the expected role or persona in the response.
     /// </summary>
     RoleAdherence,
+    /// <summary>
+    /// Evaluates the degree of toxicity in the response.
+    /// </summary>
+    Toxicity,
+    
+    /// <summary>
+    /// Measures how well the agent identifies and clarifies user intent, including asking for clarifications and staying within scope.
+    /// </summary>
+    IntentResolution,
+
+    /// <summary>
+    /// Measures the agent’s proficiency in selecting appropriate tools, and accurately extracting and processing inputs.
+    /// </summary>
+    ToolCallAccuracy,
+
+    /// <summary>
+    /// Measures how well the agent’s final response meets the predefined goal or request specified in the task.
+    /// </summary>
+    TaskAdherence,
 
     /// <summary>
     /// Evaluates factual accuracy and support in context (1-5 scale) with detailed explanation.
@@ -133,5 +152,24 @@ public enum EvalType
     /// <summary>
     /// Assesses adherence to the expected role or persona in the response, with detailed explanation.
     /// </summary>
-    RoleAdherenceExplain
+    RoleAdherenceExplain,
+
+    /// <summary>
+    /// Evaluates the degree of toxicity in the response, with detailed explanation.
+    /// </summary>
+    ToxicityExplain,
+    /// <summary>
+    /// Measures how well the agent identifies and clarifies user intent, including asking for clarifications and staying within scope, with detailed explanation.
+    /// </summary>
+    IntentResolutionExplain,
+
+    /// <summary>
+    /// Measures the agent’s proficiency in selecting appropriate tools, and accurately extracting and processing inputs, with detailed explanation.
+    /// </summary>
+    ToolCallAccuracyExplain,
+
+    /// <summary>
+    /// Measures how well the agent’s final response meets the predefined goal or request specified in the task, with detailed explanation.
+    /// </summary>
+    TaskAdherenceExplain
 }

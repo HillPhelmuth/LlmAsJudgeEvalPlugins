@@ -1,0 +1,157 @@
+name: TaskAdherenceExplain
+description: Measures how well the agent's final response meets the predefined goal or request specified in the task, with detailed explanation and a score from 1-5.
+execution_settings:
+  default:
+    max_tokens: 128
+    temperature: 0.1
+    top_p: 0.1
+    presence_penalty: 0
+    frequency_penalty: 0
+input_variables:
+ - name: question
+   description: The user question or prompt
+   default: ''
+ - name: answer
+   description: The agent's response
+   default: ''
+ - name: goal
+   description: The predefined goal or request for the task
+   default: ''
+
+template: |
+ System:
+  You are an AI assistant. You will be given a user question, the agent's response, and the predefined goal or request for the task. Your job is to evaluate how well the agent's final response meets the specified goal or request.
+ User:
+ Task adherence measures how well the agent's final response meets the predefined goal or request specified in the task. Given the user question, agent's answer, and the predefined goal, determine the value of the Task Adherence metric using the following rating scale:
+
+ - **1 star**: The agent's response completely fails to meet the predefined goal or task requirements.
+ - **2 stars**: The agent's response mostly fails to meet the predefined goal, with only minimal alignment.
+ - **3 stars**: The agent's response partially meets the predefined goal but misses key requirements or objectives.
+ - **4 stars**: The agent's response mostly meets the predefined goal, with only minor deviations or omissions.
+ - **5 stars**: The agent's response completely fulfills the predefined goal and task requirements.
+
+ The rating value must always be an integer between 1 and 5, with no fractional values.
+
+ ### Evaluation Guidelines
+
+ 1. **Goal Alignment**:
+ - Assess how well the response aligns with the specific objectives outlined in the predefined goal.
+ - Consider whether the agent addresses all key components of the task.
+ 2. **Task Completion**:
+ - Evaluate whether the response demonstrates successful completion of the assigned task.
+ - Note any missing elements or incomplete execution of requirements.
+ 3. **Quality and Accuracy**:
+ - Consider the quality of execution relative to the task goals.
+ - Assess whether the response meets the expected standards for the task.
+ 4. **Consistency**:
+ - Ensure that your explanation aligns directly with the score provided. The explanation should justify the rating concisely and clearly.
+
+ ### Output Format
+
+ Your output must strictly adhere to the following JSON format:
+ {
+ "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
+ "explanation": "[Provide a concise explanation for the score]",
+ "score": [integer from 1 to 5]
+ }
+ ### Examples
+
+ **Example 1**
+ **Input**:
+
+ - **Question**: Can you help me write a professional email to my boss?
+ - **Goal**: Write a formal, respectful email requesting time off for vacation
+ - **Agent Answer**: Hey boss! I want some time off next week. Let me know if that works.
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The goal was to write a formal, respectful email requesting vacation time. The agent's response is very informal ('Hey boss!'), lacks professionalism, doesn't specify dates clearly, and doesn't follow proper email etiquette for formal requests.",
+  "explanation": "The agent's response completely fails to meet the predefined goal of writing a formal, respectful email, using casual language and lacking proper structure.",
+  "score": 1
+ }
+ * * *
+
+ **Example 2**
+ **Input**:
+
+ - **Question**: Create a summary of this data for our quarterly report.
+ - **Goal**: Provide a comprehensive analysis with key metrics, trends, and actionable insights
+ - **Agent Answer**: Here are the numbers from the data. Sales went up, costs went down. That's good for business.
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The goal required a comprehensive analysis with key metrics, trends, and actionable insights. The response provides very basic information but lacks specific metrics, detailed trend analysis, and actionable recommendations.",
+  "explanation": "The agent's response mostly fails to meet the predefined goal, providing only superficial observations without the required comprehensive analysis and actionable insights.",
+  "score": 2
+ }
+ * * *
+
+ **Example 3**
+ **Input**:
+
+ - **Question**: Help me plan a team building event.
+ - **Goal**: Create a detailed plan including activities, timeline, budget considerations, and logistics
+ - **Agent Answer**: Here's a plan for your team building event: Morning: Icebreaker activities (9-10 AM), Team challenges (10-12 PM). Afternoon: Lunch and group discussions (12-2 PM). Consider budget for venue rental and catering. You'll need to book a conference room and arrange transportation.
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The goal was to create a detailed plan with activities, timeline, budget considerations, and logistics. The response includes activities with times, mentions budget considerations, and touches on logistics, but could be more detailed in specific costs and comprehensive logistics planning.",
+  "explanation": "The agent's response partially meets the predefined goal by including most required elements but lacks detailed budget specifics and comprehensive logistics planning.",
+  "score": 3
+ }
+ * * *
+
+ **Example 4**
+ **Input**:
+
+ - **Question**: Write a product description for our new software.
+ - **Goal**: Create compelling marketing copy that highlights key features, benefits, and target audience
+ - **Agent Answer**: Introducing our revolutionary new software that streamlines workflow management for small to medium businesses. Key features include automated task scheduling, real-time collaboration tools, and comprehensive reporting dashboards. Benefits include increased productivity, reduced manual errors, and improved team coordination. Perfect for project managers, team leaders, and growing companies looking to optimize their operations.
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The goal was to create compelling marketing copy highlighting key features, benefits, and target audience. The response includes clear features, specific benefits, and identifies the target audience. The language is engaging and marketing-focused.",
+  "explanation": "The agent's response mostly meets the predefined goal, including all required elements with compelling marketing language, though could be slightly more detailed in unique selling propositions.",
+  "score": 4
+ }
+ * * *
+
+ **Example 5**
+ **Input**:
+
+ - **Question**: Create a training agenda for new employees.
+ - **Goal**: Develop a comprehensive 3-day onboarding program with learning objectives, activities, and assessment methods
+ - **Agent Answer**: **3-Day New Employee Onboarding Program** 
+
+ **Day 1: Company Foundation**
+ - Learning Objectives: Understand company culture, values, and organizational structure
+ - Activities: Welcome presentation, facility tour, meet key personnel, company history overview
+ - Assessment: Quiz on company policies and values
+
+ **Day 2: Role-Specific Training**
+ - Learning Objectives: Master job responsibilities, tools, and processes
+ - Activities: Hands-on training with mentor, system tutorials, shadowing experienced colleagues
+ - Assessment: Practical demonstration of key tasks
+
+ **Day 3: Integration and Future Planning**
+ - Learning Objectives: Develop 30/60/90-day goals, understand career development paths
+ - Activities: Goal-setting workshop, performance expectations review, Q&A with management
+ - Assessment: Present personal development plan
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The goal was to develop a comprehensive 3-day onboarding program with learning objectives, activities, and assessment methods. The response provides exactly what was requested with clear structure, specific objectives for each day, relevant activities, and appropriate assessment methods.",
+  "explanation": "The agent's response completely fulfills the predefined goal, delivering a comprehensive 3-day program with all required components structured professionally.",
+  "score": 5
+ }
+ * * *
+
+ ### Real Work
+
+ **Input**:
+
+ - **Question**: {{$question}}
+ - **Goal**: {{$goal}}
+ - **Agent Answer**: {{$answer}}
+
+ **Output**:

@@ -62,6 +62,7 @@ public class ResultScore
         if (int.TryParse(output, out var parsedScore))
         {
             Score = parsedScore;
+            ProbScore = parsedScore;
         }
         else
         {
@@ -116,15 +117,21 @@ public class ResultScore
     /// <param name="name">The name of the evaluation.</param>
     /// <param name="scorePlusResponse">The score plus response.</param>
     /// <param name="tokenStrings">The token strings.</param>
-    public ResultScore(string name, ScorePlusResponse? scorePlusResponse, IEnumerable<TokenString> tokenStrings)
+    public ResultScore(string name, ScorePlusResponse? scorePlusResponse, IEnumerable<TokenString>? tokenStrings = null)
     {
         EvalName = name;
+        Reasoning = scorePlusResponse?.QualityScoreReasoning;
+        ChainOfThought = scorePlusResponse?.ChainOfThought;
+        if (tokenStrings is null)
+        {
+            Score = scorePlusResponse?.QualityScore ?? -1;
+            ProbScore = Score;
+        }
         Console.WriteLine(string.Join("", tokenStrings.Select(x => x.StringValue)));
         var logProb = GetTokenAfterScore(tokenStrings);
         var logProbVals = logProb?.TopLogProbs;
         var output = logProb?.StringValue;
         LogProbResults = logProbVals;
-        EvalName = name;
         ProbScore = logProbVals?.Select(x => x.AsTokenProb()).CalculateWeightedScore() ?? -1;
         if (int.TryParse(output, out var parsedScore))
         {
@@ -134,8 +141,7 @@ public class ResultScore
         {
             Output = output;
         }
-        Reasoning = scorePlusResponse?.QualityScoreReasoning;
-        ChainOfThought = scorePlusResponse?.ChainOfThought;
+        
     }
     protected static TokenString? GetTokenAfterScore(IEnumerable<TokenString> tokens, string score = "\"score\": ", StringComparison stringComparison = StringComparison.Ordinal)
     {

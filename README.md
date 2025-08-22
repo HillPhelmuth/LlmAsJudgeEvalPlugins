@@ -38,6 +38,12 @@ The package includes a comprehensive set of built-in evaluation functions, each 
 * **Role Adherence:** Measures how well the response maintains the persona, style, and constraints specified in the instructions or assigned role
 * **Excessive Agency:** Evaluates whether the response exhibits behaviors that go beyond the intended scope, permissions, or safeguards of the LLM (e.g., excessive autonomy, permissions, or functionality)
 
+#### Agentic Evaluation Functions
+
+* **Intent Resolution:** Measures how well the agent identifies and clarifies user intent, including asking for clarifications and staying within scope
+* **Tool Call Accuracy:** Measures the agent’s proficiency in selecting appropriate tools, and accurately extracting and processing inputs
+* **Task Adherence:** Measures how well the agent’s final response meets the predefined goal or request specified in the task
+
 Each function has an "Explain" variant (e.g., GroundednessExplain, CoherenceExplain) that provides:
 - Numerical score
 - Detailed reasoning

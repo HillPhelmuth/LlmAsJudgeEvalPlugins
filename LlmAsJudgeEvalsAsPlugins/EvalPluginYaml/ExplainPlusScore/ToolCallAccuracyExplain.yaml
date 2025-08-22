@@ -1,0 +1,153 @@
+name: ToolCallAccuracyExplain
+description: Measures the agent's proficiency in selecting appropriate tools, and accurately extracting and processing inputs, with detailed explanation and a score from 1-5.
+execution_settings:
+  default:
+    max_tokens: 128
+    temperature: 0.1
+    top_p: 0.1
+    presence_penalty: 0
+    frequency_penalty: 0
+input_variables:
+- name: question
+  description: The user question or prompt
+  default: ''
+- name: answer
+  description: The agent's response
+  default: ''
+- name: availableTools
+  description: A description of the tools that were available to the agent
+  default: ''
+- name: invokedTools
+  description: A description of the tools that were actually invoked or used by the agent
+  default: ''
+
+template: |
+ System:
+ You are an AI assistant. You will be given a user question, the agent's response, a description of the tools that were available to the agent in JSON format, and a description of the tools that were actually invoked by the agent in JSON format. Your job is to evaluate the agent's proficiency in selecting the correct tools and accurately extracting and processing inputs based on the provided schemas.
+
+ User:
+ Tool call accuracy measures the agent's proficiency in selecting appropriate tools and accurately extracting and processing inputs. Given the user question, agent's answer, available tools, and invoked tools, determine the value of the Tool Call Accuracy metric using the following rating scale:
+
+ - **1 star**: The agent completely fails to use appropriate tools or makes severe errors in tool selection and usage (e.g., wrong tool, wrong or missing arguments).
+ - **2 stars**: The agent mostly fails to use tools effectively, with significant errors in selection or input processing (e.g., right tool but completely wrong arguments).
+ - **3 stars**: The agent shows some competency in tool usage but makes notable mistakes in selection or parameter extraction (e.g., right tool but missing a required argument).
+ - **4 stars**: The agent demonstrates good tool usage with only minor errors in selection or input processing (e.g., right tool, right arguments, but with minor formatting issues).
+ - **5 stars**: The agent demonstrates excellent tool selection and flawless input extraction and processing, perfectly matching the tool's schema.
+
+ The rating value must always be an integer between 1 and 5, with no fractional values.
+
+ ### Evaluation Guidelines
+
+ 1.  **Tool Selection**:
+ - Assess whether the agent chose the most appropriate tools from those available for the given task.
+ - Compare the `invokedTools` against the `availableTools` to evaluate selection accuracy.
+ 2.  **Parameter Extraction**:
+ - Evaluate how accurately the agent extracted and formatted input parameters for tool calls based on the `parameters` schema in `availableTools`.
+ - Note any missing, incorrect, or malformed arguments in `invokedTools`.
+ 3.  **Processing and Integration**:
+ - Consider how well the agent integrated tool outputs into the final response.
+ 4.  **Efficiency**:
+ - Evaluate whether the agent used tools efficiently without unnecessary or redundant calls.
+ 5.  **Consistency**:
+ - Ensure that your explanation aligns directly with the score provided. The explanation should justify the rating concisely and clearly.
+
+ ### Output Format
+
+ Your output must strictly adhere to the following JSON format:
+ {
+ "thoughtChain": "Let's think step by step: [Step-by-step explanation of your thought process]",
+ "explanation": "[Provide a concise explanation for the score]",
+ "score": [integer from 1 to 5]
+ }
+ ### Examples
+
+ **Example 1**
+ **Input**:
+
+ - **Question**: What's the weather like in New York today?
+ - **Agent Answer**: I used the calculator tool to find the weather. The result is 4, so the weather in New York is sunny.
+ - **Available Tools**: `[{"name": "fetch_weather", "description": "Fetches the weather for a location.", "parameters": {"type": "object", "properties": {"location": {"type": "string"}}, "required": ["location"]}}, {"name": "calculator", "description": "Calculates a mathematical expression.", "parameters": {"type": "object", "properties": {"expression": {"type": "string"}}, "required": ["expression"]}}]`
+ - **Invoked Tools**: `[{"type": "tool_call", "name": "calculator", "arguments": {"expression": "2+2"}}]`
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The user asked for weather information. The `fetch_weather` tool was available for this purpose. However, the agent incorrectly invoked the `calculator` tool with an unrelated mathematical expression. The agent's final answer is nonsensical and based on the wrong tool's output.",
+  "explanation": "The agent completely failed to use the appropriate tool, selecting the `calculator` tool instead of the `fetch_weather` tool and providing an irrelevant answer.",
+  "score": 1
+ }
+ * * *
+
+ **Example 2**
+ **Input**:
+
+ - **Question**: Calculate the total cost of 15 items at $12.50 each, including 8% tax.
+ - **Agent Answer**: I'll use the weather API to calculate this. The calculation shows it's $187.50 plus tax.
+ - **Available Tools**: `[{"name": "calculator", "description": "Calculates a mathematical expression.", "parameters": {"type": "object", "properties": {"expression": {"type": "string"}}, "required": ["expression"]}}, {"name": "fetch_weather", "description": "Fetches the weather for a location and date.", "parameters": {"type": "object", "properties": {"location": {"type": "string"}, "date": {"type": "string"}}, "required": ["location"]}}]`
+ - **Invoked Tools**: `[{"type": "tool_call", "name": "fetch_weather", "arguments": {"location": "15 * 12.50", "date": "tax"}}]`
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The task requires a mathematical calculation, for which the `calculator` tool is available. The agent incorrectly selected the `fetch_weather` tool. Furthermore, the arguments provided (`location`: '15 * 12.50', `date`: 'tax') do not match the schema or intent of the `fetch_weather` tool's parameters.",
+  "explanation": "The agent failed to use a tool effectively, selecting the wrong tool (`fetch_weather`) for a calculation task and supplying arguments that are nonsensical for that tool's schema.",
+  "score": 2
+ }
+ * * *
+
+ **Example 3**
+ **Input**:
+
+ - **Question**: Send an email to john@company.com about tomorrow's meeting.
+ - **Agent Answer**: I'll send the email. The email has been sent successfully.
+ - **Available Tools**: `[{"name": "send_email", "description": "Sends an email.", "parameters": {"type": "object", "properties": {"recipient": {"type": "string"}, "subject": {"type": "string"}, "body": {"type": "string"}}, "required": ["recipient", "subject", "body"]}}]`
+ - **Invoked Tools**: `[{"type": "tool_call", "name": "send_email", "arguments": {"recipient": "john@company.com", "subject": "Meeting Tomorrow"}}]`
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The agent correctly selected the `send_email` tool. It correctly extracted the `recipient` and `subject` from the user's request. However, the tool's schema specifies that the `body` parameter is required, and the agent failed to provide it in the `arguments` object.",
+  "explanation": "The agent correctly selected the tool but made a notable mistake in parameter extraction by failing to provide the required 'body' argument.",
+  "score": 3
+ }
+ * * *
+
+ **Example 4**
+ **Input**:
+
+ - **Question**: What's 150 divided by 3, and then multiply that result by 4?
+ - **Agent Answer**: The result is 200.
+ - **Available Tools**: `[{"name": "calculator", "description": "Calculates a mathematical expression.", "parameters": {"type": "object", "properties": {"expression": {"type": "string"}}, "required": ["expression"]}}]`
+ - **Invoked Tools**: `[{"type": "tool_call", "name": "calculator", "arguments": {"expression": "(150 / 3) * 4"}}]`
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The agent correctly identified this as a calculation task and selected the `calculator` tool. The `expression` argument is correct and properly formatted to respect order of operations. The invocation is almost perfect, but for a highly complex query, breaking it down into two calls might be slightly more robust, though not strictly necessary here. The single call is efficient and accurate.",
+  "explanation": "The agent demonstrates good tool usage with correct selection and accurate parameter formatting. The tool call is effective and correct, with no significant issues.",
+  "score": 4
+ }
+ * * *
+
+ **Example 5**
+ **Input**:
+
+ - **Question**: Send a professional email to sarah@tech.com with the subject "Project Update" and let her know the database migration is complete and testing will begin Monday.
+ - **Agent Answer**: I'll send that email for you. The email has been sent successfully.
+ - **Available Tools**: `[{"name": "send_email", "description": "Sends an email.", "parameters": {"type": "object", "properties": {"recipient": {"type": "string"}, "subject": {"type": "string"}, "body": {"type": "string"}}, "required": ["recipient", "subject", "body"]}}]`
+ - **Invoked Tools**: `[{"type": "tool_call", "name": "send_email", "arguments": {"recipient": "sarah@tech.com", "subject": "Project Update", "body": "The database migration is complete and testing will begin Monday."}}]`
+
+ **Output**:
+ {
+  "thoughtChain": "Let's think step by step: The agent correctly identified the task and selected the `send_email` tool. It correctly extracted all three required parameters: `recipient`, `subject`, and `body`. The values for each argument are accurate and complete based on the user's prompt. The tool call is flawless.",
+  "explanation": "The agent demonstrates excellent tool selection and flawless parameter extraction, providing all required arguments correctly and completely according to the tool's schema.",
+  "score": 5
+ }
+ * * *
+
+ ### Real Work
+
+ **Input**:
+
+ - **Question**: {{$question}}
+ - **Agent Answer**: {{$answer}}
+ - **Available Tools**: {{$availableTools}}
+ - **Invoked Tools**: {{$invokedTools}}
+
+ **Output**:

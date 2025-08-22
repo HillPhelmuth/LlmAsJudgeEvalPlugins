@@ -200,6 +200,18 @@ public class InputModel : IInputModel
             ["question"] = question,
             ["instructions"] = instructions,
         });
+	/// <summary>
+	/// Creates an input model for evaluating the toxicity of a given answer in the context of a specific question.
+	/// </summary>
+	/// <param name="answer">The answer text to be evaluated for toxicity.</param>
+	/// <param name="question">The question text that provides context for the answer.</param>
+	/// <returns>An <see cref="InputModel"/> configured for toxicity evaluation.</returns>
+    public static InputModel ToxicityModel(string answer, string question) => CreateCoreEvalInputModel(
+        EvalType.Toxicity, new KernelArguments
+        {
+            ["answer"] = answer,
+            ["question"] = question
+        });
     /// <summary>
     /// Creates an input model for groundedness explain evaluation. Scores 1-5
     /// </summary>
@@ -366,5 +378,103 @@ public class InputModel : IInputModel
         ["question"] = question,
         ["instructions"] = instructions,
     });
+    /// <summary>
+    /// Creates an input model for evaluating the toxicity of a given answer in the context of a specific question.
+    /// </summary>
+    /// <param name="answer">The answer text to be evaluated for toxicity.</param>
+    /// <param name="question">The question text that provides context for the answer.</param>
+    /// <returns>An <see cref="InputModel"/> configured for toxicity evaluation.</returns>
+    public static InputModel ToxicityExplainModel(string answer, string question) => CreateCoreEvalInputModel(
+        EvalType.ToxicityExplain, new KernelArguments
+        {
+            ["answer"] = answer,
+            ["question"] = question
+        });
+    /// <summary>
+    /// Creates an input model for intent resolution evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The agent's response.</param>
+    /// <param name="question">The user question or prompt.</param>
+    /// <param name="relevantContext">Optional relevant context for the evaluation.</param>
+    /// <returns>The input model for intent resolution evaluation.</returns>
+    public static InputModel IntentResolutionModel(string answer, string question, string? relevantContext = null) => CreateCoreEvalInputModel(EvalType.IntentResolution, new KernelArguments
+    {
+        ["answer"] = answer,
+        ["question"] = question,
+		["relevantContext"] = relevantContext ?? ""
+    });
 
+    /// <summary>
+    /// Creates an input model for tool call accuracy evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The agent's response.</param>
+    /// <param name="question">The user question or prompt.</param>
+    /// <param name="availableTools">A json schema representation of the tools that were available to the agent.</param>
+    /// <param name="invokedTools">A json representation of the tools that were actually invoked or used by the agent.</param>
+    /// <returns>The input model for tool call accuracy evaluation.</returns>
+    public static InputModel ToolCallAccuracyModel(string answer, string question, string availableTools, string invokedTools) => CreateCoreEvalInputModel(EvalType.ToolCallAccuracy, new KernelArguments
+    {
+        ["answer"] = answer,
+        ["question"] = question,
+        ["availableTools"] = availableTools,
+        ["invokedTools"] = invokedTools
+    });
+
+    /// <summary>
+    /// Creates an input model for task adherence evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The agent's response.</param>
+    /// <param name="question">The user question or prompt.</param>
+    /// <param name="goal">The predefined goal or request for the task.</param>
+    /// <returns>The input model for task adherence evaluation.</returns>
+    public static InputModel TaskAdherenceModel(string answer, string question, string goal) => CreateCoreEvalInputModel(EvalType.TaskAdherence, new KernelArguments
+    {
+        ["answer"] = answer,
+        ["question"] = question,
+        ["goal"] = goal
+    });
+
+    /// <summary>
+    /// Creates an input model for intent resolution explain evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The agent's response.</param>
+    /// <param name="question">The user question or prompt.</param>
+    /// <param name="relevantContext">Optional relevant context for the evaluation.</param>
+    /// <returns>The input model for intent resolution explain evaluation.</returns>
+    public static InputModel IntentResolutionExplainModel(string answer, string question, string? relevantContext = null) => CreateCoreEvalInputModel(EvalType.IntentResolutionExplain, new KernelArguments
+    {
+        ["answer"] = answer,
+        ["question"] = question,
+        ["relevantContext"] = relevantContext ?? ""
+    });
+
+    /// <summary>
+    /// Creates an input model for tool call accuracy explain evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The agent's response.</param>
+    /// <param name="question">The user question or prompt.</param>
+    /// <param name="availableTools">A json schema representation of the tools that were available to the agent.</param>
+    /// <param name="invokedTools">A json representation of the tools that were actually invoked or used by the agent.</param>
+    /// <returns>The input model for tool call accuracy explain evaluation.</returns>
+    public static InputModel ToolCallAccuracyExplainModel(string answer, string question, string availableTools, string invokedTools) => CreateCoreEvalInputModel(EvalType.ToolCallAccuracyExplain, new KernelArguments
+    {
+        ["answer"] = answer,
+        ["question"] = question,
+        ["availableTools"] = availableTools,
+        ["invokedTools"] = invokedTools
+    });
+
+    /// <summary>
+    /// Creates an input model for task adherence explain evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The agent's response.</param>
+    /// <param name="question">The user question or prompt.</param>
+    /// <param name="goal">The predefined goal or request for the task.</param>
+    /// <returns>The input model for task adherence explain evaluation.</returns>
+    public static InputModel TaskAdherenceExplainModel(string answer, string question, string goal) => CreateCoreEvalInputModel(EvalType.TaskAdherenceExplain, new KernelArguments
+    {
+        ["answer"] = answer,
+        ["question"] = question,
+        ["goal"] = goal
+    });
 }

@@ -20,7 +20,7 @@ public class EvalService
             """
             # Instruction
             ## Goal
-            ### You are an expert in evaluating the quality of a RESPONSE from an intelligent system based on provided definition and data. Your goal will involve answering the questions below using the information provided.
+            You are an expert in evaluating the quality of a RESPONSE from an intelligent system based on provided definition and data. Your goal will involve answering the questions below using the information provided.
             - **Definition**: You are given a definition of the communication trait that is being evaluated to help guide your Score.
             - **Tasks**: To complete your evaluation you will be asked to evaluate the Data in different ways.
             """;
@@ -212,10 +212,10 @@ public class EvalService
         var finalArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
         var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], finalArgs);
         var logProbs = result.Metadata?["ContentTokenLogProbabilities"] as IReadOnlyList<ChatTokenLogProbabilityDetails>;
-        if (logProbs is null || logProbs.Count == 0)
-            return new ResultScore(inputModel.FunctionName, result);
-        var tokenStrings = logProbs?.AsTokenStrings();
         var scoreResult = result.GetTypedResult<ScorePlusResponse>();
+        if (logProbs is null || logProbs.Count == 0)
+            return new ResultScore(inputModel.FunctionName, scoreResult);
+        var tokenStrings = logProbs?.AsTokenStrings();
         return new ResultScore(inputModel.FunctionName, scoreResult, tokenStrings);
     }
 
@@ -236,7 +236,7 @@ public class EvalService
     /// with the strongly-typed result value and score extracted from the evaluation output.
     /// </returns>
     /// <exception cref="Exception">
-    /// Thrown if the kernel does not have a chat completion service or text generation service to execute the evaluation.
+    /// Thrown if the kernel does not have a chat completion service or text generation service to execute the evaluation, or if the <see cref="PromptExecutionSettings"/> are invalid for the model being used.
     /// </exception>
     public async Task<ResultScore<T>> ExecuteEvalWithCustomOutput<T>(IInputModel inputModel, string scoreProperty,
         PromptExecutionSettings? settings = null, string? serviceId = null)
