@@ -126,8 +126,8 @@ public class ResultScore
         {
             Score = scorePlusResponse?.QualityScore ?? -1;
             ProbScore = Score;
+            return;
         }
-        Console.WriteLine(string.Join("", tokenStrings.Select(x => x.StringValue)));
         var logProb = GetTokenAfterScore(tokenStrings);
         var logProbVals = logProb?.TopLogProbs;
         var output = logProb?.StringValue;
