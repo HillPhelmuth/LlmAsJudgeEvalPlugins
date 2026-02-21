@@ -48,12 +48,26 @@ Each function has an "Explain" variant (e.g., GroundednessExplain, CoherenceExpl
 - Chain-of-thought analysis
 - Probability-weighted score
 
+### Initialize the EvalService
+**Using a `Kernel` instance:**
 ```csharp
 // Initialize the Semantic Kernel
 var kernel = Kernel.CreateBuilder().AddOpenAIChatCompletion("openai-model-name", "openai-apiKey").Build();
 
 // Create an instance of the EvalService
 var evalService = new EvalService(kernel);
+```
+**Using an `Microsoft.Extensions.AI.IChatClient` instance:**
+```csharp
+// Initialize the Chat Client
+var chatClient = new OpenAIClient("openai-apiKey").GetChatClient("model-name").AsIChatClient();
+
+// Create an instance of the EvalService
+var evalService = new EvalService(chatClient);
+```
+
+### Execute Evaluations
+```csharp
 
 // Create an input model for the built-in evaluation function
 var coherenceInput = InputModel.CoherenceModel("This is the answer to evaluate.", "This is the question or prompt that generated the answer");

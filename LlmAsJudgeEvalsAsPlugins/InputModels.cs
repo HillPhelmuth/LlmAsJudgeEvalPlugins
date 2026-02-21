@@ -336,7 +336,19 @@ public class InputModel : IInputModel
 	/// <param name="answer">The response being evaluated.</param>
 	/// <param name="question">The question.</param>
 	/// <returns>The input model for helpfulness explain evaluation.</returns>
+	[Obsolete("The HelfulnessExplainModel is deprecated, and will be removed in future versions. Please use the HelpfulnessExplainModel instead")]
 	public static InputModel HelfulnessExplainModel(string answer, string question) => CreateCoreEvalInputModel(EvalType.HelpfulnessExplain, new KernelArguments
+	{
+		["answer"] = answer,
+		["question"] = question,
+	});
+    /// <summary>
+    /// Creates an input model for helpfulness explain evaluation. Scores 1-5
+    /// </summary>
+    /// <param name="answer">The response being evaluated.</param>
+    /// <param name="question">The question.</param>
+    /// <returns>The input model for helpfulness explain evaluation.</returns>
+    public static InputModel HelpfulnessExplainModel(string answer, string question) => CreateCoreEvalInputModel(EvalType.HelpfulnessExplain, new KernelArguments
 	{
 		["answer"] = answer,
 		["question"] = question,
