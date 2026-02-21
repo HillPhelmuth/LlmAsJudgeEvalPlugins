@@ -164,7 +164,9 @@ public class EvalService
 
         var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
         var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], kernelArgs);
-        var logProbs = result.Metadata?["ContentTokenLogProbabilities"] as IReadOnlyList<ChatTokenLogProbabilityDetails>;
+        if (result.Metadata is null || !result.Metadata.TryGetValue("ContentTokenLogProbabilities", out var logProbTokens))
+            return new ResultScore(inputModel.FunctionName, result);
+        var logProbs = logProbTokens as IReadOnlyList<ChatTokenLogProbabilityDetails>;
         if (logProbs is null || logProbs.Count == 0)
             return new ResultScore(inputModel.FunctionName, result);
         var tokenStrings = logProbs.AsTokenStrings()[0];
@@ -211,7 +213,9 @@ public class EvalService
         };
         var finalArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
         var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], finalArgs);
-        var logProbs = result.Metadata?["ContentTokenLogProbabilities"] as IReadOnlyList<ChatTokenLogProbabilityDetails>;
+        if (result.Metadata is null || !result.Metadata.TryGetValue("ContentTokenLogProbabilities", out var logProbTokens))
+            return new ResultScore(inputModel.FunctionName, result);
+        var logProbs = logProbTokens as IReadOnlyList<ChatTokenLogProbabilityDetails>;
         var scoreResult = result.GetTypedResult<ScorePlusResponse>();
         if (logProbs is null || logProbs.Count == 0)
             return new ResultScore(inputModel.FunctionName, scoreResult);
@@ -268,7 +272,9 @@ public class EvalService
         };
         var kernelArgs = new KernelArguments(inputModel.RequiredInputs, new Dictionary<string, PromptExecutionSettings> { { PromptExecutionSettings.DefaultServiceId, settings } });
         var result = await currentKernel.InvokeAsync(evalPlugin[inputModel.FunctionName], kernelArgs);
-        var logProbs = result.Metadata?["ContentTokenLogProbabilities"] as IReadOnlyList<ChatTokenLogProbabilityDetails>;
+        if (result.Metadata is null || !result.Metadata.TryGetValue("ContentTokenLogProbabilities", out var logProbTokens))
+            return new ResultScore<T>(inputModel.FunctionName, scoreProperty, result);
+        var logProbs = logProbTokens as IReadOnlyList<ChatTokenLogProbabilityDetails>;
         if (logProbs is null || logProbs.Count == 0)
             return new ResultScore<T>(inputModel.FunctionName, scoreProperty, result);
         var tokenStrings = logProbs.AsTokenStrings();
